@@ -154,16 +154,31 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                 {authMode === 'register' && (
                     <>
                         <TextInput style={styles.modernInput} placeholder="Deine E-Mail Adresse" placeholderTextColor="#888" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-                        <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)} style={styles.modernDateBtn}>
-                            <Text style={{ color: '#ccc', fontSize: 14, marginRight: 10 }}>Geburtsdatum:</Text>
-                            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>{birthDate.toLocaleDateString('de-DE')}</Text>
-                            <Ionicons name="calendar-outline" size={20} color="#888" style={{ marginLeft: 'auto' }} />
-                        </TouchableOpacity>
-                        {showDatePicker && (
-                            <View style={styles.datePickerContainer}>
-                                <DateTimePicker value={birthDate} mode="date" display="spinner" themeVariant="dark" textColor="white" maximumDate={new Date()} onChange={(e, d) => { if (Platform.OS === 'android') setShowDatePicker(false); if (d) setBirthDate(d); }} style={{ height: 120 }} />
-                                {Platform.OS === 'ios' && <TouchableOpacity onPress={() => setShowDatePicker(false)} style={styles.closePickerBtn}><Text style={{ color: THEME_COLOR }}>Fertig</Text></TouchableOpacity>}
+                        {Platform.OS === 'web' ? (
+                            <View style={[styles.modernInput, { paddingVertical: 10 }]}>
+                                <Text style={{ color: '#888', fontSize: 12, marginBottom: 5 }}>Geburtsdatum</Text>
+                                <DateTimePicker
+                                    value={birthDate}
+                                    mode="date"
+                                    display="default"
+                                    onChange={(e, d) => d && setBirthDate(d)}
+                                    style={{ width: '100%', height: 30, backgroundColor: 'transparent' }}
+                                />
                             </View>
+                        ) : (
+                            <>
+                                <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)} style={styles.modernDateBtn}>
+                                    <Text style={{ color: '#ccc', fontSize: 14, marginRight: 10 }}>Geburtsdatum:</Text>
+                                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>{birthDate.toLocaleDateString('de-DE')}</Text>
+                                    <Ionicons name="calendar-outline" size={20} color="#888" style={{ marginLeft: 'auto' }} />
+                                </TouchableOpacity>
+                                {showDatePicker && (
+                                    <View style={styles.datePickerContainer}>
+                                        <DateTimePicker value={birthDate} mode="date" display="spinner" themeVariant="dark" textColor="white" maximumDate={new Date()} onChange={(e, d) => { if (Platform.OS === 'android') setShowDatePicker(false); if (d) setBirthDate(d); }} style={{ height: 120 }} />
+                                        {Platform.OS === 'ios' && <TouchableOpacity onPress={() => setShowDatePicker(false)} style={styles.closePickerBtn}><Text style={{ color: THEME_COLOR }}>Fertig</Text></TouchableOpacity>}
+                                    </View>
+                                )}
+                            </>
                         )}
                     </>
                 )}
