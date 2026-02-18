@@ -84,7 +84,7 @@ def toggle_collection_save(recipe_id: int, collection_id: int, db: Session = Dep
     db.commit()
     return {"active": active}
 
-@router.get("/my-collections")
+@router.get("/collections")
 def get_collections(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     cols = db.query(Collection).filter(Collection.user_id == current_user.id).all()
     return cols
