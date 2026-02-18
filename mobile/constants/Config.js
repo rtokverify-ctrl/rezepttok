@@ -1,6 +1,6 @@
-// Use local URL in development, and environment variable in production
 const LOCAL_URL = 'http://192.168.178.153:8000';
-const PROD_URL = process.env.EXPO_PUBLIC_API_URL || LOCAL_URL;
+// 👇 HIER deine echte Render-URL eintragen:
+const PROD_URL = 'https://rezepttok.onrender.com';
 
 export const BASE_URL = __DEV__ ? LOCAL_URL : PROD_URL;
 export const THEME_COLOR = '#00C2FF';
