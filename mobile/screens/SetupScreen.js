@@ -12,7 +12,7 @@ const SetupScreen = ({ userToken, initialDisplayName, onSetupComplete }) => {
     const [isUploading, setIsUploading] = useState(false);
 
     const pickSetupImage = async () => {
-        let r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaType.Images, allowsEditing: true, aspect: [1, 1], quality: 0.5 });
+        let r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.5 });
         if (!r.canceled) setSetupImageUri(r.assets[0].uri);
     };
 
