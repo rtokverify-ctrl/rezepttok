@@ -1,0 +1,28 @@
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+backend/venv/
+backend/.env
+*.db
+backend/static/videos/
+backend/static/images/
+
+# Node / Frontend
+mobile/node_modules/
+mobile/.expo/
+mobile/web-build/
+mobile/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Brain artifacts
+.gemini/

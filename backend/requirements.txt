@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+python-multipart
+passlib[bcrypt]
+python-jose[cryptography]
+python-dotenv
+# New dependencies
+psycopg2-binary
+redis
+minio
+fastapi-mail
+gunicorn
