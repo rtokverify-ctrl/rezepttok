@@ -28,10 +28,30 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
         setUploadProgress(0);
         setIsProcessing(false);
         try {
-            const task = FileSystem.createUploadTask(`${BASE_URL}/upload-video`, uploadVideoUri, { httpMethod: 'POST', uploadType: FileSystem.FileSystemUploadType.MULTIPART, fieldName: 'file', headers: { 'Authorization': `Bearer ${userToken}` } }, (data) => { const percent = data.totalBytesSent / data.totalBytesExpectedToSend; setUploadProgress(Math.floor(percent * 100)); });
-            const result = await task.uploadAsync();
+            let vUrl;
+
+            if (Platform.OS === 'web') {
+                // Web Upload via standard fetch
+                const videoBlob = await (await fetch(uploadVideoUri)).blob();
+                const formData = new FormData();
+                formData.append('file', videoBlob, 'video.mp4');
+
+                const uploadResponse = await fetch(`${BASE_URL}/upload-video`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${userToken}` },
+                    body: formData
+                });
+                if (!uploadResponse.ok) throw new Error("Video Upload Fehler");
+                const uploadResult = await uploadResponse.json();
+                vUrl = uploadResult.url;
+            } else {
+                // Mobile Upload via FileSystem
+                const task = FileSystem.createUploadTask(`${BASE_URL}/upload-video`, uploadVideoUri, { httpMethod: 'POST', uploadType: FileSystem.FileSystemUploadType.MULTIPART, fieldName: 'file', headers: { 'Authorization': `Bearer ${userToken}` } }, (data) => { const percent = data.totalBytesSent / data.totalBytesExpectedToSend; setUploadProgress(Math.floor(percent * 100)); });
+                const result = await task.uploadAsync();
+                vUrl = JSON.parse(result.body).url;
+            }
+
             setIsProcessing(true);
-            const vUrl = JSON.parse(result.body).url;
             const tagsArray = uploadTags.split(',').map(t => t.trim()).filter(t => t.length > 0);
             const rData = { title: uploadTitle, video_url: vUrl, ingredients: ingredientsText.split('\n').map(l => ({ name: l, amount: "1", unit: "x" })), steps: stepsText.split('\n').map((l, i) => ({ order: i + 1, instruction: l })), tags: tagsArray, tips: uploadTips || null };
             await fetch(`${BASE_URL}/upload`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}`, 'bypass-tunnel-reminder': 'true' }, body: JSON.stringify(rData) });
