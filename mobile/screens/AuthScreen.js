@@ -157,13 +157,21 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                         {Platform.OS === 'web' ? (
                             <View style={[styles.modernInput, { paddingVertical: 10 }]}>
                                 <Text style={{ color: '#888', fontSize: 12, marginBottom: 5 }}>Geburtsdatum</Text>
-                                <DateTimePicker
-                                    value={birthDate}
-                                    mode="date"
-                                    display="default"
-                                    onChange={(e, d) => d && setBirthDate(d)}
-                                    style={{ width: '100%', height: 30, backgroundColor: 'transparent' }}
-                                />
+                                {React.createElement('input', {
+                                    type: 'date',
+                                    value: birthDate.toISOString().split('T')[0],
+                                    onChange: (e) => setBirthDate(new Date(e.target.value)),
+                                    style: {
+                                        backgroundColor: 'transparent',
+                                        color: 'white',
+                                        border: 'none',
+                                        fontSize: 16,
+                                        width: '100%',
+                                        outline: 'none',
+                                        fontFamily: 'inherit',
+                                        colorScheme: 'dark'
+                                    }
+                                })}
                             </View>
                         ) : (
                             <>
