@@ -5,7 +5,7 @@ import os
 
 from database import engine, Base
 import models 
-from routers import auth_router, users_router, recipes_router, video_router, search_router, notifications_router, shopping_router
+from routers import auth_router, users_router, recipes_router, video_router, search_router, notifications_router, shopping_router, debug_router
 
 # Create tables
 Base.metadata.create_all(bind=engine)
