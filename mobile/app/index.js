@@ -119,7 +119,7 @@ export default function App() {
     // --- ACTIONS ---
     const toggleLike = async (id) => {
         setVideos(prev => prev.map(v => v.id === id ? { ...v, is_liked: !v.is_liked, likes: v.is_liked ? v.likes - 1 : v.likes + 1 } : v));
-        try { await fetch(`${BASE_URL}/videos/${id}/like`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } }); loadMyProfile(); } catch (e) { }
+        try { await fetch(`${BASE_URL}/recipes/${id}/like`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } }); loadMyProfile(); } catch (e) { }
     };
 
     const toggleFollow = async (userId) => {

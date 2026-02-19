@@ -11,6 +11,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
     const [status, setStatus] = useState({});
     const player = useVideoPlayer(item.video_url, player => {
         player.loop = true;
+        player.muted = true; // Mute by default to allow autoplay
     });
 
     useEffect(() => {
