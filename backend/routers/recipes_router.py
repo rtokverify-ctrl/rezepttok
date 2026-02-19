@@ -43,7 +43,10 @@ def get_all_saved_videos(db: Session = Depends(get_db), current_user: User = Dep
     for s in saves:
         r = db.query(Recipe).filter(Recipe.id == s.recipe_id).first()
         if r:
-            results.append({ "id": r.id, "video_url": r.video_url, "title": r.title, "ingredients": r.ingredients, "steps": r.steps, "tags": r.tags, "tips": r.tips, "is_mine": (r.owner_id == current_user.id)})
+            owner = db.query(User).filter(User.id == r.owner_id).first()
+            chef_display = owner.display_name if owner else "Unknown"
+            owner_avatar = owner.avatar_url if owner else None
+            results.append({ "id": r.id, "video_url": r.video_url, "title": r.title, "ingredients": r.ingredients, "steps": r.steps, "tags": r.tags, "tips": r.tips, "is_mine": (r.owner_id == current_user.id), "chef": chef_display, "owner_id": r.owner_id, "owner_avatar_url": owner_avatar})
     return results
 
 @router.post("/recipes/{recipe_id}/toggle-global-save")
@@ -103,7 +106,10 @@ def get_collection_videos(collection_id: int, db: Session = Depends(get_db), cur
     for s in saves:
         r = db.query(Recipe).filter(Recipe.id == s.recipe_id).first()
         if r:
-            results.append({ "id": r.id, "video_url": r.video_url, "title": r.title, "ingredients": r.ingredients, "steps": r.steps, "tags": r.tags, "tips": r.tips, "is_mine": (r.owner_id == current_user.id)})
+            owner = db.query(User).filter(User.id == r.owner_id).first()
+            chef_display = owner.display_name if owner else "Unknown"
+            owner_avatar = owner.avatar_url if owner else None
+            results.append({ "id": r.id, "video_url": r.video_url, "title": r.title, "ingredients": r.ingredients, "steps": r.steps, "tags": r.tags, "tips": r.tips, "is_mine": (r.owner_id == current_user.id), "chef": chef_display, "owner_id": r.owner_id, "owner_avatar_url": owner_avatar})
     return results
 
 @router.post("/recipes/{recipe_id}/like")

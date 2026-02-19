@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Platform } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -34,8 +34,8 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
             toggleLike(item.id); // Always toggle like, or check !item.is_liked if we only want to like
             setShowHeart(true);
             Animated.sequence([
-                Animated.spring(scaleValue, { toValue: 1, useNativeDriver: true, friction: 5 }),
-                Animated.timing(scaleValue, { toValue: 0, duration: 150, delay: 500, useNativeDriver: true })
+                Animated.spring(scaleValue, { toValue: 1, useNativeDriver: Platform.OS !== 'web', friction: 5 }),
+                Animated.timing(scaleValue, { toValue: 0, duration: 150, delay: 500, useNativeDriver: Platform.OS !== 'web' })
             ]).start(() => setShowHeart(false));
         } else {
             // Single tap: toggle play/pause
