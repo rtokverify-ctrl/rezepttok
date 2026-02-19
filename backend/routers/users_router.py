@@ -20,6 +20,9 @@ async def update_profile(
     current_user: User = Depends(get_current_user), 
     db: Session = Depends(get_db)
 ):
+    display_name = display_name.strip()
+    if not display_name:
+        display_name = current_user.username
     current_user.display_name = display_name
     current_user.bio = bio
     if file:
