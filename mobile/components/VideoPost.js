@@ -8,19 +8,15 @@ import { THEME_COLOR, BASE_URL } from '../constants/Config';
 const { width } = Dimensions.get('window');
 
 const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, currentScreen, containerHeight }) => {
-    const [status, setStatus] = useState({});
-    const player = useVideoPlayer(item.video_url, player => {
-        player.loop = true;
-        player.muted = true; // Mute by default to allow autoplay
-    });
+    const [userPaused, setUserPaused] = useState(false);
 
     useEffect(() => {
-        if (isActive && currentScreen === 'feed') {
+        if (isActive && currentScreen === 'feed' && !userPaused) {
             try { player.play(); } catch (e) { }
         } else {
             try { player.pause(); } catch (e) { }
         }
-    }, [isActive, currentScreen]);
+    }, [isActive, currentScreen, userPaused]);
 
     // Double tap like animation
     const [showHeart, setShowHeart] = useState(false);
@@ -32,7 +28,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
         const now = Date.now();
         if (lastTap.current && (now - lastTap.current) < 300) {
             // Double tap!
-            toggleLike(item.id); // Always toggle like, or check !item.is_liked if we only want to like
+            toggleLike(item.id); // Always toggle like
             setShowHeart(true);
             Animated.sequence([
                 Animated.spring(scaleValue, { toValue: 1, useNativeDriver: Platform.OS !== 'web', friction: 5 }),
@@ -40,7 +36,13 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
             ]).start(() => setShowHeart(false));
         } else {
             // Single tap: toggle play/pause
-            if (player.playing) player.pause(); else player.play();
+            if (player.playing) {
+                player.pause();
+                setUserPaused(true);
+            } else {
+                player.play();
+                setUserPaused(false);
+            }
         }
         lastTap.current = now;
     };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, ScrollView, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, ScrollView, TextInput, ActivityIndicator, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BASE_URL, THEME_COLOR } from '../constants/Config';
 import MiniVideo from '../components/MiniVideo';
@@ -52,24 +52,56 @@ const ProfileScreen = ({
     const handleUpdateProfile = async () => {
         setIsUploading(true);
         try {
-            const p = { display_name: setupDisplayName, bio: setupBio };
-            let r;
-            if (setupImageUri && setupImageUri !== (myProfileData?.avatar_url ? `${BASE_URL}${myProfileData.avatar_url}` : null)) {
-                r = await FileSystem.uploadAsync(`${BASE_URL}/update-profile`, setupImageUri, { httpMethod: 'POST', uploadType: 1, fieldName: 'file', headers: { 'Authorization': `Bearer ${userToken}` }, parameters: p });
-            } else {
+            const hasNewImage = setupImageUri && setupImageUri !== (myProfileData?.avatar_url ? `${BASE_URL}${myProfileData.avatar_url}` : null);
+
+            if (Platform.OS === 'web') {
                 const f = new FormData();
-                f.append('display_name', p.display_name);
-                f.append('bio', p.bio);
-                const raw = await fetch(`${BASE_URL}/update-profile`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` }, body: f });
-                r = { status: raw.status };
+                f.append('display_name', setupDisplayName);
+                f.append('bio', setupBio);
+
+                if (hasNewImage) {
+                    const response = await fetch(setupImageUri);
+                    const blob = await response.blob();
+                    f.append('file', blob, 'avatar.jpg');
+                }
+
+                const r = await fetch(`${BASE_URL}/update-profile`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${userToken}` },
+                    body: f
+                });
+                if (r.status !== 200) throw new Error("Fehler beim Speichern (Web)");
+
+            } else {
+                // Native
+                if (hasNewImage) {
+                    const r = await FileSystem.uploadAsync(`${BASE_URL}/update-profile`, setupImageUri, {
+                        httpMethod: 'POST',
+                        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                        fieldName: 'file',
+                        headers: { 'Authorization': `Bearer ${userToken}` },
+                        parameters: { display_name: setupDisplayName, bio: setupBio }
+                    });
+                    if (r.status !== 200) throw new Error("Fehler beim Speichern (Native Upload)");
+                } else {
+                    const f = new FormData();
+                    f.append('display_name', setupDisplayName);
+                    f.append('bio', setupBio);
+                    const r = await fetch(`${BASE_URL}/update-profile`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` }, body: f });
+                    if (r.status !== 200) throw new Error("Fehler beim Speichern (Native Text)");
+                }
             }
-            if (r.status !== 200) throw new Error("Fehler");
+
             setSettingsVisible(false);
             setSettingsView('menu');
             loadMyProfile();
-            Alert.alert("Profil aktualisiert! ✅");
+            if (Platform.OS === 'web') window.alert("Profil aktualisiert! ✅");
+            else Alert.alert("Profil aktualisiert! ✅");
+
         } catch (e) {
-            Alert.alert("Fehler", e.message);
+            console.log(e);
+            if (Platform.OS === 'web') window.alert("Fehler: " + e.message);
+            else Alert.alert("Fehler", e.message);
         } finally {
             setIsUploading(false);
         }
