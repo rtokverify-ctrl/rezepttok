@@ -75,7 +75,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => toggleLike(item.id)} style={styles.actionButton}>
-                    <Ionicons name="heart" size={35} color={item.liked ? THEME_COLOR : 'white'} />
+                    <Ionicons name="heart" size={35} color={item.is_liked ? THEME_COLOR : 'white'} />
                     <Text style={styles.actionText}>{item.likes}</Text>
                 </TouchableOpacity>
 

@@ -56,19 +56,38 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
             let vUrl;
 
             if (Platform.OS === 'web') {
-                // Web Upload via standard fetch
+                // Web Upload via XMLHttpRequest for Progress
                 const videoBlob = await (await fetch(uploadVideoUri)).blob();
                 const formData = new FormData();
                 formData.append('file', videoBlob, 'video.mp4');
 
-                const uploadResponse = await fetch(`${BASE_URL}/upload-video`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${userToken}` },
-                    body: formData
+                vUrl = await new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', `${BASE_URL}/upload-video`);
+                    xhr.setRequestHeader('Authorization', `Bearer ${userToken}`);
+
+                    xhr.upload.onprogress = (event) => {
+                        if (event.lengthComputable) {
+                            setUploadProgress(Math.round((event.loaded / event.total) * 100));
+                        }
+                    };
+
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                resolve(response.url);
+                            } catch (e) {
+                                reject(new Error("Invalid JSON response"));
+                            }
+                        } else {
+                            reject(new Error("Upload failed"));
+                        }
+                    };
+
+                    xhr.onerror = () => reject(new Error("Network Error"));
+                    xhr.send(formData);
                 });
-                if (!uploadResponse.ok) throw new Error("Video Upload Fehler");
-                const uploadResult = await uploadResponse.json();
-                vUrl = uploadResult.url;
             } else {
                 // Mobile Upload via FileSystem
                 const task = FileSystem.createUploadTask(`${BASE_URL}/upload-video`, uploadVideoUri, { httpMethod: 'POST', uploadType: FileSystem.FileSystemUploadType.MULTIPART, fieldName: 'file', headers: { 'Authorization': `Bearer ${userToken}` } }, (data) => { const percent = data.totalBytesSent / data.totalBytesExpectedToSend; setUploadProgress(Math.floor(percent * 100)); });

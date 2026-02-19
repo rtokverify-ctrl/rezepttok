@@ -33,7 +33,8 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
         hashed_password=hashed_pw, 
         display_name=user.username,
         verification_code=verification_code,
-        is_verified=True # AUTO-VERIFY FOR TESTING
+        verification_code=verification_code,
+        is_verified=False # Require Email Verification
     )
     db.add(new_user)
     db.commit()
