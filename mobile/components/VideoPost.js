@@ -9,6 +9,10 @@ const { width } = Dimensions.get('window');
 
 const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, currentScreen, containerHeight }) => {
     const [userPaused, setUserPaused] = useState(false);
+    const player = useVideoPlayer(item.video_url, player => {
+        player.loop = true;
+        player.muted = true; // Mute by default to allow autoplay
+    });
 
     useEffect(() => {
         if (isActive && currentScreen === 'feed' && !userPaused) {
