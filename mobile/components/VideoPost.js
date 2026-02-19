@@ -66,7 +66,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                 </View>
             )}
 
-            {!player.playing && !showHeart && (
+            {userPaused && !showHeart && (
                 <View style={styles.playIconOverlay} pointerEvents="none">
                     <Ionicons name="play" size={60} color="rgba(255,255,255,0.4)" />
                 </View>
