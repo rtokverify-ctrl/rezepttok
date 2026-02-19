@@ -68,9 +68,9 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
             <LinearGradient colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.8)']} style={styles.videoGradient} />
 
             <View style={styles.rightSidebar}>
-                <TouchableOpacity onPress={() => onChefPress(item.owner?.id)} style={[styles.actionButton, { marginBottom: 25 }]}>
+                <TouchableOpacity onPress={() => onChefPress(item.owner_id)} style={[styles.actionButton, { marginBottom: 25 }]}>
                     {item.owner?.avatar_url ? <Image source={{ uri: `${BASE_URL}${item.owner.avatar_url}` }} style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: 'white' }} /> : <View style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: 'white', backgroundColor: '#333', justifyContent: 'center', alignItems: 'center' }}><Text style={{ color: 'white', fontWeight: 'bold' }}>{item.chef?.charAt(0)}</Text></View>}
-                    {!item.owner?.i_follow && <TouchableOpacity onPress={() => onFollowPress(item.owner?.id)} style={{ position: 'absolute', bottom: -10, backgroundColor: THEME_COLOR, borderRadius: 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}><Ionicons name="add" size={14} color="white" /></TouchableOpacity>}
+                    {!item.owner?.i_follow && <TouchableOpacity onPress={() => onFollowPress(item.owner_id)} style={{ position: 'absolute', bottom: -10, backgroundColor: THEME_COLOR, borderRadius: 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}><Ionicons name="add" size={14} color="white" /></TouchableOpacity>}
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => toggleLike(item.id)} style={styles.actionButton}>
@@ -78,7 +78,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                     <Text style={styles.actionText}>{item.likes}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => openComments(item)} style={styles.actionButton}>
+                <TouchableOpacity onPress={() => openComments(item.id)} style={styles.actionButton}>
                     <Ionicons name="chatbubble-ellipses" size={35} color="white" />
                     <Text style={styles.actionText}>{item.comments_count || 0}</Text>
                 </TouchableOpacity>

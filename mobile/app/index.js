@@ -188,11 +188,11 @@ export default function App() {
     const handleGlobalSave = async (recipe) => {
         setRecipeToSave(recipe);
         try {
-            const r = await fetch(`${BASE_URL}/videos/${recipe.id}/collections`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await fetch(`${BASE_URL}/recipes/${recipe.id}/save-status`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
-            setCurrentRecipeCollections(d);
+            setCurrentRecipeCollections(Array.isArray(d) ? d : []);
             setSaveModalVisible(true);
-        } catch (e) { }
+        } catch (e) { setCurrentRecipeCollections([]); }
     };
 
     const createCollection = async () => {
@@ -203,15 +203,19 @@ export default function App() {
             setCollections([...collections, d]);
             setNewCollectionName('');
             setIsCreatingCollection(false);
-            toggleCollectionForRecipe(d.id);
+            if (d.id) toggleCollectionForRecipe(d.id);
         } catch (e) { }
     };
 
     const toggleCollectionForRecipe = async (collectionId) => {
         const isAdded = currentRecipeCollections.includes(collectionId);
-        const method = isAdded ? 'DELETE' : 'POST';
+        // Toggle logic: If added, remove. Backend handles toggle or specific remove? 
+        // Backend: toggle_collection_save checks existing. If existing -> delete. If not -> add.
+        // So always POST is fine if backend toggles.
+        // Backend router: @router.post("/recipes/{recipe_id}/toggle-collection/{collection_id}")
+
         try {
-            await fetch(`${BASE_URL}/collections/${collectionId}/videos/${recipeToSave.id}`, { method, headers: { 'Authorization': `Bearer ${userToken}` } });
+            await fetch(`${BASE_URL}/recipes/${recipeToSave.id}/toggle-collection/${collectionId}`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
             setCurrentRecipeCollections(isAdded ? currentRecipeCollections.filter(id => id !== collectionId) : [...currentRecipeCollections, collectionId]);
             loadMyProfile(); // Refresh saved videos
         } catch (e) { }
