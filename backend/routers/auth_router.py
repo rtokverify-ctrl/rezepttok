@@ -52,8 +52,7 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     
     print(f"DEBUG: Queuing verification email for {user.email}")
     
-    # Return access token immediately since we auto-verified
-    return {"msg": "Registration successful", "email": user.email, "code": verification_code}
+    return {"msg": "Registration successful. Please check your email to verify your account.", "email": user.email}
 
 @router.post("/verify", response_model=Token)
 def verify_email(data: UserVerify, db: Session = Depends(get_db)):
