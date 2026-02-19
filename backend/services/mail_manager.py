@@ -6,8 +6,10 @@ load_dotenv()
 
 class MailManager:
     def __init__(self):
-        self.api_key = os.getenv("RESEND_API_KEY", "")
-        self.from_email = os.getenv("MAIL_FROM", "RezeptTok <onboarding@resend.dev>")
+        self.api_key = os.getenv("MAILJET_API_KEY", "")
+        self.secret_key = os.getenv("MAILJET_SECRET_KEY", "")
+        self.from_email = os.getenv("MAIL_FROM", "rtok.verify@gmail.com")
+        self.from_name = os.getenv("MAIL_FROM_NAME", "RezeptTok")
 
     async def send_verification_code(self, email: str, code: str):
         html = f"""
@@ -19,32 +21,37 @@ class MailManager:
         </div>
         """
 
-        if not self.api_key:
-            print("WARNING: No RESEND_API_KEY set. Email not sent.")
-            raise Exception("RESEND_API_KEY not configured")
+        if not self.api_key or not self.secret_key:
+            print("WARNING: Mailjet API keys not set.")
+            raise Exception("MAILJET_API_KEY or MAILJET_SECRET_KEY not configured")
 
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                "https://api.resend.com/emails",
-                headers={
-                    "Authorization": f"Bearer {self.api_key}",
-                    "Content-Type": "application/json"
-                },
+                "https://api.mailjet.com/v3.1/send",
+                auth=(self.api_key, self.secret_key),
                 json={
-                    "from": self.from_email,
-                    "to": [email],
-                    "subject": "Dein RezeptTok 2FA Code",
-                    "html": html
+                    "Messages": [{
+                        "From": {
+                            "Email": self.from_email,
+                            "Name": self.from_name
+                        },
+                        "To": [{
+                            "Email": email
+                        }],
+                        "Subject": "Dein RezeptTok 2FA Code",
+                        "HTMLPart": html
+                    }]
                 },
                 timeout=30.0
             )
 
             if response.status_code != 200:
                 error_msg = response.text
-                print(f"Resend API Error ({response.status_code}): {error_msg}")
+                print(f"Mailjet API Error ({response.status_code}): {error_msg}")
                 raise Exception(f"Email sending failed: {error_msg}")
 
-            print(f"Email sent successfully to {email} via Resend")
-            return response.json()
+            result = response.json()
+            print(f"Email sent successfully to {email} via Mailjet")
+            return result
 
 mail_manager = MailManager()
