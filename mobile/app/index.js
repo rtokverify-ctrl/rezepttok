@@ -83,14 +83,19 @@ export default function App() {
         setMyProfileData(null);
     };
 
+    const getFullVideoUrl = (url) => {
+        if (!url) return null;
+        if (url.startsWith('http')) return url;
+        return `${BASE_URL}/static/${url.split('/').pop()}`;
+    };
+
     const loadFeed = async () => {
         try {
             const r = await fetch(`${BASE_URL}/feed`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
             if (Array.isArray(d)) {
-                setVideos(d.map(v => ({ ...v, video_url: `${BASE_URL}/static/${v.video_url.split('/').pop()}` })));
+                setVideos(d.map(v => ({ ...v, video_url: getFullVideoUrl(v.video_url) })));
             } else {
-                console.log('Feed response not an array:', d);
                 setVideos([]);
             }
         } catch (e) { console.log(e); setVideos([]); }
@@ -105,9 +110,9 @@ export default function App() {
                 fetch(`${BASE_URL}/saved-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json())
             ]);
             setMyProfileData(p);
-            setMyVideos(Array.isArray(v) ? v.map(x => ({ ...x, video_url: `${BASE_URL}/static/${x.video_url.split('/').pop()}` })) : []);
-            setLikedVideos(Array.isArray(l) ? l.map(x => ({ ...x, video_url: `${BASE_URL}/static/${x.video_url.split('/').pop()}` })) : []);
-            setSavedVideos(Array.isArray(s) ? s.map(x => ({ ...x, video_url: `${BASE_URL}/static/${x.video_url.split('/').pop()}` })) : []);
+            setMyVideos(Array.isArray(v) ? v.map(x => ({ ...x, video_url: getFullVideoUrl(x.video_url) })) : []);
+            setLikedVideos(Array.isArray(l) ? l.map(x => ({ ...x, video_url: getFullVideoUrl(x.video_url) })) : []);
+            setSavedVideos(Array.isArray(s) ? s.map(x => ({ ...x, video_url: getFullVideoUrl(x.video_url) })) : []);
         } catch (e) { console.log(e); }
     };
 
@@ -128,6 +133,7 @@ export default function App() {
     };
 
     const handleChefPress = async (chefId) => {
+        if (!chefId) return;
         if (chefId === myProfileData?.id) { setCurrentScreen('profile'); return; }
         try {
             const [u, v] = await Promise.all([
@@ -135,7 +141,7 @@ export default function App() {
                 fetch(`${BASE_URL}/users/${chefId}/videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json())
             ]);
             setUserProfileData(u);
-            setUserProfileVideos(v.map(x => ({ ...x, video_url: `${BASE_URL}/static/${x.video_url.split('/').pop()}` })));
+            setUserProfileVideos(Array.isArray(v) ? v.map(x => ({ ...x, video_url: getFullVideoUrl(x.video_url) })) : []);
             setUserProfileVisible(true);
         } catch (e) { console.log(e); }
     };
@@ -145,7 +151,7 @@ export default function App() {
         Alert.alert("Löschen", "Sicher?", [{ text: "Abbrechen" }, {
             text: "Löschen", style: 'destructive', onPress: async () => {
                 try {
-                    await fetch(`${BASE_URL}/videos/${selectedRecipe.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${userToken}` } });
+                    await fetch(`${BASE_URL}/recipes/${selectedRecipe.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${userToken}` } });
                     setModalVisible(false);
                     loadMyProfile();
                     loadFeed();
@@ -156,19 +162,20 @@ export default function App() {
 
     // --- COMMENTS ---
     const openCommentsModal = async (videoId) => {
+        if (!videoId) return;
         setCommentVideoId(videoId);
         setCommentsVisible(true);
         setCommentLoading(true);
         try {
-            const r = await fetch(`${BASE_URL}/videos/${videoId}/comments`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await fetch(`${BASE_URL}/recipes/${videoId}/comments`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             setCurrentComments(await r.json());
         } catch (e) { } finally { setCommentLoading(false); }
     };
 
     const sendComment = async () => {
-        if (!newComment.trim()) return;
+        if (!newComment.trim() || !commentVideoId) return;
         try {
-            const r = await fetch(`${BASE_URL}/videos/${commentVideoId}/comments`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` }, body: JSON.stringify({ text: newComment }) });
+            const r = await fetch(`${BASE_URL}/recipes/${commentVideoId}/comments`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` }, body: JSON.stringify({ text: newComment }) });
             const d = await r.json();
             setCurrentComments([d, ...currentComments]);
             setNewComment('');
@@ -186,6 +193,7 @@ export default function App() {
     };
 
     const handleGlobalSave = async (recipe) => {
+        if (!recipe || !recipe.id) return;
         setRecipeToSave(recipe);
         try {
             const r = await fetch(`${BASE_URL}/recipes/${recipe.id}/save-status`, { headers: { 'Authorization': `Bearer ${userToken}` } });
@@ -208,11 +216,8 @@ export default function App() {
     };
 
     const toggleCollectionForRecipe = async (collectionId) => {
+        if (!collectionId || !recipeToSave) return;
         const isAdded = currentRecipeCollections.includes(collectionId);
-        // Toggle logic: If added, remove. Backend handles toggle or specific remove? 
-        // Backend: toggle_collection_save checks existing. If existing -> delete. If not -> add.
-        // So always POST is fine if backend toggles.
-        // Backend router: @router.post("/recipes/{recipe_id}/toggle-collection/{collection_id}")
 
         try {
             await fetch(`${BASE_URL}/recipes/${recipeToSave.id}/toggle-collection/${collectionId}`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
@@ -223,11 +228,10 @@ export default function App() {
 
     const loadCollectionVideos = async (id) => {
         try {
-            const r = await fetch(`${BASE_URL}/collections/${id}`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await fetch(`${BASE_URL}/collections/${id}/videos`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
-            setCollectionVideos(d.map(x => ({ ...x, video_url: `${BASE_URL}/static/${x.video_url.split('/').pop()}` })));
+            setCollectionVideos(Array.isArray(d) ? d.map(x => ({ ...x, video_url: getFullVideoUrl(x.video_url) })) : []);
             setActiveCollectionId(id);
-            // Must ensure profile is showing saved tab
         } catch (e) { }
     };
 
@@ -268,8 +272,8 @@ export default function App() {
                         savedVideos={savedVideos}
                         collections={collections}
                         collectionVideos={collectionVideos}
-                        loadLikedVideos={() => fetch(`${BASE_URL}/liked-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()).then(l => setLikedVideos(Array.isArray(l) ? l.map(x => ({ ...x, video_url: `${BASE_URL}/static/${x.video_url.split('/').pop()}` })) : []))}
-                        loadSavedVideosAll={() => fetch(`${BASE_URL}/saved-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()).then(s => setSavedVideos(Array.isArray(s) ? s.map(x => ({ ...x, video_url: `${BASE_URL}/static/${x.video_url.split('/').pop()}` })) : []))}
+                        loadLikedVideos={() => fetch(`${BASE_URL}/liked-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()).then(l => setLikedVideos(Array.isArray(l) ? l.map(x => ({ ...x, video_url: getFullVideoUrl(x.video_url) })) : []))}
+                        loadSavedVideosAll={() => fetch(`${BASE_URL}/saved-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()).then(s => setSavedVideos(Array.isArray(s) ? s.map(x => ({ ...x, video_url: getFullVideoUrl(x.video_url) })) : []))}
                         fetchCollections={loadCollections}
                         loadCollectionVideos={loadCollectionVideos}
                         activeCollectionId={activeCollectionId}
