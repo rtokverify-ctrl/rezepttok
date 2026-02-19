@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Platform } from 'react-native';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { View, Text, Image, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Dimensions, Animated, Easing, Platform, PanResponder } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,47 +9,114 @@ const { width } = Dimensions.get('window');
 
 const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, currentScreen, containerHeight }) => {
     const [userPaused, setUserPaused] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [isSeeking, setIsSeeking] = useState(false);
+    const seekBarRef = useRef(null);
+    const seekBarWidth = useRef(0);
+    const wasPlayingBeforeSeek = useRef(false);
+
     const player = useVideoPlayer(item.video_url, player => {
         player.loop = true;
-        player.muted = true; // Mute by default to allow autoplay
+        player.muted = true;
     });
 
+    // Sync play/pause with isActive and currentScreen
     useEffect(() => {
-        if (isActive && currentScreen === 'feed' && !userPaused) {
+        if (!player) return;
+        const shouldPlay = isActive && currentScreen === 'feed' && !userPaused;
+
+        if (shouldPlay) {
             try { player.play(); } catch (e) { }
         } else {
             try { player.pause(); } catch (e) { }
         }
-    }, [isActive, currentScreen, userPaused]);
+    }, [isActive, currentScreen, userPaused, player]);
+
+    // Reset userPaused when scrolling to a new video
+    useEffect(() => {
+        if (isActive) {
+            setUserPaused(false);
+        }
+    }, [isActive]);
+
+    // Track time & duration via polling (expo-video events are unreliable on web)
+    useEffect(() => {
+        if (!player || !isActive) return;
+
+        const interval = setInterval(() => {
+            try {
+                if (!isSeeking) {
+                    const t = player.currentTime || 0;
+                    const d = player.duration || 0;
+                    setCurrentTime(t);
+                    if (d > 0) setDuration(d);
+                }
+            } catch (e) { /* player may not be ready */ }
+        }, 250);
+
+        return () => clearInterval(interval);
+    }, [player, isActive, isSeeking]);
+
+    // Seek bar touch handling
+    const handleSeekStart = useCallback((locationX) => {
+        if (seekBarWidth.current <= 0 || duration <= 0) return;
+        setIsSeeking(true);
+        wasPlayingBeforeSeek.current = !userPaused;
+        try { player.pause(); } catch (e) { }
+
+        const progress = Math.max(0, Math.min(1, locationX / seekBarWidth.current));
+        const seekTo = progress * duration;
+        setCurrentTime(seekTo);
+    }, [duration, player, userPaused]);
+
+    const handleSeekMove = useCallback((locationX) => {
+        if (seekBarWidth.current <= 0 || duration <= 0 || !isSeeking) return;
+        const progress = Math.max(0, Math.min(1, locationX / seekBarWidth.current));
+        setCurrentTime(progress * duration);
+    }, [duration, isSeeking]);
+
+    const handleSeekEnd = useCallback(() => {
+        if (!isSeeking || duration <= 0) return;
+        try {
+            player.currentTime = currentTime;
+            if (wasPlayingBeforeSeek.current) {
+                player.play();
+                setUserPaused(false);
+            }
+        } catch (e) { }
+        setIsSeeking(false);
+    }, [isSeeking, currentTime, duration, player]);
 
     // Double tap like animation
     const [showHeart, setShowHeart] = useState(false);
     const scaleValue = useRef(new Animated.Value(0)).current;
     const lastTap = useRef(null);
 
-    // Internal double tap handler
     const handleTap = () => {
         const now = Date.now();
         if (lastTap.current && (now - lastTap.current) < 300) {
-            // Double tap!
-            toggleLike(item.id); // Always toggle like
+            // Double tap — like
+            toggleLike(item.id);
             setShowHeart(true);
             Animated.sequence([
                 Animated.spring(scaleValue, { toValue: 1, useNativeDriver: Platform.OS !== 'web', friction: 5 }),
                 Animated.timing(scaleValue, { toValue: 0, duration: 150, delay: 500, useNativeDriver: Platform.OS !== 'web' })
             ]).start(() => setShowHeart(false));
         } else {
-            // Single tap: toggle play/pause
-            if (player.playing) {
-                player.pause();
-                setUserPaused(true);
-            } else {
-                player.play();
+            // Single tap — toggle play/pause
+            if (userPaused) {
+                try { player.play(); } catch (e) { }
                 setUserPaused(false);
+            } else {
+                try { player.pause(); } catch (e) { }
+                setUserPaused(true);
             }
         }
         lastTap.current = now;
     };
+
+    const progress = duration > 0 ? currentTime / duration : 0;
 
     return (
         <View style={{ width: width, height: containerHeight, backgroundColor: 'black' }}>
@@ -73,6 +140,24 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
             )}
 
             <LinearGradient colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.8)']} style={styles.videoGradient} />
+
+            {/* Seekbar */}
+            <View
+                style={styles.seekBarContainer}
+                ref={seekBarRef}
+                onLayout={(e) => { seekBarWidth.current = e.nativeEvent.layout.width; }}
+                onStartShouldSetResponder={() => true}
+                onMoveShouldSetResponder={() => true}
+                onResponderGrant={(e) => handleSeekStart(e.nativeEvent.locationX)}
+                onResponderMove={(e) => handleSeekMove(e.nativeEvent.locationX)}
+                onResponderRelease={handleSeekEnd}
+                onResponderTerminate={handleSeekEnd}
+            >
+                <View style={styles.seekBarTrack}>
+                    <View style={[styles.seekBarFill, { width: `${progress * 100}%` }]} />
+                    <View style={[styles.seekBarThumb, { left: `${progress * 100}%` }]} />
+                </View>
+            </View>
 
             <View style={styles.rightSidebar}>
                 <TouchableOpacity onPress={() => onChefPress(item.owner_id)} style={[styles.actionButton, { marginBottom: 25 }]}>
@@ -118,7 +203,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
 
 const styles = StyleSheet.create({
     videoGradient: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 250 },
-    rightSidebar: { position: 'absolute', right: 10, bottom: 80, alignItems: 'center' }, // Adjusted bottom padding
+    rightSidebar: { position: 'absolute', right: 10, bottom: 80, alignItems: 'center' },
     actionButton: { marginBottom: 20, alignItems: 'center' },
     actionText: { color: 'white', fontWeight: 'bold', fontSize: 13, textShadowColor: 'black', textShadowRadius: 5 },
     bottomInfo: { position: 'absolute', bottom: 15, left: 15, right: 80 },
@@ -128,6 +213,42 @@ const styles = StyleSheet.create({
     miniTagText: { color: 'white', fontSize: 11, fontWeight: '600' },
     videoDescription: { color: '#eee', fontSize: 15, lineHeight: 20, textShadowColor: 'black', textShadowRadius: 5 },
     playIconOverlay: { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', zIndex: 5 },
+    // Seekbar styles
+    seekBarContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 24,        // Generous touch target
+        justifyContent: 'center',
+        zIndex: 10,
+        paddingHorizontal: 0,
+    },
+    seekBarTrack: {
+        height: 3,
+        backgroundColor: 'rgba(255,255,255,0.3)',
+        borderRadius: 1.5,
+        position: 'relative',
+    },
+    seekBarFill: {
+        height: '100%',
+        backgroundColor: THEME_COLOR,
+        borderRadius: 1.5,
+    },
+    seekBarThumb: {
+        position: 'absolute',
+        top: -5,
+        width: 13,
+        height: 13,
+        borderRadius: 6.5,
+        backgroundColor: THEME_COLOR,
+        marginLeft: -6.5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+        elevation: 3,
+    },
 });
 
 export default VideoPost;
