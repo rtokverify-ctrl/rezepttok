@@ -132,7 +132,7 @@ def get_comments(recipe_id: int, db: Session = Depends(get_db)):
     for c in comments:
         u = db.query(User).filter(User.id == c.user_id).first()
         results.append({
-            "id": c.id, "text": c.text, "username": u.display_name if u else "User", "avatar": u.avatar_url if u else None,
+            "id": c.id, "text": c.text, "username": u.display_name if u and u.display_name else (u.username if u else "Gast"), "avatar": u.avatar_url if u else None,
             "created_at": c.created_at
         })
     return results
@@ -145,7 +145,15 @@ def create_comment(recipe_id: int, comment: CommentCreate, db: Session = Depends
     if recipe and recipe.owner_id != user.id:
         db.add(Notification(recipient_id=recipe.owner_id, sender_id=user.id, type="comment", post_id=recipe_id, created_at=datetime.now().isoformat()))
     db.commit()
-    return {"msg": "Kommentar gepostet"}
+    db.refresh(new_comment)
+    
+    # Return full comment object for frontend
+    return {
+        "id": new_comment.id, "text": new_comment.text, 
+        "username": user.display_name if user.display_name else user.username, 
+        "avatar": user.avatar_url,
+        "created_at": new_comment.created_at
+    }
 
 @router.post("/upload")
 def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):

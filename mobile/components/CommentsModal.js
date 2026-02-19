@@ -45,12 +45,12 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
                                         <Image source={{ uri: `${BASE_URL}${item.avatar}` }} style={styles.commentAvatarImage} />
                                     ) : (
                                         <View style={styles.commentAvatar}>
-                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.username.charAt(0).toUpperCase()}</Text>
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>{(item.username || "?").charAt(0).toUpperCase()}</Text>
                                         </View>
                                     )}
                                     <View style={{ flex: 1 }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                            <Text style={styles.commentUser}>{item.username}</Text>
+                                            <Text style={styles.commentUser}>{item.username || "Gast"}</Text>
                                             <Text style={styles.commentTime}>{formatCommentDate(item.created_at)}</Text>
                                         </View>
                                         <Text style={styles.commentText}>{item.text}</Text>
