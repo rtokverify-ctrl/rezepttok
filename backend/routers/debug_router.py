@@ -1,28 +1,29 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import EmailStr
+from fastapi import APIRouter
 from services.mail_manager import mail_manager
 
 router = APIRouter()
 
 @router.get("/test-email")
-@router.get("/test-email")
-async def test_email(email: EmailStr):
+async def test_email(email: str):
     try:
-        await mail_manager.send_verification_code(email, "TEST-CODE-123")
+        result = await mail_manager.send_verification_code(email, "TEST-CODE-123")
         return {
             "msg": "Email sent successfully", 
             "recipient": email,
+            "resend_response": result,
             "debug_info": {
-                "from": mail_manager.conf.MAIL_FROM,
-                "server": mail_manager.conf.MAIL_SERVER,
-                "port": mail_manager.conf.MAIL_PORT,
-                "username": mail_manager.conf.MAIL_USERNAME,
-                "use_tls": mail_manager.conf.MAIL_STARTTLS,
-                "use_ssl": mail_manager.conf.MAIL_SSL_TLS
+                "api_key_set": bool(mail_manager.api_key),
+                "from": mail_manager.from_email
             }
         }
     except Exception as e:
         import traceback
-        error_trace = traceback.format_exc()
-        print(f"DEBUG EMAIL ERROR: {error_trace}")
-        return {"msg": "Email failed", "error": str(e), "trace": error_trace}
+        return {
+            "msg": "Email failed", 
+            "error": str(e), 
+            "trace": traceback.format_exc(),
+            "debug_info": {
+                "api_key_set": bool(mail_manager.api_key),
+                "from": mail_manager.from_email
+            }
+        }

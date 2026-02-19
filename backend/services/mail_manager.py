@@ -1,28 +1,15 @@
 import os
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
-from pydantic import EmailStr
-from typing import List
+import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class MailManager:
     def __init__(self):
-        self.conf = ConnectionConfig(
-            MAIL_USERNAME=os.getenv("MAIL_USERNAME", "user@example.com"),
-            MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", "password"),
-            MAIL_FROM=os.getenv("MAIL_FROM", os.getenv("MAIL_USERNAME", "noreply@rezepttok.com")),
-            MAIL_PORT=int(os.getenv("MAIL_PORT", 587)),
-            MAIL_SERVER=os.getenv("MAIL_SERVER", "smtp.gmail.com"),
-            MAIL_FROM_NAME=os.getenv("MAIL_FROM_NAME", "RezeptTok Security"),
-            MAIL_STARTTLS=os.getenv("MAIL_STARTTLS", "True").lower() == "true",
-            MAIL_SSL_TLS=os.getenv("MAIL_SSL_TLS", "False").lower() == "true",
-            USE_CREDENTIALS=True,
-            VALIDATE_CERTS=True
-        )
-        self.fast_mail = FastMail(self.conf)
+        self.api_key = os.getenv("RESEND_API_KEY", "")
+        self.from_email = os.getenv("MAIL_FROM", "RezeptTok <onboarding@resend.dev>")
 
-    async def send_verification_code(self, email: EmailStr, code: str):
+    async def send_verification_code(self, email: str, code: str):
         html = f"""
         <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center;">
             <h2 style="color: #00C2FF;">RezeptTok Verification</h2>
@@ -31,22 +18,33 @@ class MailManager:
             <p>Dieser Code ist 10 Minuten gültig.</p>
         </div>
         """
-        
-        message = MessageSchema(
-            subject="Dein RezeptTok 2FA Code",
-            recipients=[email],
-            body=html,
-            subtype=MessageType.html
-        )
-        
-        try:
-            await self.fast_mail.send_message(message)
-            # MOCK FOR DEV (DISABLED):
-            # print(f"=======================================")
-            # print(f"MOCK MAIL TO: {email}")
-            # print(f"CODE: {code}")
-            # print(f"=======================================")
-        except Exception as e:
-            print(f"Error sending email: {e}")
+
+        if not self.api_key:
+            print("WARNING: No RESEND_API_KEY set. Email not sent.")
+            raise Exception("RESEND_API_KEY not configured")
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "from": self.from_email,
+                    "to": [email],
+                    "subject": "Dein RezeptTok 2FA Code",
+                    "html": html
+                },
+                timeout=30.0
+            )
+
+            if response.status_code != 200:
+                error_msg = response.text
+                print(f"Resend API Error ({response.status_code}): {error_msg}")
+                raise Exception(f"Email sending failed: {error_msg}")
+
+            print(f"Email sent successfully to {email} via Resend")
+            return response.json()
 
 mail_manager = MailManager()

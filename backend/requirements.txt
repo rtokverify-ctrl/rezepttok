@@ -9,5 +9,5 @@ python-dotenv
 psycopg2-binary
 redis
 boto3
-fastapi-mail
+httpx
 gunicorn
