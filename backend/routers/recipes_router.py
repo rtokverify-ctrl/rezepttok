@@ -97,6 +97,7 @@ def create_collection(col: CollectionCreate, db: Session = Depends(get_db), curr
     new_col = Collection(name=col.name, user_id=current_user.id)
     db.add(new_col)
     db.commit()
+    db.refresh(new_col)
     return new_col
 
 @router.get("/collections/{collection_id}/videos")

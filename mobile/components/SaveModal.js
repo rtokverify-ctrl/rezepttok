@@ -3,13 +3,19 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, TextInput 
 import { Ionicons } from '@expo/vector-icons';
 import { THEME_COLOR } from '../constants/Config';
 
-const SaveModal = ({ visible, onClose, collections, currentRecipeCollections = [], toggleCollectionForRecipe, createCollection, isCreatingCollection, setIsCreatingCollection, newCollectionName, setNewCollectionName }) => {
+const SaveModal = ({ visible, onClose, collections, currentRecipeCollections = [], toggleCollectionForRecipe, createCollection, isCreatingCollection, setIsCreatingCollection, newCollectionName, setNewCollectionName, onGlobalSave }) => {
     return (
         <Modal visible={visible} animationType="slide" transparent>
             <View style={styles.modalOverlay}>
                 <View style={[styles.modalContent, { height: '40%' }]}>
                     <View style={styles.modalHandle} />
-                    <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', marginVertical: 15 }}>In Ordner speichern</Text>
+                    <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', marginVertical: 15 }}>Rezept speichern</Text>
+
+                    <TouchableOpacity onPress={onGlobalSave} style={{ alignSelf: 'center', backgroundColor: '#f0f0f0', paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, marginBottom: 15 }}>
+                        <Text style={{ fontWeight: 'bold' }}>⚡ Schnell-Speichern (Ohne Ordner)</Text>
+                    </TouchableOpacity>
+
+                    <Text style={{ marginLeft: 20, fontWeight: 'bold', marginBottom: 10, color: '#666' }}>In Ordner:</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingLeft: 20 }}>
                         <TouchableOpacity onPress={() => setIsCreatingCollection(true)} style={styles.collectionCard}>
                             <View style={[styles.collectionIcon, { backgroundColor: '#eee' }]}><Ionicons name="add" size={30} color="black" /></View>
