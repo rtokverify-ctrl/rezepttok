@@ -79,7 +79,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                     <Text style={styles.actionText}>{item.likes}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => openComments(item.id)} style={styles.actionButton}>
+                <TouchableOpacity onPress={() => openComments && openComments(item.id)} style={styles.actionButton}>
                     <Ionicons name="chatbubble-ellipses" size={35} color="white" />
                     <Text style={styles.actionText}>{item.comments_count || 0}</Text>
                 </TouchableOpacity>
