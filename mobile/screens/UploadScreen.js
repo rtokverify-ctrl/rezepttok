@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -41,12 +41,20 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
                 fileSize = fileInfo.size;
             }
 
+            console.log("File size:", fileSize);
+
             if (fileSize > 50 * 1024 * 1024) {
-                Alert.alert("Datei zu groß", "Das Video ist größer als 50MB. Bitte kürze es oder wähle ein kleineres Video.");
+                if (Platform.OS === 'web') {
+                    window.alert("Datei zu groß! Das Video ist größer als 50MB.");
+                } else {
+                    Alert.alert("Datei zu groß", "Das Video ist größer als 50MB. Bitte kürze es oder wähle ein kleineres Video.");
+                }
                 return;
             }
         } catch (e) {
             console.log("Size check failed", e);
+            Alert.alert("Fehler", "Dateigröße konnte nicht geprüft werden.");
+            return;
         }
 
         setIsUploading(true);

@@ -255,10 +255,11 @@ export default function App() {
 
         try {
             await fetch(`${BASE_URL}/recipes/${recipeToSave.id}/toggle-collection/${collectionId}`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
-            // Also update global saved status if we added to a collection, it is implicitly saved
-            if (!isAdded) {
-                setVideos(prev => prev.map(v => v.id === recipeToSave.id ? { ...v, saved: true } : v));
-            }
+
+            // Sync global saved status: If it's in ANY collection, it's saved. If in NONE, it's not saved.
+            const isSavedAnywhere = newCollections.length > 0;
+            setVideos(prev => prev.map(v => v.id === recipeToSave.id ? { ...v, saved: isSavedAnywhere } : v));
+
             loadMyProfile();
         } catch (e) { }
     };
