@@ -18,8 +18,16 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
     if user.age < 16: raise HTTPException(status_code=400, detail="Du musst mindestens 16 Jahre alt sein!")
     email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
     if not re.match(email_regex, user.email): raise HTTPException(status_code=400, detail="Keine gültige Email-Adresse!")
-    if db.query(User).filter(User.username == user.username).first(): raise HTTPException(status_code=400, detail="Username vergeben")
-    if db.query(User).filter(User.email == user.email).first(): raise HTTPException(status_code=400, detail="Email schon registriert")
+    if db.query(User).filter(User.username == user.username).first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Username vergeben"
+        )
+    if db.query(User).filter(User.email == user.email).first():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Email schon registriert"
+        )
     hashed_pw = get_password_hash(user.password)
     
     # Generate 2FA Code
