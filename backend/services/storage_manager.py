@@ -3,6 +3,7 @@ import shutil
 from fastapi import UploadFile
 import boto3
 from botocore.client import Config
+from boto3.s3.transfer import TransferConfig
 
 class StorageManager:
     def __init__(self):
@@ -40,7 +41,7 @@ class StorageManager:
         if not os.path.exists(self.upload_dir):
             os.makedirs(self.upload_dir)
 
-from boto3.s3.transfer import TransferConfig
+
 
     async def save_video(self, file: UploadFile, filename: str) -> str:
         if self.mode == "s3":
