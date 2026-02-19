@@ -132,6 +132,28 @@ export default function App() {
 
     // ... (toggleFollow, handleChefPress, deleteRecipe, openCommentsModal, sendComment remain same) ...
 
+    // --- COMMENTS ---
+    const onOpenComments = async (videoId) => {
+        if (!videoId) return;
+        setCommentVideoId(videoId);
+        setCommentsVisible(true);
+        setCommentLoading(true);
+        try {
+            const r = await fetch(`${BASE_URL}/recipes/${videoId}/comments`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            setCurrentComments(await r.json());
+        } catch (e) { } finally { setCommentLoading(false); }
+    };
+
+    const sendComment = async () => {
+        if (!newComment.trim() || !commentVideoId) return;
+        try {
+            const r = await fetch(`${BASE_URL}/recipes/${commentVideoId}/comments`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` }, body: JSON.stringify({ text: newComment }) });
+            const d = await r.json();
+            setCurrentComments([d, ...currentComments]);
+            setNewComment('');
+        } catch (e) { }
+    };
+
     // --- COLLECTIONS / SAVE ---
     const loadCollections = async () => {
         try {
@@ -226,7 +248,7 @@ export default function App() {
                         handleGlobalSave={handleGlobalSave}
                         setSelectedRecipe={setSelectedRecipe}
                         setModalVisible={setModalVisible}
-                        openCommentsModal={openCommentsModal}
+                        onOpenComments={onOpenComments}
                         onChefPress={handleChefPress}
                         toggleFollowInFeed={toggleFollow}
                         currentScreen={currentScreen}

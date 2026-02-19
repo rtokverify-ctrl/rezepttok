@@ -25,6 +25,9 @@ app.add_middleware(
 @app.get("/")
 def read_root(): return {"status": "Online"}
 
+@app.head("/")
+def head_root(): return {"status": "Online"}
+
 app.include_router(auth_router.router)
 app.include_router(users_router.router)
 app.include_router(recipes_router.router)

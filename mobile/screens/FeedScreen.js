@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import VideoPost from '../components/VideoPost';
 import { THEME_COLOR } from '../constants/Config';
 
-const FeedScreen = ({ videos, toggleLike, handleGlobalSave, setSelectedRecipe, setModalVisible, openCommentsModal, onChefPress, toggleFollowInFeed, currentScreen, setCurrentScreen }) => {
+const FeedScreen = ({ videos, toggleLike, handleGlobalSave, setSelectedRecipe, setModalVisible, onOpenComments, onChefPress, toggleFollowInFeed, currentScreen, setCurrentScreen }) => {
     const [feedHeight, setFeedHeight] = useState(0);
     const [viewableItemIndex, setViewableItemIndex] = useState(0);
 
@@ -26,7 +26,7 @@ const FeedScreen = ({ videos, toggleLike, handleGlobalSave, setSelectedRecipe, s
                         <VideoPost
                             item={item} isActive={index === viewableItemIndex}
                             toggleLike={toggleLike} onSavePress={handleGlobalSave}
-                            openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={openCommentsModal}
+                            openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={onOpenComments}
                             onChefPress={onChefPress} onFollowPress={toggleFollowInFeed}
                             currentScreen={currentScreen} containerHeight={feedHeight}
                         />
