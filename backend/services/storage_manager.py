@@ -80,4 +80,32 @@ class StorageManager:
                 shutil.copyfileobj(file.file, buffer)
             return f"/static/videos/{filename}"
 
+    async def save_avatar(self, file: UploadFile, filename: str) -> str:
+        if self.mode == "s3":
+            file.file.seek(0)
+            transfer_config = TransferConfig(multipart_threshold=50 * 1024 * 1024)
+            
+            s3_key = f"avatars/{filename}"
+            self.s3_client.upload_fileobj(
+                file.file,
+                self.bucket_name,
+                s3_key,
+                ExtraArgs={'ContentType': file.content_type or 'image/jpeg', 'ACL': 'public-read'},
+                Config=transfer_config
+            )
+            
+            base_public_url = os.getenv("S3_PUBLIC_URL", "")
+            if not base_public_url:
+                base_public_url = self.endpoint_url.replace("/s3", "/object/public") + f"/{self.bucket_name}"
+            if base_public_url.endswith("/"): base_public_url = base_public_url[:-1]
+            
+            return f"{base_public_url}/{s3_key}"
+        else:
+            # Local Storage
+            os.makedirs("static/avatars", exist_ok=True)
+            file_path = f"static/avatars/{filename}"
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+            return f"/static/avatars/{filename}"
+
 storage_manager = StorageManager()

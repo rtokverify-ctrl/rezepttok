@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, ScrollView, TextInput, ActivityIndicator, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
 import MiniVideo from '../components/MiniVideo';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -40,7 +40,7 @@ const ProfileScreen = ({
         setSettingsView('menu');
         setSetupDisplayName(myProfileData?.display_name || "");
         setSetupBio(myProfileData?.bio || "");
-        setSetupImageUri(myProfileData?.avatar_url ? `${BASE_URL}${myProfileData.avatar_url}` : null);
+        setSetupImageUri(myProfileData?.avatar_url ? getFullUrl(myProfileData.avatar_url) : null);
         setSettingsVisible(true);
     };
 
@@ -52,7 +52,7 @@ const ProfileScreen = ({
     const handleUpdateProfile = async () => {
         setIsUploading(true);
         try {
-            const hasNewImage = setupImageUri && setupImageUri !== (myProfileData?.avatar_url ? `${BASE_URL}${myProfileData.avatar_url}` : null);
+            const hasNewImage = setupImageUri && setupImageUri !== (myProfileData?.avatar_url ? getFullUrl(myProfileData.avatar_url) : null);
 
             if (Platform.OS === 'web') {
                 const f = new FormData();
@@ -175,7 +175,7 @@ const ProfileScreen = ({
                 <View style={{ alignItems: 'center', marginTop: -10 }}>
                     <View style={{ marginBottom: 15 }}>
                         {myProfileData?.avatar_url ?
-                            <Image source={{ uri: `${BASE_URL}${myProfileData.avatar_url}` }} style={styles.profileAvatar} /> :
+                            <Image source={{ uri: getFullUrl(myProfileData.avatar_url) }} style={styles.profileAvatar} /> :
                             <View style={styles.profileAvatarPlaceholder}><Text style={{ color: 'white', fontSize: 32, fontWeight: 'bold' }}>{(myProfileData?.display_name || "U").charAt(0)}</Text></View>
                         }
                     </View>

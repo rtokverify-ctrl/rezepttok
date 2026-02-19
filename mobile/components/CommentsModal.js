@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput, Image, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
 
 const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNewComment, sendComment }) => {
 
@@ -42,7 +42,7 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
                             renderItem={({ item }) => (
                                 <View style={styles.commentItem}>
                                     {item.avatar ? (
-                                        <Image source={{ uri: `${BASE_URL}${item.avatar}` }} style={styles.commentAvatarImage} />
+                                        <Image source={{ uri: getFullUrl(item.avatar) }} style={styles.commentAvatarImage} />
                                     ) : (
                                         <View style={styles.commentAvatar}>
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>{(item.username || "?").charAt(0).toUpperCase()}</Text>

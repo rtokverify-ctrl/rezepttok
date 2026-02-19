@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL } from '../constants/Config';
+import { BASE_URL, getFullUrl } from '../constants/Config';
 
 const SearchScreen = ({ userToken, navigation }) => {
     const [searchText, setSearchText] = useState('');
@@ -15,7 +15,7 @@ const SearchScreen = ({ userToken, navigation }) => {
             const r = await fetch(`${BASE_URL}/search?q=${searchText}`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
             setSearchResults({
-                users: d.users.map(u => ({ ...u, avatar_url: u.avatar_url ? `${BASE_URL}${u.avatar_url}` : null })),
+                users: d.users.map(u => ({ ...u, avatar_url: u.avatar_url ? getFullUrl(u.avatar_url) : null })),
                 videos: d.videos.map(v => ({ ...v, video_url: `${BASE_URL}/static/${v.video_url.split('/').pop()}` }))
             });
         } catch (e) {

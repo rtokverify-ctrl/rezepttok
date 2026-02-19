@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Form
 from sqlalchemy.orm import Session
-import shutil
 import uuid
 import os
 
@@ -26,17 +25,11 @@ async def update_profile(
     current_user.display_name = display_name
     current_user.bio = bio
     if file:
-        if current_user.avatar_url:
-            old_path = current_user.avatar_url.lstrip("/")
-            if os.path.exists(old_path):
-                try: os.remove(old_path)
-                except: pass
+        from services.storage_manager import storage_manager
         ext = file.filename.split(".")[-1]
         new_name = f"avatar_{current_user.id}_{uuid.uuid4()}.{ext}"
-        # Ensure directory exists, might be needed if running from backend root
-        os.makedirs("static", exist_ok=True)
-        with open(f"static/{new_name}", "wb") as buffer: shutil.copyfileobj(file.file, buffer)
-        current_user.avatar_url = f"/static/{new_name}"
+        avatar_url = await storage_manager.save_avatar(file, new_name)
+        current_user.avatar_url = avatar_url
     db.commit()
     return {"msg": "Profil aktualisiert", "avatar_url": current_user.avatar_url}
 

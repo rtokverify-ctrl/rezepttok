@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
 
 const NotificationScreen = ({ userToken }) => {
     const [notifications, setNotifications] = useState([]);
@@ -40,7 +40,7 @@ const NotificationScreen = ({ userToken }) => {
                     renderItem={({ item }) => (
                         <View style={{ flexDirection: 'row', alignItems: 'center', padding: 15, borderBottomWidth: 1, borderBottomColor: '#222' }}>
                             <View style={{ position: 'relative', marginRight: 15 }}>
-                                {item.actor_avatar ? <Image source={{ uri: `${BASE_URL}${item.actor_avatar}` }} style={{ width: 50, height: 50, borderRadius: 25 }} /> : <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#333', justifyContent: 'center', alignItems: 'center' }}><Ionicons name="person" size={24} color="#666" /></View>}
+                                {item.actor_avatar ? <Image source={{ uri: getFullUrl(item.actor_avatar) }} style={{ width: 50, height: 50, borderRadius: 25 }} /> : <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#333', justifyContent: 'center', alignItems: 'center' }}><Ionicons name="person" size={24} color="#666" /></View>}
                                 <View style={{ position: 'absolute', bottom: 0, right: 0, backgroundColor: 'black', borderRadius: 10, padding: 2 }}>
                                     <Ionicons name={item.type === 'like' ? 'heart' : item.type === 'follow' ? 'person-add' : 'chatbubble'} size={16} color={item.type === 'like' ? '#ff4d4d' : THEME_COLOR} />
                                 </View>

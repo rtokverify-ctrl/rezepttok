@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Image, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
 import MiniVideo from './MiniVideo';
 
 const { width } = Dimensions.get('window');
@@ -19,7 +19,7 @@ const UserProfileModal = ({ visible, onClose, userProfileData, userProfileVideos
                         <ScrollView>
                             <View style={{ alignItems: 'center', paddingTop: 30, paddingBottom: 15 }}>
                                 {userProfileData.avatar_url ? (
-                                    <Image source={{ uri: `${BASE_URL}${userProfileData.avatar_url}` }} style={{ width: 90, height: 90, borderRadius: 45 }} />
+                                    <Image source={{ uri: getFullUrl(userProfileData.avatar_url) }} style={{ width: 90, height: 90, borderRadius: 45 }} />
                                 ) : (
                                     <View style={{ width: 90, height: 90, borderRadius: 45, backgroundColor: '#ddd', justifyContent: 'center', alignItems: 'center' }}>
                                         <Text style={{ fontSize: 36, fontWeight: 'bold', color: '#666' }}>{(userProfileData.display_name || 'U').charAt(0)}</Text>
