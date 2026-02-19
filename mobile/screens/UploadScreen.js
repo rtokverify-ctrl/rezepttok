@@ -6,10 +6,13 @@ import * as FileSystem from 'expo-file-system/legacy';
 import { BASE_URL, THEME_COLOR } from '../constants/Config';
 import MiniVideo from '../components/MiniVideo';
 
-// Conditional import: react-native-compressor only works on native (not web)
-let Video;
-if (Platform.OS !== 'web') {
-    Video = require('react-native-compressor').Video;
+// Conditional imports: different compression for each platform
+let NativeVideoCompressor;
+let compressVideoWeb;
+if (Platform.OS === 'web') {
+    compressVideoWeb = require('../utils/compressVideoWeb').compressVideoWeb;
+} else {
+    NativeVideoCompressor = require('react-native-compressor').Video;
 }
 
 const UploadScreen = ({ userToken, onUploadComplete }) => {
@@ -33,47 +36,56 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
     };
 
     const compressVideo = async (uri) => {
-        // Web: no native compression available, return as-is
-        if (Platform.OS === 'web' || !Video) {
-            return uri;
-        }
+        if (Platform.OS === 'web') {
+            // ===== WEB: FFmpeg.wasm compression =====
+            try {
+                setCompressionStatus('FFmpeg wird geladen...');
+                const compressedBlobUrl = await compressVideoWeb(uri, (progress) => {
+                    setCompressionStatus(`Komprimiere: ${Math.round(progress * 100)}%`);
+                });
+                setCompressionStatus('');
+                return compressedBlobUrl;
+            } catch (e) {
+                console.log('Web compression failed, using original:', e);
+                setCompressionStatus('');
+                return uri; // Fallback to original
+            }
+        } else {
+            // ===== MOBILE: react-native-compressor =====
+            if (!NativeVideoCompressor) return uri;
 
-        try {
-            setCompressionStatus('Komprimiere Video...');
-            const compressedUri = await Video.compress(uri, {
-                compressionMethod: 'auto',
-                maxSize: 720,          // Max 720p (height for portrait, width for landscape)
-                bitrate: 2000000,      // 2 Mbps — good quality for mobile viewing
-            }, (progress) => {
-                setCompressionStatus(`Komprimiere: ${Math.round(progress * 100)}%`);
-            });
+            try {
+                setCompressionStatus('Komprimiere Video...');
+                const compressedUri = await NativeVideoCompressor.compress(uri, {
+                    compressionMethod: 'auto',
+                    maxSize: 720,
+                    bitrate: 2000000,
+                }, (progress) => {
+                    setCompressionStatus(`Komprimiere: ${Math.round(progress * 100)}%`);
+                });
 
-            // Log size reduction
-            if (FileSystem) {
+                // Log size reduction
                 try {
                     const originalInfo = await FileSystem.getInfoAsync(uri);
                     const compressedInfo = await FileSystem.getInfoAsync(compressedUri);
-                    const savedMB = ((originalInfo.size - compressedInfo.size) / (1024 * 1024)).toFixed(1);
                     const savedPercent = Math.round((1 - compressedInfo.size / originalInfo.size) * 100);
-                    console.log(`Compression: ${(originalInfo.size / 1024 / 1024).toFixed(1)}MB → ${(compressedInfo.size / 1024 / 1024).toFixed(1)}MB (${savedPercent}% saved, ${savedMB}MB weniger)`);
-                } catch (e) {
-                    console.log('Could not get file sizes for logging');
-                }
-            }
+                    console.log(`Native Compression: ${(originalInfo.size / 1024 / 1024).toFixed(1)}MB → ${(compressedInfo.size / 1024 / 1024).toFixed(1)}MB (${savedPercent}% saved)`);
+                } catch (e) { /* ignore size logging errors */ }
 
-            setCompressionStatus('');
-            return compressedUri;
-        } catch (e) {
-            console.log('Compression failed, using original:', e);
-            setCompressionStatus('');
-            return uri; // Fallback to original if compression fails
+                setCompressionStatus('');
+                return compressedUri;
+            } catch (e) {
+                console.log('Native compression failed, using original:', e);
+                setCompressionStatus('');
+                return uri;
+            }
         }
     };
 
     const handleUpload = async () => {
         if (!uploadVideoUri) return;
 
-        // Check file size before compression (50MB limit on original)
+        // Check file size (50MB limit on original)
         try {
             let fileSize = 0;
             if (Platform.OS === 'web') {
@@ -97,7 +109,11 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
             }
         } catch (e) {
             console.log("Size check failed", e);
-            Alert.alert("Fehler", "Dateigröße konnte nicht geprüft werden.");
+            if (Platform.OS === 'web') {
+                window.alert("Dateigröße konnte nicht geprüft werden.");
+            } else {
+                Alert.alert("Fehler", "Dateigröße konnte nicht geprüft werden.");
+            }
             return;
         }
 
@@ -106,7 +122,7 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
         setIsProcessing(false);
 
         try {
-            // Step 1: Compress video (native only)
+            // Step 1: Compress video (platform-specific)
             const videoToUpload = await compressVideo(uploadVideoUri);
 
             // Step 2: Upload
@@ -157,12 +173,21 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
             const tagsArray = uploadTags.split(',').map(t => t.trim()).filter(t => t.length > 0);
             const rData = { title: uploadTitle, video_url: vUrl, ingredients: ingredientsText.split('\n').map(l => ({ name: l, amount: "1", unit: "x" })), steps: stepsText.split('\n').map((l, i) => ({ order: i + 1, instruction: l })), tags: tagsArray, tips: uploadTips || null };
             await fetch(`${BASE_URL}/upload`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}`, 'bypass-tunnel-reminder': 'true' }, body: JSON.stringify(rData) });
-            Alert.alert("Erfolg", "Dein Rezept ist online!");
+
+            if (Platform.OS === 'web') {
+                window.alert("Dein Rezept ist online!");
+            } else {
+                Alert.alert("Erfolg", "Dein Rezept ist online!");
+            }
             // Reset form
             setUploadTitle(''); setUploadVideoUri(null); setUploadTags(''); setUploadTips(''); setIngredientsText(''); setStepsText(''); setUploadProgress(0); setIsProcessing(false);
             if (onUploadComplete) onUploadComplete();
         } catch (e) {
-            Alert.alert("Fehler", e.message);
+            if (Platform.OS === 'web') {
+                window.alert("Fehler: " + e.message);
+            } else {
+                Alert.alert("Fehler", e.message);
+            }
         } finally {
             setIsUploading(false);
             setIsProcessing(false);
