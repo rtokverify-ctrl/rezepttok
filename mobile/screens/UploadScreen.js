@@ -6,6 +6,12 @@ import * as FileSystem from 'expo-file-system/legacy';
 import { BASE_URL, THEME_COLOR } from '../constants/Config';
 import MiniVideo from '../components/MiniVideo';
 
+// Conditional import: react-native-compressor only works on native (not web)
+let Video;
+if (Platform.OS !== 'web') {
+    Video = require('react-native-compressor').Video;
+}
+
 const UploadScreen = ({ userToken, onUploadComplete }) => {
     const [uploadTitle, setUploadTitle] = useState('');
     const [uploadVideoUri, setUploadVideoUri] = useState(null);
@@ -16,20 +22,58 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
     const [uploadTips, setUploadTips] = useState('');
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [compressionStatus, setCompressionStatus] = useState('');
 
     const pickVideo = async () => {
         let r = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-            quality: 0.5,
-            videoExportPreset: ImagePicker.VideoExportPreset.MediumQuality,
+            quality: 1, // Pick at full quality — we compress ourselves
         });
         if (!r.canceled) setUploadVideoUri(r.assets[0].uri);
+    };
+
+    const compressVideo = async (uri) => {
+        // Web: no native compression available, return as-is
+        if (Platform.OS === 'web' || !Video) {
+            return uri;
+        }
+
+        try {
+            setCompressionStatus('Komprimiere Video...');
+            const compressedUri = await Video.compress(uri, {
+                compressionMethod: 'auto',
+                maxSize: 720,          // Max 720p (height for portrait, width for landscape)
+                bitrate: 2000000,      // 2 Mbps — good quality for mobile viewing
+            }, (progress) => {
+                setCompressionStatus(`Komprimiere: ${Math.round(progress * 100)}%`);
+            });
+
+            // Log size reduction
+            if (FileSystem) {
+                try {
+                    const originalInfo = await FileSystem.getInfoAsync(uri);
+                    const compressedInfo = await FileSystem.getInfoAsync(compressedUri);
+                    const savedMB = ((originalInfo.size - compressedInfo.size) / (1024 * 1024)).toFixed(1);
+                    const savedPercent = Math.round((1 - compressedInfo.size / originalInfo.size) * 100);
+                    console.log(`Compression: ${(originalInfo.size / 1024 / 1024).toFixed(1)}MB → ${(compressedInfo.size / 1024 / 1024).toFixed(1)}MB (${savedPercent}% saved, ${savedMB}MB weniger)`);
+                } catch (e) {
+                    console.log('Could not get file sizes for logging');
+                }
+            }
+
+            setCompressionStatus('');
+            return compressedUri;
+        } catch (e) {
+            console.log('Compression failed, using original:', e);
+            setCompressionStatus('');
+            return uri; // Fallback to original if compression fails
+        }
     };
 
     const handleUpload = async () => {
         if (!uploadVideoUri) return;
 
-        // Check file size (50MB limit)
+        // Check file size before compression (50MB limit on original)
         try {
             let fileSize = 0;
             if (Platform.OS === 'web') {
@@ -41,7 +85,7 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
                 fileSize = fileInfo.size;
             }
 
-            console.log("File size:", fileSize);
+            console.log("Original file size:", fileSize);
 
             if (fileSize > 50 * 1024 * 1024) {
                 if (Platform.OS === 'web') {
@@ -60,12 +104,17 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
         setIsUploading(true);
         setUploadProgress(0);
         setIsProcessing(false);
+
         try {
+            // Step 1: Compress video (native only)
+            const videoToUpload = await compressVideo(uploadVideoUri);
+
+            // Step 2: Upload
             let vUrl;
 
             if (Platform.OS === 'web') {
                 // Web Upload via XMLHttpRequest for Progress
-                const videoBlob = await (await fetch(uploadVideoUri)).blob();
+                const videoBlob = await (await fetch(videoToUpload)).blob();
                 const formData = new FormData();
                 formData.append('file', videoBlob, 'video.mp4');
 
@@ -98,11 +147,12 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
                 });
             } else {
                 // Mobile Upload via FileSystem
-                const task = FileSystem.createUploadTask(`${BASE_URL}/upload-video`, uploadVideoUri, { httpMethod: 'POST', uploadType: FileSystem.FileSystemUploadType.MULTIPART, fieldName: 'file', headers: { 'Authorization': `Bearer ${userToken}` } }, (data) => { const percent = data.totalBytesSent / data.totalBytesExpectedToSend; setUploadProgress(Math.floor(percent * 100)); });
+                const task = FileSystem.createUploadTask(`${BASE_URL}/upload-video`, videoToUpload, { httpMethod: 'POST', uploadType: FileSystem.FileSystemUploadType.MULTIPART, fieldName: 'file', headers: { 'Authorization': `Bearer ${userToken}` } }, (data) => { const percent = data.totalBytesSent / data.totalBytesExpectedToSend; setUploadProgress(Math.floor(percent * 100)); });
                 const result = await task.uploadAsync();
                 vUrl = JSON.parse(result.body).url;
             }
 
+            // Step 3: Create recipe entry
             setIsProcessing(true);
             const tagsArray = uploadTags.split(',').map(t => t.trim()).filter(t => t.length > 0);
             const rData = { title: uploadTitle, video_url: vUrl, ingredients: ingredientsText.split('\n').map(l => ({ name: l, amount: "1", unit: "x" })), steps: stepsText.split('\n').map((l, i) => ({ order: i + 1, instruction: l })), tags: tagsArray, tips: uploadTips || null };
@@ -116,6 +166,7 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
         } finally {
             setIsUploading(false);
             setIsProcessing(false);
+            setCompressionStatus('');
         }
     };
 
@@ -126,11 +177,13 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
                 <TouchableOpacity onPress={pickVideo} style={styles.uploadPreview}>
                     {uploadVideoUri ? <MiniVideo uri={uploadVideoUri} style={{ width: '100%', height: '100%' }} /> : <Ionicons name="cloud-upload" size={40} color="#666" />}
                 </TouchableOpacity>
-                {isUploading && (
+                {(isUploading || compressionStatus) && (
                     <View style={{ marginBottom: 20 }}>
-                        <Text style={{ color: 'white', marginBottom: 5, textAlign: 'center' }}>{isProcessing ? "Verarbeite Rezept..." : `Lade hoch: ${uploadProgress}%`}</Text>
+                        <Text style={{ color: 'white', marginBottom: 5, textAlign: 'center' }}>
+                            {compressionStatus || (isProcessing ? "Verarbeite Rezept..." : `Lade hoch: ${uploadProgress}%`)}
+                        </Text>
                         <View style={{ height: 6, backgroundColor: '#333', borderRadius: 3, overflow: 'hidden' }}>
-                            <View style={{ height: '100%', width: `${uploadProgress}%`, backgroundColor: THEME_COLOR }} />
+                            <View style={{ height: '100%', width: compressionStatus ? '100%' : `${uploadProgress}%`, backgroundColor: compressionStatus ? '#FFB800' : THEME_COLOR }} />
                         </View>
                     </View>
                 )}
