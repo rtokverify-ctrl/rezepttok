@@ -8,6 +8,6 @@ python-dotenv
 # New dependencies
 psycopg2-binary
 redis
-minio
+boto3
 fastapi-mail
 gunicorn
