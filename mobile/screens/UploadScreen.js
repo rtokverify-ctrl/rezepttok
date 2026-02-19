@@ -18,7 +18,11 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const pickVideo = async () => {
-        let r = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Videos, quality: 1 });
+        let r = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+            quality: 0.5,
+            videoExportPreset: ImagePicker.VideoExportPreset.MediumQuality,
+        });
         if (!r.canceled) setUploadVideoUri(r.assets[0].uri);
     };
 
