@@ -40,17 +40,24 @@ class StorageManager:
         if not os.path.exists(self.upload_dir):
             os.makedirs(self.upload_dir)
 
+from boto3.s3.transfer import TransferConfig
+
     async def save_video(self, file: UploadFile, filename: str) -> str:
         if self.mode == "s3":
             # Upload to S3 (Boto3)
             # Reset file pointer
             file.file.seek(0)
             
+            # Configure transfer settings
+            # Force standard PUT for files < 50MB (avoids multipart issues on strict S3 gateways)
+            transfer_config = TransferConfig(multipart_threshold=50 * 1024 * 1024)
+
             self.s3_client.upload_fileobj(
                 file.file,
                 self.bucket_name,
                 filename,
-                ExtraArgs={'ContentType': file.content_type, 'ACL': 'public-read'}
+                ExtraArgs={'ContentType': file.content_type, 'ACL': 'public-read'},
+                Config=transfer_config
             )
             
             # Return URL
