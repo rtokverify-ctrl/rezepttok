@@ -31,8 +31,17 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
 
         // Check file size (50MB limit)
         try {
-            const fileInfo = await FileSystem.getInfoAsync(uploadVideoUri);
-            if (fileInfo.size > 50 * 1024 * 1024) {
+            let fileSize = 0;
+            if (Platform.OS === 'web') {
+                const response = await fetch(uploadVideoUri);
+                const blob = await response.blob();
+                fileSize = blob.size;
+            } else {
+                const fileInfo = await FileSystem.getInfoAsync(uploadVideoUri);
+                fileSize = fileInfo.size;
+            }
+
+            if (fileSize > 50 * 1024 * 1024) {
                 Alert.alert("Datei zu groß", "Das Video ist größer als 50MB. Bitte kürze es oder wähle ein kleineres Video.");
                 return;
             }
