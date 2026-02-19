@@ -130,7 +130,48 @@ export default function App() {
         try { await fetch(`${BASE_URL}/recipes/${id}/like`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } }); loadMyProfile(); } catch (e) { }
     };
 
-    // ... (toggleFollow, handleChefPress, deleteRecipe, openCommentsModal, sendComment remain same) ...
+    const toggleFollow = async (userId) => {
+        if (!userId) return;
+        setVideos(prev => prev.map(v => v.owner_id === userId ? { ...v, i_follow: !v.i_follow } : v));
+        if (userProfileData && userProfileData.id === userId) {
+            setUserProfileData(prev => ({ ...prev, i_follow: !prev.i_follow, followers_count: prev.i_follow ? prev.followers_count - 1 : prev.followers_count + 1 }));
+        }
+        try {
+            await fetch(`${BASE_URL}/users/${userId}/toggle-follow`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
+            loadMyProfile();
+        } catch (e) { console.log(e); }
+    };
+
+    const handleChefPress = async (chefId) => {
+        if (!chefId) return;
+        if (myProfileData && chefId === myProfileData.id) {
+            setCurrentScreen('profile');
+        } else {
+            try {
+                const r = await fetch(`${BASE_URL}/users/${chefId}/profile`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+                const d = await r.json();
+                if (d.profile) {
+                    setUserProfileData(d.profile);
+                    setUserProfileVideos(Array.isArray(d.videos) ? d.videos.map(v => ({ ...v, video_url: getFullVideoUrl(v.video_url) })) : []);
+                    setUserProfileVisible(true);
+                }
+            } catch (e) { console.log(e); }
+        }
+    };
+
+    const deleteRecipe = async () => {
+        if (!selectedRecipe) return;
+        try {
+            await fetch(`${BASE_URL}/recipes/${selectedRecipe.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${userToken}` } });
+            setModalVisible(false);
+            setSelectedRecipe(null);
+            loadFeed();
+            loadMyProfile();
+            Alert.alert("Gelöscht", "Video wurde entfernt.");
+        } catch (e) {
+            Alert.alert("Fehler", "Konnte nicht löschen.");
+        }
+    };
 
     // --- COMMENTS ---
     const onOpenComments = async (videoId) => {
