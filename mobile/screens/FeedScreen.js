@@ -1,12 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import VideoPost from '../components/VideoPost';
 import { THEME_COLOR } from '../constants/Config';
 
-const FeedScreen = ({ videos, toggleLike, handleGlobalSave, setSelectedRecipe, setModalVisible, onOpenComments, onChefPress, toggleFollowInFeed, currentScreen, setCurrentScreen }) => {
+const FeedScreen = ({ videos, toggleLike, handleGlobalSave, setSelectedRecipe, setModalVisible, onOpenComments, onChefPress, toggleFollowInFeed, setCurrentScreen }) => {
     const [feedHeight, setFeedHeight] = useState(0);
     const [viewableItemIndex, setViewableItemIndex] = useState(0);
+    const isFocused = useIsFocused();
 
     const onViewableItemsChanged = useRef(({ viewableItems }) => {
         if (viewableItems.length > 0) setViewableItemIndex(viewableItems[0].index);
@@ -28,7 +30,7 @@ const FeedScreen = ({ videos, toggleLike, handleGlobalSave, setSelectedRecipe, s
                             toggleLike={toggleLike} onSavePress={handleGlobalSave}
                             openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={onOpenComments}
                             onChefPress={onChefPress} onFollowPress={toggleFollowInFeed}
-                            currentScreen={currentScreen} containerHeight={feedHeight}
+                            containerHeight={feedHeight}
                         />
                     )}
                 />

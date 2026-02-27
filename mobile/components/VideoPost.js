@@ -7,7 +7,7 @@ import { THEME_COLOR, BASE_URL, getFullUrl } from '../constants/Config';
 
 const { width } = Dimensions.get('window');
 
-const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, currentScreen, containerHeight }) => {
+const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, containerHeight }) => {
     const [userPaused, setUserPaused] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -24,12 +24,12 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
     // Play/pause based on visibility
     useEffect(() => {
         if (!player) return;
-        if (isActive && currentScreen === 'feed' && !userPaused) {
+        if (isActive && !userPaused) {
             try { player.play(); } catch (e) { }
         } else {
             try { player.pause(); } catch (e) { }
         }
-    }, [isActive, currentScreen, userPaused, player]);
+    }, [isActive, userPaused, player]);
 
     // Reset pause when scrolling to new video
     useEffect(() => {
