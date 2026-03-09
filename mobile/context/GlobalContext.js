@@ -24,6 +24,9 @@ export const GlobalProvider = ({ children }) => {
     const [activeCollectionId, setActiveCollectionId] = useState(null);
     const [collectionVideos, setCollectionVideos] = useState([]);
 
+    // Chat
+    const [unreadChatCount, setUnreadChatCount] = useState(0);
+
     useEffect(() => {
         checkLogin();
     }, []);
@@ -33,6 +36,7 @@ export const GlobalProvider = ({ children }) => {
             loadFeed();
             loadMyProfile();
             loadCollections();
+            loadUnreadChatCount();
         }
     }, [userToken]);
 
@@ -145,6 +149,18 @@ export const GlobalProvider = ({ children }) => {
         } catch (e) { }
     };
 
+    const loadUnreadChatCount = async () => {
+        if (!userToken) return;
+        try {
+            const r = await fetch(`${BASE_URL}/conversations`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const data = await r.json();
+            if (Array.isArray(data)) {
+                const total = data.reduce((sum, c) => sum + (c.unread_count || 0), 0);
+                setUnreadChatCount(total);
+            }
+        } catch (e) { setUnreadChatCount(0); }
+    };
+
     const toggleLike = async (id) => {
         setVideos(prev => prev.map(v => v.id === id ? { ...v, is_liked: !v.is_liked, likes: v.is_liked ? (v.likes - 1) : (v.likes + 1) } : v));
         try {
@@ -186,7 +202,8 @@ export const GlobalProvider = ({ children }) => {
         collections, setCollections, fetchCollections: loadCollections,
         activeCollectionId, setActiveCollectionId,
         collectionVideos, setCollectionVideos, loadCollectionVideos,
-        toggleLike, toggleFollow, deleteRecipeGlobal, loadMyProfile
+        toggleLike, toggleFollow, deleteRecipeGlobal, loadMyProfile,
+        unreadChatCount, loadUnreadChatCount
     };
 
     return (

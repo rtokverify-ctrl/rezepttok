@@ -1,12 +1,40 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Image, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 import MiniVideo from './MiniVideo';
 
 const { width } = Dimensions.get('window');
 
 const UserProfileModal = ({ visible, onClose, userProfileData, userProfileVideos, toggleFollowOnProfile, setSelectedRecipe, setModalVisible }) => {
+    const router = useRouter();
+    const { userToken } = useGlobal();
+
+    const startConversation = async () => {
+        if (!userProfileData?.id) return;
+        try {
+            const r = await fetch(`${BASE_URL}/conversations?user_id=${userProfileData.id}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${userToken}` },
+            });
+            const data = await r.json();
+            onClose();
+            router.push({
+                pathname: '/conversation',
+                params: {
+                    conversationId: data.conversation_id,
+                    otherUserId: userProfileData.id,
+                    otherUsername: userProfileData.username,
+                    otherAvatar: userProfileData.avatar_url || '',
+                },
+            });
+        } catch (e) {
+            console.log('Start conversation error', e);
+        }
+    };
+
     return (
         <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
             <View style={styles.modalOverlay}>
@@ -43,9 +71,15 @@ const UserProfileModal = ({ visible, onClose, userProfileData, userProfileVideos
                                 </View>
                                 {userProfileData.bio ? <Text style={{ color: '#555', marginTop: 12, textAlign: 'center', paddingHorizontal: 30 }}>{userProfileData.bio}</Text> : null}
                                 {!userProfileData.is_me && (
-                                    <TouchableOpacity onPress={toggleFollowOnProfile} style={[styles.followBtn, userProfileData.i_follow && styles.followBtnActive]}>
-                                        <Text style={[styles.followBtnText, userProfileData.i_follow && styles.followBtnTextActive]}>{userProfileData.i_follow ? 'Folgst du' : 'Folgen'}</Text>
-                                    </TouchableOpacity>
+                                    <View style={{ flexDirection: 'row', marginTop: 15, gap: 10 }}>
+                                        <TouchableOpacity onPress={toggleFollowOnProfile} style={[styles.followBtn, userProfileData.i_follow && styles.followBtnActive]}>
+                                            <Text style={[styles.followBtnText, userProfileData.i_follow && styles.followBtnTextActive]}>{userProfileData.i_follow ? 'Folgst du' : 'Folgen'}</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={startConversation} style={styles.messageBtn}>
+                                            <Ionicons name="chatbubble-outline" size={16} color="white" style={{ marginRight: 6 }} />
+                                            <Text style={styles.messageBtnText}>Nachricht</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 )}
                             </View>
                             <View style={{ borderTopWidth: 1, borderTopColor: '#eee' }}>
@@ -73,10 +107,12 @@ const styles = StyleSheet.create({
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20 },
     modalHandle: { width: 40, height: 4, backgroundColor: '#ccc', borderRadius: 2, alignSelf: 'center', marginTop: 10 },
-    followBtn: { marginTop: 15, paddingHorizontal: 40, paddingVertical: 10, borderRadius: 8, backgroundColor: THEME_COLOR },
+    followBtn: { paddingHorizontal: 30, paddingVertical: 10, borderRadius: 8, backgroundColor: THEME_COLOR },
     followBtnActive: { backgroundColor: '#eee' },
     followBtnText: { color: 'white', fontWeight: 'bold', fontSize: 15 },
     followBtnTextActive: { color: '#333' },
+    messageBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 8, backgroundColor: '#333' },
+    messageBtnText: { color: 'white', fontWeight: 'bold', fontSize: 15 },
 });
 
 export default UserProfileModal;

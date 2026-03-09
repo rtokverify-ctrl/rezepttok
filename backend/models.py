@@ -77,3 +77,20 @@ class Follow(Base):
     __tablename__ = "follows"
     follower_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     following_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+
+class Conversation(Base):
+    __tablename__ = "conversations"
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user1_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user2_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[str] = mapped_column()
+    updated_at: Mapped[str] = mapped_column()
+
+class Message(Base):
+    __tablename__ = "messages"
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    conversation_id: Mapped[int] = mapped_column(ForeignKey("conversations.id"))
+    sender_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    text: Mapped[str] = mapped_column()
+    created_at: Mapped[str] = mapped_column()
+    read: Mapped[bool] = mapped_column(default=False)

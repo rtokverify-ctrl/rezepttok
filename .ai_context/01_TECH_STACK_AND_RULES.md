@@ -55,4 +55,4 @@ Die Applikation nutzt eine **REST API**.
 
 ## 🤖 KI & Workflow Regeln
 
-- **Git & Commits:** Bevor Code-Änderungen über Git committet oder gepusht werden, **muss** zwingend der Nutzer gefragt werden: *"Sollen wir die Änderungen jetzt pushen?"*. Pushen darf niemals ohne ausdrückliche Freigabe passieren.
+- **Git & Commits:** Bevor Code-Änderungen über Git committet oder gepusht werden, **muss** zwingend der Nutzer gefragt werden: *„Sollen wir die Änderungen jetzt pushen?"*. Pushen darf niemals ohne ausdrückliche Freigabe passieren. **Nach jeder abgeschlossenen Änderung** (z. B. nach einem Feature, Bugfix oder Refactoring) soll der Nutzer aktiv gefragt werden, ob die Änderungen committet und gepusht werden sollen.

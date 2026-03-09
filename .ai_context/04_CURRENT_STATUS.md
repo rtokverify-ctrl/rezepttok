@@ -4,9 +4,13 @@
 - **Erstellung der AI-Kontext-Dokumentation:** Die Ordnerstruktur und Architektur des RezeptTok Projektes (FastAPI Backend + React Native Frontend) wurde gescannt und im `.ai_context` Ordner niedergeschrieben, um zukünftige Entwicklungen abzusichern und Codeverständnis für die KI zu optimieren.
 
 ## 📝 To-Do (Offen / Zukünftig)
-- **State Management Refactoring (Potential):** Aktuell läuft die gesamte Logik im Root (`index.js`). Bei weiterem Wachstum sollte evaluiert werden, ob Expo-Router nativ für die Screens genutzt wird und Daten-Fetches in einen React Context oder Server-State (z. B. React Query) verlagert werden.
+- **💬 Chat-System implementieren:** Echtes Messaging zwischen Usern (Rezepte teilen/diskutieren). `chat_router.py` ist aktuell nur ein WebSocket-Echo-Stub, `ChatScreen.js` ist minimal.
+- **🤝 Collaboration / Teilen fertigstellen:** Sharing-Endpoints für Einkaufslisten und Collections in `collaboration_router.py` sind nur `pass`-Stubs – Logik implementieren.
+- **📱 UI/UX Polish:** Feed-Algorithmus (Trending/For-You statt chronologisch), Pull-to-Refresh, Skeleton Loading States, Infinite Scroll.
+- **🔒 Sicherheit & Robustheit:** Rate Limiting, Input Validation verschärfen, Fehlerbehandlung im Frontend verbessern, CORS auf spezifische Origins einschränken.
+- **📊 Rezept-Kategorien & Tags:** Tags existieren im Model, aber ein Screen zum Filtern/Browsen nach Kategorien fehlt noch.
+- **🧪 Tests:** Automatisierte Tests für Backend (pytest) und Frontend (Jest) einführen.
 - **Feinschliff Search & Video Compression:** Verifizierung, dass die kürzlich integrierte Video-Kompression über `react-native-compressor` fehlerfrei in Cloud/Prod-Umgebungen interagiert.
-- *Nutzer-definierte Ergänzungen kommen hier rein.*
 
 ## ✅ Done (Erledigt / Implementiert)
 - **Infrastruktur Setup:** Docker Container für PostgreSQL und grundlegende Verbindungslogik etabliert.

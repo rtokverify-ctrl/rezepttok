@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, ScrollView, TextInput, ActivityIndicator, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 import MiniVideo from '../components/MiniVideo';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -25,6 +27,8 @@ const ProfileScreen = ({
     loadMyProfile,
     onLogout
 }) => {
+    const router = useRouter();
+    const { unreadChatCount } = useGlobal();
     const [profileTab, setProfileTab] = useState('uploads');
     const [savedViewType, setSavedViewType] = useState('all'); // 'all' or 'folders'
     const [settingsVisible, setSettingsVisible] = useState(false);
@@ -164,6 +168,14 @@ const ProfileScreen = ({
             <View style={styles.profileHeader}>
                 {/* HEADER BUTTONS */}
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: '100%', paddingRight: 20 }}>
+                    <TouchableOpacity onPress={() => router.push('/chat')} style={{ marginRight: 20, position: 'relative' }}>
+                        <Ionicons name="chatbubble-ellipses-outline" size={25} color="white" />
+                        {unreadChatCount > 0 && (
+                            <View style={{ position: 'absolute', top: -5, right: -8, backgroundColor: '#ff3b30', borderRadius: 9, minWidth: 18, height: 18, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 4 }}>
+                                <Text style={{ color: 'white', fontSize: 10, fontWeight: '700' }}>{unreadChatCount > 99 ? '99+' : unreadChatCount}</Text>
+                            </View>
+                        )}
+                    </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 20 }}>
                         <Ionicons name="share-social-outline" size={26} color="white" />
                     </TouchableOpacity>

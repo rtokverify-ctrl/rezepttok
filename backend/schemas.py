@@ -28,3 +28,29 @@ class CommentCreate(BaseModel):
 
 class CollectionCreate(BaseModel):
     name: str
+
+class MessageCreate(BaseModel):
+    text: str
+
+class MessageOut(BaseModel):
+    id: int
+    text: str
+    sender_id: int
+    created_at: str
+    read: bool
+
+    class Config:
+        from_attributes = True
+
+class ConversationUserOut(BaseModel):
+    id: int
+    username: str
+    avatar_url: Optional[str] = None
+
+class ConversationOut(BaseModel):
+    id: int
+    other_user: ConversationUserOut
+    last_message: Optional[str] = None
+    last_message_time: Optional[str] = None
+    unread_count: int = 0
+
