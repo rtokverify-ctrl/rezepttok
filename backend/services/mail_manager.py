@@ -22,36 +22,40 @@ class MailManager:
         """
 
         if not self.api_key or not self.secret_key:
-            print("WARNING: Mailjet API keys not set.")
-            raise Exception("MAILJET_API_KEY or MAILJET_SECRET_KEY not configured")
+            print("WARNING: Mailjet API keys not set. Skipping email.")
+            return None
 
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "https://api.mailjet.com/v3.1/send",
-                auth=(self.api_key, self.secret_key),
-                json={
-                    "Messages": [{
-                        "From": {
-                            "Email": self.from_email,
-                            "Name": self.from_name
-                        },
-                        "To": [{
-                            "Email": email
-                        }],
-                        "Subject": "Dein RezeptTok 2FA Code",
-                        "HTMLPart": html
-                    }]
-                },
-                timeout=30.0
-            )
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    "https://api.mailjet.com/v3.1/send",
+                    auth=(self.api_key, self.secret_key),
+                    json={
+                        "Messages": [{
+                            "From": {
+                                "Email": self.from_email,
+                                "Name": self.from_name
+                            },
+                            "To": [{
+                                "Email": email
+                            }],
+                            "Subject": "Dein RezeptTok 2FA Code",
+                            "HTMLPart": html
+                        }]
+                    },
+                    timeout=30.0
+                )
 
-            if response.status_code != 200:
-                error_msg = response.text
-                print(f"Mailjet API Error ({response.status_code}): {error_msg}")
-                raise Exception(f"Email sending failed: {error_msg}")
+                if response.status_code != 200:
+                    error_msg = response.text
+                    print(f"WARNING: Mailjet API Error ({response.status_code}): {error_msg}")
+                    return None
 
-            result = response.json()
-            print(f"Email sent successfully to {email} via Mailjet")
-            return result
+                result = response.json()
+                print(f"Email sent successfully to {email} via Mailjet")
+                return result
+        except Exception as e:
+            print(f"WARNING: Email sending failed for {email}: {e}")
+            return None
 
 mail_manager = MailManager()

@@ -11,3 +11,4 @@ redis
 boto3
 httpx
 gunicorn
+pytest

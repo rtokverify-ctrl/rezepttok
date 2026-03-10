@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 import re
 
 from database import get_db
@@ -30,29 +31,28 @@ def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = 
         )
     hashed_pw = get_password_hash(user.password)
     
-    # Generate 2FA Code
-    import random
-    verification_code = str(random.randint(100000, 999999))
-    
     new_user = User(
         username=user.username, 
         email=user.email, 
         age=user.age, 
         hashed_password=hashed_pw, 
         display_name=user.username,
-        verification_code=verification_code,
-        is_verified=False # Require Email Verification
+        verification_code=None,
+        is_verified=True  # Auto-verify (Email-Verifizierung deaktiviert)
     )
     db.add(new_user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username oder Email bereits vergeben"
+        )
     
-    # Try sending mail (but don't fail if it breaks)
-    from services.mail_manager import mail_manager
-    background_tasks.add_task(mail_manager.send_verification_code, user.email, verification_code)
-    
-    print(f"DEBUG: Queuing verification email for {user.email}")
-    
-    return {"msg": "Registration successful. Please check your email to verify your account.", "email": user.email}
+    # Auto-verify: direkt Token zurückgeben
+    access_token = create_access_token(data={"sub": user.username})
+    return {"msg": "Registration successful!", "email": user.email, "access_token": access_token, "token_type": "bearer"}
 
 @router.post("/verify", response_model=Token)
 def verify_email(data: UserVerify, db: Session = Depends(get_db)):
