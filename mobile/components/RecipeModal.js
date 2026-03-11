@@ -13,16 +13,34 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
         if (!selectedRecipe?.ingredients) return;
         setAddingToShop(true);
         try {
-            // Add all ingredients
+            // 1. Fetch existing lists
+            let listId = null;
+            const res = await fetch(`${BASE_URL}/shopping-lists`, { headers: { 'Authorization': 'Bearer ' + userToken } });
+            const lists = await res.json();
+            
+            if (lists.length > 0) {
+                listId = lists[0].id;
+            } else {
+                // Create a default list if none exist
+                const lRes = await fetch(`${BASE_URL}/shopping-lists`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + userToken },
+                    body: JSON.stringify({ name: 'Rezept Zutaten' }) 
+                });
+                const newList = await lRes.json();
+                listId = newList.id;
+            }
+
+            // 2. Add all ingredients to the found list
             const promises = selectedRecipe.ingredients.map(ing =>
-                fetch(`${BASE_URL}/shopping-list`, {
+                fetch(`${BASE_URL}/shopping-lists/${listId}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + userToken },
                     body: JSON.stringify({ item: ing.name })
                 })
             );
             await Promise.all(promises);
-            Alert.alert("Erfolg", "Zutaten wurden zur Einkaufsliste hinzugefügt! 🛒");
+            Alert.alert("Erfolg", "Zutaten wurden in deine Einkaufsliste gepackt! 🛒");
         } catch (e) {
             Alert.alert("Fehler", "Konnte Zutaten nicht hinzufügen.");
         } finally {

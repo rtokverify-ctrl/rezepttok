@@ -28,12 +28,24 @@ class Notification(Base):
     read: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[str] = mapped_column()
 
-class ShoppingListItem(Base):
-    __tablename__ = "shopping_list"
+class ShoppingList(Base):
+    __tablename__ = "shopping_lists"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    name: Mapped[str] = mapped_column()
+    created_at: Mapped[str] = mapped_column()
+
+class ShoppingListItem(Base):
+    __tablename__ = "shopping_list_items"
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    list_id: Mapped[int] = mapped_column(ForeignKey("shopping_lists.id", ondelete="CASCADE"))
     item: Mapped[str] = mapped_column()
     completed: Mapped[bool] = mapped_column(default=False)
+
+class SharedShoppingList(Base):
+    __tablename__ = "shared_shopping_lists"
+    list_id: Mapped[int] = mapped_column(ForeignKey("shopping_lists.id", ondelete="CASCADE"), primary_key=True)
+    shared_with_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
 
 class Recipe(Base):
     __tablename__ = "recipes"
@@ -71,7 +83,12 @@ class SavedRecipe(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"))
-    collection_id: Mapped[Optional[int]] = mapped_column(ForeignKey("collections.id"), default=None)
+    collection_id: Mapped[Optional[int]] = mapped_column(ForeignKey("collections.id", ondelete="CASCADE"), default=None)
+
+class SharedCollection(Base):
+    __tablename__ = "shared_collections"
+    collection_id: Mapped[int] = mapped_column(ForeignKey("collections.id", ondelete="CASCADE"), primary_key=True)
+    shared_with_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
 
 class Follow(Base):
     __tablename__ = "follows"
