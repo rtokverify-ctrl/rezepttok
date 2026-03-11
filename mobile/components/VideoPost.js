@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     // Seekbar
     seekBarContainer: {
         position: 'absolute',
-        bottom: -1,            // Flush with the bottom edge (sits on navbar)
+        bottom: 5,
         left: 0,
         right: 0,
         height: 20,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
         cursor: 'pointer',
     },
     seekBarTrack: {
-        height: 3,
+        height: 4,
         backgroundColor: 'rgba(255,255,255,0.25)',
         position: 'relative',
         overflow: 'hidden',

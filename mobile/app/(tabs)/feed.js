@@ -115,6 +115,8 @@ export default function FeedTab() {
             const d = await r.json();
             setCurrentComments([d, ...currentComments]);
             setNewComment('');
+            // Instantly update the comment counter in the feed
+            setVideos(prev => prev.map(v => v.id === commentVideoId ? { ...v, comments_count: (v.comments_count || 0) + 1 } : v));
         } catch (e) { }
     };
 

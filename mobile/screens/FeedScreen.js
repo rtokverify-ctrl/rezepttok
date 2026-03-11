@@ -100,34 +100,38 @@ const FeedScreen = ({
             <TouchableOpacity onPress={() => setCurrentScreen('search')} style={styles.searchButton}>
                 <Ionicons name="search" size={24} color="white" />
             </TouchableOpacity>
-            {feedHeight > 0 && videos.length > 0 ? (
-                <FlatList
-                    keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
-                    data={videos} pagingEnabled showsVerticalScrollIndicator={false}
-                    snapToInterval={feedHeight} decelerationRate="fast"
-                    onViewableItemsChanged={onViewableItemsChanged}
-                    viewabilityConfig={{ itemVisiblePercentThreshold: 95 }}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                            tintColor={THEME_COLOR}
-                            colors={[THEME_COLOR]}
-                            progressBackgroundColor="#111"
-                        />
-                    }
-                    renderItem={({ item, index }) => (
-                        <VideoPost
-                            item={item} isActive={index === viewableItemIndex}
-                            toggleLike={toggleLike} onSavePress={handleGlobalSave}
-                            openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={onOpenComments}
-                            onChefPress={onChefPress} onFollowPress={toggleFollowInFeed}
-                            containerHeight={feedHeight}
-                        />
-                    )}
-                />
-            ) : (
-                <EmptyFeed onRefresh={onRefresh} />
+            {feedHeight > 0 && (
+                videos.length > 0 ? (
+                    <FlatList
+                        keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
+                        data={videos} pagingEnabled showsVerticalScrollIndicator={false}
+                        snapToInterval={feedHeight} decelerationRate="fast"
+                        onViewableItemsChanged={onViewableItemsChanged}
+                        viewabilityConfig={{ itemVisiblePercentThreshold: 95 }}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                tintColor={THEME_COLOR}
+                                colors={[THEME_COLOR]}
+                                progressBackgroundColor="#111"
+                            />
+                        }
+                        renderItem={({ item, index }) => (
+                            <VideoPost
+                                item={item} isActive={index === viewableItemIndex}
+                                toggleLike={toggleLike} onSavePress={handleGlobalSave}
+                                openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={onOpenComments}
+                                onChefPress={onChefPress} onFollowPress={toggleFollowInFeed}
+                                containerHeight={feedHeight}
+                            />
+                        )}
+                    />
+                ) : !feedLoading ? (
+                    <EmptyFeed onRefresh={onRefresh} />
+                ) : (
+                    <FeedSkeleton />
+                )
             )}
         </View>
     );
