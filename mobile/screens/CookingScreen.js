@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Modal, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BASE_URL, THEME_COLOR } from '../constants/Config';
 
@@ -10,6 +10,11 @@ const CookingScreen = ({ userToken }) => {
     const [shoppingItems, setShoppingItems] = useState([]);
     const [newListText, setNewListText] = useState('');
     const [newItemText, setNewItemText] = useState('');
+
+    // Sharing
+    const [shareModalVisible, setShareModalVisible] = useState(false);
+    const [shareListId, setShareListId] = useState(null);
+    const [shareUsername, setShareUsername] = useState('');
 
     // Timer
     const [timerSeconds, setTimerSeconds] = useState(0);
@@ -63,6 +68,27 @@ const CookingScreen = ({ userToken }) => {
             setLists(newLists);
             if (activeListId === id) setActiveListId(newLists.length > 0 ? newLists[0].id : null);
         } catch (e) { }
+    };
+
+    const shareList = async () => {
+        if (!shareUsername.trim() || !shareListId) return;
+        try {
+            const r = await fetch(`${BASE_URL}/shopping-lists/${shareListId}/share`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + userToken },
+                body: JSON.stringify({ username: shareUsername.trim() })
+            });
+            const data = await r.json();
+            if (r.ok) {
+                Alert.alert("Erfolg", `Liste geteilt mit ${shareUsername}`);
+                setShareModalVisible(false);
+                setShareUsername('');
+            } else {
+                Alert.alert("Fehler", data.detail || data.message || "User nicht gefunden.");
+            }
+        } catch (e) {
+            Alert.alert("Fehler", "Senden fehlgeschlagen.");
+        }
     };
 
     const addShoppingItem = async () => {
@@ -131,11 +157,19 @@ const CookingScreen = ({ userToken }) => {
                                 keyExtractor={item => item.id.toString()}
                                 renderItem={({ item }) => (
                                     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: activeListId === item.id ? THEME_COLOR : '#333', paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, marginRight: 10 }}>
-                                        <TouchableOpacity onPress={() => setActiveListId(item.id)}>
+                                        <TouchableOpacity onPress={() => setActiveListId(item.id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            {item.is_shared && <Ionicons name="people" size={14} color="white" style={{ marginRight: 5 }} />}
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.name}</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => deleteList(item.id)} style={{ marginLeft: 10 }}>
-                                            <Ionicons name="close-circle" size={18} color="rgba(255,255,255,0.6)" />
+                                        
+                                        {!item.is_shared && activeListId === item.id && (
+                                            <TouchableOpacity onPress={() => { setShareListId(item.id); setShareModalVisible(true); }} style={{ marginLeft: 15 }}>
+                                                <Ionicons name="share-social" size={18} color="white" />
+                                            </TouchableOpacity>
+                                        )}
+
+                                        <TouchableOpacity onPress={() => deleteList(item.id)} style={{ marginLeft: item.is_shared || activeListId !== item.id ? 10 : 15 }}>
+                                            <Ionicons name={item.is_shared ? "log-out-outline" : "close-circle"} size={18} color={item.is_shared ? "#ff4d4d" : "rgba(255,255,255,0.6)"} />
                                         </TouchableOpacity>
                                     </View>
                                 )}
@@ -173,6 +207,7 @@ const CookingScreen = ({ userToken }) => {
                     </View>
                 )}
 
+                {/* --- TIMER --- */}
                 {cookingTab === 'timer' && (
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={{ fontSize: 80, fontWeight: 'bold', color: 'white', fontVariant: ['tabular-nums'] }}>{formatTimer(timerSeconds)}</Text>
@@ -212,6 +247,35 @@ const CookingScreen = ({ userToken }) => {
                     </View>
                 )}
             </View>
+
+            {/* SHARE MODAL */}
+            <Modal visible={shareModalVisible} transparent={true} animationType="fade">
+                <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+                    <View style={{ backgroundColor: '#1a1a1a', padding: 25, borderRadius: 20, width: '100%', alignItems: 'center' }}>
+                        <Ionicons name="people-circle" size={50} color={THEME_COLOR} style={{ marginBottom: 15 }} />
+                        <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>Liste teilen</Text>
+                        <Text style={{ color: '#aaa', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>Gib den exakten Usernamen ein, um diese Liste freizugeben.</Text>
+
+                        <TextInput
+                            style={[styles.modernInput, { width: '100%' }]}
+                            placeholder="Username"
+                            placeholderTextColor="#666"
+                            value={shareUsername}
+                            onChangeText={setShareUsername}
+                            autoCapitalize="none"
+                        />
+
+                        <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                            <TouchableOpacity onPress={() => setShareModalVisible(false)} style={{ flex: 1, padding: 15, backgroundColor: '#333', borderRadius: 12, marginRight: 10, alignItems: 'center' }}>
+                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Abbrechen</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={shareList} style={{ flex: 1, padding: 15, backgroundColor: THEME_COLOR, borderRadius: 12, marginLeft: 10, alignItems: 'center' }}>
+                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Teilen</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };

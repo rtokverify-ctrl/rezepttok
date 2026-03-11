@@ -18,6 +18,7 @@ class ShoppingListOut(BaseModel):
     name: str
     user_id: int
     created_at: str
+    is_shared: bool = False
 
     class Config:
         from_attributes = True
@@ -38,9 +39,28 @@ class ShoppingItemOut(BaseModel):
 
 @router.get("/shopping-lists", response_model=List[ShoppingListOut])
 def get_shopping_lists(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    """Holt alle Listen des Users (eigene). Geteilte folgen später."""
-    lists = db.query(ShoppingList).filter(ShoppingList.user_id == current_user.id).all()
-    return lists
+    """Holt alle Listen des Users (eigene) UND Listen, die mit ihm geteilt wurden."""
+    # Eigene Listen
+    owned_lists = db.query(ShoppingList).filter(ShoppingList.user_id == current_user.id).all()
+    
+    # Geteilte Listen
+    shared_entries = db.query(SharedShoppingList).filter(SharedShoppingList.shared_with_user_id == current_user.id).all()
+    shared_list_ids = [e.list_id for e in shared_entries]
+    shared_lists = db.query(ShoppingList).filter(ShoppingList.id.in_(shared_list_ids)).all()
+
+    # is_shared Flag setzen (Pydantic model expects this)
+    result = []
+    for l in owned_lists:
+        l_dict = l.__dict__.copy()
+        l_dict["is_shared"] = False
+        result.append(l_dict)
+    
+    for l in shared_lists:
+        l_dict = l.__dict__.copy()
+        l_dict["is_shared"] = True
+        result.append(l_dict)
+        
+    return result
 
 @router.post("/shopping-lists", response_model=ShoppingListOut)
 def create_shopping_list(list_data: ShoppingListCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -67,11 +87,20 @@ def delete_shopping_list(list_id: int, db: Session = Depends(get_db), current_us
 # --- Shopping List ITEMS Routing ---
 
 def _verify_list_access(list_id: int, user_id: int, db: Session):
-    # TODO: Add shared access check here later
-    l = db.query(ShoppingList).filter(ShoppingList.id == list_id, ShoppingList.user_id == user_id).first()
+    # Check ownership
+    l = db.query(ShoppingList).filter(ShoppingList.id == list_id).first()
     if not l:
-        raise HTTPException(status_code=403, detail="Not authorized to access this list")
-    return l
+        raise HTTPException(status_code=404, detail="List not found")
+        
+    if l.user_id == user_id:
+        return l
+        
+    # Check shared access
+    shared = db.query(SharedShoppingList).filter(SharedShoppingList.list_id == list_id, SharedShoppingList.shared_with_user_id == user_id).first()
+    if shared:
+        return l
+        
+    raise HTTPException(status_code=403, detail="Not authorized to access this list")
 
 @router.get("/shopping-lists/{list_id}/items", response_model=List[ShoppingItemOut])
 def get_shopping_items(list_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
