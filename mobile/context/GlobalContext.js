@@ -12,6 +12,7 @@ export const GlobalProvider = ({ children }) => {
 
     // Global Feed Data
     const [videos, setVideos] = useState([]);
+    const [feedLoading, setFeedLoading] = useState(true);
 
     // Profile Data
     const [myProfileData, setMyProfileData] = useState(null);
@@ -68,8 +69,9 @@ export const GlobalProvider = ({ children }) => {
         setSavedVideos([]);
     };
 
-    const loadFeed = async () => {
+    const loadFeed = async (isRefresh = false) => {
         if (!userToken) return;
+        if (!isRefresh) setFeedLoading(true);
         try {
             const r = await fetch(`${BASE_URL}/feed`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
@@ -88,6 +90,8 @@ export const GlobalProvider = ({ children }) => {
         } catch (e) {
             console.log("Feed Error", e);
             setVideos([]);
+        } finally {
+            setFeedLoading(false);
         }
     };
 
@@ -195,7 +199,7 @@ export const GlobalProvider = ({ children }) => {
 
     const value = {
         userToken, isLoading, handleLogin, logout,
-        videos, setVideos, loadFeed,
+        videos, setVideos, loadFeed, feedLoading,
         myProfileData, setMyProfileData, myVideos, setMyVideos,
         likedVideos, loadLikedVideos,
         savedVideos, loadSavedVideosAll,

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, ScrollView, TextInput, ActivityIndicator, Alert, Platform } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, ScrollView, TextInput, ActivityIndicator, Alert, Platform, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
@@ -7,6 +7,52 @@ import { useGlobal } from '../context/GlobalContext';
 import MiniVideo from '../components/MiniVideo';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// ── Skeleton Pulse ──────────────────────────────────────────────────
+const SkeletonPulse = ({ style }) => {
+    const opacity = useRef(new Animated.Value(0.3)).current;
+    useEffect(() => {
+        const anim = Animated.loop(Animated.sequence([
+            Animated.timing(opacity, { toValue: 0.7, duration: 800, useNativeDriver: true }),
+            Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+        ]));
+        anim.start();
+        return () => anim.stop();
+    }, []);
+    return <Animated.View style={[{ backgroundColor: '#222', borderRadius: 8 }, style, { opacity }]} />;
+};
+
+const ProfileSkeleton = () => (
+    <View style={{ flex: 1, backgroundColor: 'black', paddingTop: 60 }}>
+        <View style={{ alignItems: 'center' }}>
+            <SkeletonPulse style={{ width: 110, height: 110, borderRadius: 55, marginBottom: 15 }} />
+            <SkeletonPulse style={{ width: 120, height: 18, marginBottom: 20 }} />
+            <View style={{ flexDirection: 'row', gap: 30, marginBottom: 20 }}>
+                <View style={{ alignItems: 'center' }}>
+                    <SkeletonPulse style={{ width: 40, height: 20, marginBottom: 6 }} />
+                    <SkeletonPulse style={{ width: 50, height: 12 }} />
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                    <SkeletonPulse style={{ width: 40, height: 20, marginBottom: 6 }} />
+                    <SkeletonPulse style={{ width: 50, height: 12 }} />
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                    <SkeletonPulse style={{ width: 40, height: 20, marginBottom: 6 }} />
+                    <SkeletonPulse style={{ width: 50, height: 12 }} />
+                </View>
+            </View>
+            <SkeletonPulse style={{ width: SCREEN_WIDTH * 0.6, height: 14 }} />
+        </View>
+        <View style={{ flexDirection: 'row', marginTop: 30, borderTopWidth: 1, borderTopColor: '#222' }}>
+            {[0,1,2].map(i => <View key={i} style={{ flex: 1, alignItems: 'center', paddingVertical: 15 }}><SkeletonPulse style={{ width: 24, height: 24 }} /></View>)}
+        </View>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', padding: 1 }}>
+            {[0,1,2,3,4,5].map(i => <SkeletonPulse key={i} style={{ width: '33.33%', aspectRatio: 0.7, borderWidth: 1, borderColor: 'black' }} />)}
+        </View>
+    </View>
+);
 
 const ProfileScreen = ({
     userToken,
@@ -163,6 +209,25 @@ const ProfileScreen = ({
     if (profileTab === 'uploads') activeData = myVideos;
     if (profileTab === 'likes') activeData = likedVideos;
 
+    // Show skeleton while profile is loading
+    if (!myProfileData) return <ProfileSkeleton />;
+
+    const emptyMessages = {
+        uploads: { icon: 'videocam-outline', text: 'Teile dein erstes Rezept!' },
+        likes: { icon: 'heart-outline', text: 'Videos die dir gefallen erscheinen hier.' },
+        saved: { icon: 'bookmark-outline', text: 'Speichere Rezepte um sie hier zu sehen.' },
+    };
+
+    const EmptyGrid = ({ tab }) => {
+        const msg = emptyMessages[tab] || emptyMessages.uploads;
+        return (
+            <View style={{ padding: 50, alignItems: 'center' }}>
+                <Ionicons name={msg.icon} size={50} color="#333" />
+                <Text style={{ color: '#555', fontSize: 15, marginTop: 12, textAlign: 'center' }}>{msg.text}</Text>
+            </View>
+        );
+    };
+
     return (
         <View style={{ flex: 1, backgroundColor: 'black' }}>
             <View style={styles.profileHeader}>
@@ -231,7 +296,7 @@ const ProfileScreen = ({
                             keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
                             data={savedVideos} numColumns={3}
                             renderItem={({ item }) => <TouchableOpacity onPress={() => { setSelectedRecipe(item); setModalVisible(true); }} style={styles.gridItem}><MiniVideo uri={item.video_url} style={{ width: '100%', height: '100%' }} /></TouchableOpacity>}
-                            ListEmptyComponent={<View style={{ padding: 50, alignItems: 'center' }}><Text style={{ color: '#666' }}>Noch nichts gespeichert.</Text></View>}
+                            ListEmptyComponent={<EmptyGrid tab="saved" />}
                         />
                     ) : (
                         <FlatList
@@ -255,7 +320,7 @@ const ProfileScreen = ({
                     keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
                     data={activeData} numColumns={3}
                     renderItem={({ item }) => <TouchableOpacity onPress={() => { setSelectedRecipe(item); setModalVisible(true); }} style={styles.gridItem}><MiniVideo uri={item.video_url} style={{ width: '100%', height: '100%' }} /></TouchableOpacity>}
-                    ListEmptyComponent={<View style={{ padding: 50, alignItems: 'center' }}><Text style={{ color: '#666' }}>Hier ist es noch leer.</Text></View>}
+                    ListEmptyComponent={<EmptyGrid tab={profileTab} />}
                 />
             )}
 

@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 export default function FeedTab() {
     const {
         userToken, videos, toggleLike, setVideos, loadMyProfile,
-        collections, loadCollections
+        collections, loadCollections, loadFeed, feedLoading
     } = useGlobal();
 
     const router = useRouter();
@@ -151,6 +151,8 @@ export default function FeedTab() {
                 onChefPress={handleChefPress}
                 toggleFollowInFeed={toggleFollowInFeed}
                 setCurrentScreen={(target) => router.push(`/(tabs)/${target}`)}
+                loadFeed={loadFeed}
+                feedLoading={feedLoading}
             />
 
             <RecipeModal
