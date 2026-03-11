@@ -23,12 +23,31 @@ def test_add_item_to_list(client, auth_token):
     list_resp = client.post("/shopping-lists", json={"name": "Party"}, headers=auth_header(auth_token)).json()
     list_id = list_resp["id"]
 
-    # 2. Add item
-    r = client.post(f"/shopping-lists/{list_id}/items", json={"item": "Bier"}, headers=auth_header(auth_token))
+    # 2. Add item with quantity
+    r = client.post(f"/shopping-lists/{list_id}/items", json={"item": "Bier", "quantity": "2 Kasten"}, headers=auth_header(auth_token))
+    data = r.json()
     assert r.status_code == 200
-    assert r.json()["item"] == "Bier"
-    assert r.json()["completed"] is False
-    assert r.json()["list_id"] == list_id
+    assert data["item"] == "Bier"
+    assert data["quantity"] == "2 Kasten"
+    assert data["completed"] is False
+    assert data["list_id"] == list_id
+
+def test_update_item(client, auth_token):
+    # 1. Create list and item
+    list_resp = client.post("/shopping-lists", json={"name": "Update Test"}, headers=auth_header(auth_token)).json()
+    item_resp = client.post(f"/shopping-lists/{list_resp['id']}/items", json={"item": "Mehl", "quantity": "1kg"}, headers=auth_header(auth_token)).json()
+
+    # 2. Update quantity
+    r = client.patch(f"/shopping-lists/items/{item_resp['id']}", json={"quantity": "2kg"}, headers=auth_header(auth_token))
+    assert r.status_code == 200
+    assert r.json()["quantity"] == "2kg"
+    assert r.json()["item"] == "Mehl" # Name should remain unchanged
+
+    # 3. Update name
+    r2 = client.patch(f"/shopping-lists/items/{item_resp['id']}", json={"item": "Dinkelmehl"}, headers=auth_header(auth_token))
+    assert r2.status_code == 200
+    assert r2.json()["item"] == "Dinkelmehl"
+    assert r2.json()["quantity"] == "2kg"
 
 def test_toggle_item(client, auth_token):
     l = client.post("/shopping-lists", json={"name": "Test"}, headers=auth_header(auth_token)).json()

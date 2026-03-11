@@ -31,14 +31,24 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
                 listId = newList.id;
             }
 
+            // Helper: Versuch, Menge und Item zu trennen (sehr simpel)
+            const parseIngredient = (text) => {
+                const match = text.match(/^([\d.,]+\s*(?:g|ml|TL|EL|Prise|Stk|Tasse|Kasten|l|kg|Pck|Bund)?)\s+(.+)$/i);
+                if (match) {
+                    return { quantity: match[1].trim(), item: match[2].trim() };
+                }
+                return { quantity: '', item: text.trim() };
+            };
+
             // 2. Add all ingredients to the found list
-            const promises = selectedRecipe.ingredients.map(ing =>
-                fetch(`${BASE_URL}/shopping-lists/${listId}/items`, {
+            const promises = selectedRecipe.ingredients.map(ing => {
+                const parsed = parseIngredient(ing.name);
+                return fetch(`${BASE_URL}/shopping-lists/${listId}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + userToken },
-                    body: JSON.stringify({ item: ing.name })
-                })
-            );
+                    body: JSON.stringify({ item: parsed.item, quantity: parsed.quantity })
+                });
+            });
             await Promise.all(promises);
             Alert.alert("Erfolg", "Zutaten wurden in deine Einkaufsliste gepackt! 🛒");
         } catch (e) {

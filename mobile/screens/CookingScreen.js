@@ -10,6 +10,7 @@ const CookingScreen = ({ userToken }) => {
     const [shoppingItems, setShoppingItems] = useState([]);
     const [newListText, setNewListText] = useState('');
     const [newItemText, setNewItemText] = useState('');
+    const [newQuantityText, setNewQuantityText] = useState('');
 
     // Sharing
     const [shareModalVisible, setShareModalVisible] = useState(false);
@@ -94,10 +95,25 @@ const CookingScreen = ({ userToken }) => {
     const addShoppingItem = async () => {
         if (!newItemText.trim() || !activeListId) return;
         try {
-            const r = await fetch(`${BASE_URL}/shopping-lists/${activeListId}/items`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + userToken }, body: JSON.stringify({ item: newItemText }) });
+            const r = await fetch(`${BASE_URL}/shopping-lists/${activeListId}/items`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + userToken }, body: JSON.stringify({ item: newItemText, quantity: newQuantityText }) });
             const d = await r.json();
             setShoppingItems([...shoppingItems, d]);
             setNewItemText('');
+            setNewQuantityText('');
+        } catch (e) { }
+    };
+
+    const updateShoppingItem = async (id, newItem, newQuantity) => {
+        try {
+            const r = await fetch(`${BASE_URL}/shopping-lists/items/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + userToken },
+                body: JSON.stringify({ item: newItem, quantity: newQuantity })
+            });
+            if (r.ok) {
+                const d = await r.json();
+                setShoppingItems(shoppingItems.map(i => i.id === id ? d : i));
+            }
         } catch (e) { }
     };
 
@@ -180,6 +196,7 @@ const CookingScreen = ({ userToken }) => {
                         {activeListId ? (
                             <>
                                 <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                                    <TextInput style={[styles.modernInput, { width: 80, marginBottom: 0, marginRight: 10, textAlign: 'center' }]} placeholder="Menge" placeholderTextColor="#666" value={newQuantityText} onChangeText={setNewQuantityText} />
                                     <TextInput style={[styles.modernInput, { flex: 1, marginBottom: 0, marginRight: 10 }]} placeholder="Neues Item..." placeholderTextColor="#666" value={newItemText} onChangeText={setNewItemText} />
                                     <TouchableOpacity onPress={addShoppingItem} style={{ backgroundColor: THEME_COLOR, justifyContent: 'center', paddingHorizontal: 20, borderRadius: 12 }}><Ionicons name="add" size={24} color="white" /></TouchableOpacity>
                                 </View>
@@ -191,8 +208,23 @@ const CookingScreen = ({ userToken }) => {
                                             <TouchableOpacity onPress={() => toggleShoppingItem(item.id)} style={{ marginRight: 15 }}>
                                                 <Ionicons name={item.completed ? "checkbox" : "square-outline"} size={24} color={item.completed ? THEME_COLOR : "#666"} />
                                             </TouchableOpacity>
-                                            <Text style={{ flex: 1, color: item.completed ? '#666' : 'white', textDecorationLine: item.completed ? 'line-through' : 'none', fontSize: 16 }}>{item.item}</Text>
-                                            <TouchableOpacity onPress={() => deleteShoppingItem(item.id)}><Ionicons name="trash-outline" size={20} color="#ff4d4d" /></TouchableOpacity>
+                                            
+                                            <View style={{ flex: 1, flexDirection: 'row', opacity: item.completed ? 0.5 : 1 }}>
+                                                <TextInput 
+                                                    style={{ color: 'white', fontSize: 16, width: 80, padding: 0, marginRight: 10, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 5, paddingHorizontal: 5, textAlign: 'center' }}
+                                                    defaultValue={item.quantity}
+                                                    placeholder="-"
+                                                    placeholderTextColor="#444"
+                                                    onEndEditing={(e) => updateShoppingItem(item.id, item.item, e.nativeEvent.text)}
+                                                />
+                                                <TextInput 
+                                                    style={{ flex: 1, color: 'white', fontSize: 16, textDecorationLine: item.completed ? 'line-through' : 'none', padding: 0, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 5, paddingHorizontal: 5 }}
+                                                    defaultValue={item.item}
+                                                    onEndEditing={(e) => updateShoppingItem(item.id, e.nativeEvent.text, item.quantity)}
+                                                />
+                                            </View>
+
+                                            <TouchableOpacity onPress={() => deleteShoppingItem(item.id)} style={{ marginLeft: 10 }}><Ionicons name="trash-outline" size={20} color="#ff4d4d" /></TouchableOpacity>
                                         </View>
                                     )}
                                     ListEmptyComponent={<Text style={{ color: '#666', textAlign: 'center', marginTop: 30 }}>Diese Liste ist leer.</Text>}

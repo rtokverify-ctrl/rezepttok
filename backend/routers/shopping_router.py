@@ -25,11 +25,17 @@ class ShoppingListOut(BaseModel):
 
 class ShoppingItemCreate(BaseModel):
     item: str
+    quantity: str | None = ""
+
+class ShoppingItemUpdate(BaseModel):
+    item: str | None = None
+    quantity: str | None = None
 
 class ShoppingItemOut(BaseModel):
     id: int
     list_id: int
     item: str
+    quantity: str | None
     completed: bool
 
     class Config:
@@ -111,11 +117,27 @@ def get_shopping_items(list_id: int, db: Session = Depends(get_db), current_user
 @router.post("/shopping-lists/{list_id}/items", response_model=ShoppingItemOut)
 def add_shopping_item(list_id: int, item: ShoppingItemCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     _verify_list_access(list_id, current_user.id, db)
-    new_item = ShoppingListItem(list_id=list_id, item=item.item)
+    new_item = ShoppingListItem(list_id=list_id, item=item.item, quantity=item.quantity)
     db.add(new_item)
     db.commit()
     db.refresh(new_item)
     return new_item
+
+@router.patch("/shopping-lists/items/{item_id}", response_model=ShoppingItemOut)
+def update_shopping_item(item_id: int, updates: ShoppingItemUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    item = db.query(ShoppingListItem).filter(ShoppingListItem.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    _verify_list_access(item.list_id, current_user.id, db)
+    
+    if updates.item is not None:
+        item.item = updates.item
+    if updates.quantity is not None:
+        item.quantity = updates.quantity
+        
+    db.commit()
+    db.refresh(item)
+    return item
 
 @router.delete("/shopping-lists/items/{item_id}")
 def delete_shopping_item(item_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

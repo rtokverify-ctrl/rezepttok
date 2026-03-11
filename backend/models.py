@@ -40,6 +40,7 @@ class ShoppingListItem(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     list_id: Mapped[int] = mapped_column(ForeignKey("shopping_lists.id", ondelete="CASCADE"))
     item: Mapped[str] = mapped_column()
+    quantity: Mapped[Optional[str]] = mapped_column(default="")
     completed: Mapped[bool] = mapped_column(default=False)
 
 class SharedShoppingList(Base):
