@@ -30,7 +30,7 @@
 - `fastapi-mail` (vermutlich verwendet, um Emails zu senden, wie bei Registrierungen).
 
 ### Mobile
-- `expo-router`: Für das initiale Setup installiert, aber scheinbar wird stark mit einer State-basierten Single-Page-App Logik in `index.js` gearbeitet.
+- `expo-router`: Für das initiale Setup installed, aber scheinbar wird stark mit einer State-basierten Single-Page-App Logik in `index.js` gearbeitet.
 - `react-native-video` & `expo-video`: Für die Darstellung und Wiedergabe der Rezept-Videos.
 - `react-native-compressor`: Lokale Komprimierung der Videos *vor* dem Upload.
 - `@react-native-async-storage/async-storage`: Lokales Speichern des Session-Tokens (`userToken`).
@@ -53,6 +53,34 @@ Die Applikation nutzt eine **REST API**.
 - **Sockets/GraphQL:** Aktuell nicht im Einsatz.
 - **Auth:** Requests an geschützte Backend-Endpunkte erfordern einen HTTP-Header: `Authorization: Bearer <token>`.
 
-## 🤖 KI & Workflow Regeln
+## 🤖 KI & Workflow Regeln (STRICTLY ENFORCED)
 
-- **Git & Commits:** Bevor Code-Änderungen über Git committet oder gepusht werden, **muss** zwingend der Nutzer gefragt werden: *„Sollen wir die Änderungen jetzt pushen?"*. Pushen darf niemals ohne ausdrückliche Freigabe passieren. **Nach jeder abgeschlossenen Änderung** (z. B. nach einem Feature, Bugfix oder Refactoring) soll der Nutzer aktiv gefragt werden, ob die Änderungen committet und gepusht werden sollen.
+### 1. Verification Before Done
+- Never mark a task complete without proving it works.
+- Run tests, check logs, and explicitly demonstrate correctness before finishing.
+
+### 2. Autonomous Bug Fixing
+- When given a bug report: just fix it. Do not ask for hand-holding.
+- Point at logs, errors, failing tests - then resolve them. Zero context switching required from the user.
+
+### 3. Demand Elegance (Balanced)
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution".
+- Skip this for simple, obvious fixes - don't over-engineer.
+
+### 4. Self-Improvement Loop
+- After ANY correction from the user: update `tasks/lessons.md`.
+- Write rules for yourself that prevent the same mistake.
+- Ruthlessly iterate on these lessons until mistake rate drops. Review `tasks/lessons.md` at session start.
+
+### 5. Task Management (Plan First)
+- Write plan to `tasks/todo.md` with checkable items before starting implementation for non-trivial tasks (3+ steps).
+- Verify the plan with the user before starting.
+- Track progress by marking items complete as you go. Explain changes with a high-level summary at each step.
+
+### 6. Subagent Strategy
+- Use subagents liberally to keep main context window clean.
+- Offload research, exploration, and parallel analysis to subagents.
+
+### 7. Git & Commits
+- Bevor Code-Änderungen über Git committet oder gepusht werden, **muss** zwingend der Nutzer gefragt werden: *„Sollen wir die Änderungen jetzt pushen?"*. Pushen darf niemals ohne ausdrückliche Freigabe passieren. **Nach jeder abgeschlossenen Änderung** soll der Nutzer aktiv gefragt werden.

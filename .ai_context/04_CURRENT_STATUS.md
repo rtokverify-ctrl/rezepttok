@@ -1,19 +1,19 @@
 # 🕒 04_CURRENT_STATUS
 
 ## 🟢 Active Context (Woran wir gerade arbeiten)
-- **Implementierung von Backend automatisierten Tests (pytest):** Wir haben soeben ein komplettes Test-Setup inklusive In-Memory-SQLite (`conftest.py`) und Tests für alle Haupt-Router (Auth, Users, Recipes, Chat, Shopping, Notifications) sowie Integration, Security und Data-Integrity fertiggestellt. Mocks für E-Mails wurden implementiert.
-- **Health-Check Endpoint:** `/health` Route wurde hinzugefügt zur Selbst-Diagnose der App.
+- **Workflow Orchestration Integration:** Einführung strenger Workflow-Regeln (Plan Node, Verification Before Done, Self-Improvement Loop via `tasks/lessons.md`).
 
 ## 📝 To-Do (Offen / Morgen)
 - Tests mit der Mobile App / Frontend-Implementierung ergänzen falls nötig.
-- Neu geschriebene Tests pushen (Wir pushen nach jedem Feature/Fix, aber warten aktuell auf Nutzersignal).
 - **🤝 Collaboration / Teilen fertigstellen:** Sharing-Endpoints für Einkaufslisten und Collections in `collaboration_router.py` sind nur `pass`-Stubs – Logik implementieren.
-- **📱 UI/UX Polish:** Feed-Algorithmus (Trending/For-You statt chronologisch), Pull-to-Refresh, Skeleton Loading States, Infinite Scroll.
 - **🔒 Sicherheit & Robustheit:** Rate Limiting, Input Validation verschärfen, Fehlerbehandlung im Frontend verbessern, CORS auf spezifische Origins einschränken.
 - **📊 Rezept-Kategorien & Tags:** Tags existieren im Model, aber ein Screen zum Filtern/Browsen nach Kategorien fehlt noch.
+- **📱 Feed-Algorithmus:** Anpassung von chronologisch auf Trending/For-You und Infinite Scroll.
 
 ## ✅ Done (Erledigt / Implementiert)
+- **UI/UX Polish:** Pull-to-Refresh, Skeleton Loading States, verbesserte Empty States, Suchergebnisse und chronologische Notifications.
+- **Backend Testing & Bugfixes:** 61/61 Tests bestanden, Auto-Verify aktiviert, Race Conditions behoben.
 - **Infrastruktur Setup:** Docker Container für PostgreSQL und grundlegende Verbindungslogik etabliert.
-- **Search Feature:** Suche für Rezepte und Benutzer implementiert (Backend Router `search_router.py` + Mobile `SearchScreen.js`).
+- **Search Feature:** Suche für Rezepte und Benutzer implementiert.
 - **Video Compression:** Integration von client-seitiger Video-Komprimierung vor Upload zu minIO / S3.
 - **AI Context Setup:** `.ai_context` Maps und Architekturguides angelegt.
