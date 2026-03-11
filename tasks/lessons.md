@@ -22,3 +22,7 @@ This document tracks lessons learned from corrections, bugs, and architectural d
 ### L3: Render/FastAPI Deployment Crashes (2026-03-11)
 **Mistake:** Used `gunicorn` with `UvicornWorker` in `render.yaml`. Render repeatedly failed to ping the port (`No open HTTP ports detected`), leading to `SIGTERM` crashes despite traffic arriving.
 **Rule:** For FastAPI on Render, avoid `gunicorn`. Use `uvicorn main:app --host 0.0.0.0 --port $PORT` directly as the start command to ensure Render's health checks can accurately bind and detect the open port.
+
+### L4: React Native early returns blocking onLayout (2026-03-11)
+**Mistake:** Added an early return for `<FeedSkeleton />` without an `onLayout` handler in `FeedScreen.js`. This prevented the main View from calculating `feedHeight`, causing the feed to stay permanently black (height=0).
+**Rule:** When a component's rendering logic relies on dimensions measured by an `onLayout` event on a container `View`, NEVER use an early return that replaces that container. Keep a single main return wrapper with `onLayout` and conditionally render children inside it.

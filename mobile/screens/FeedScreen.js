@@ -83,25 +83,16 @@ const FeedScreen = ({
         setRefreshing(false);
     }, [loadFeed]);
 
-    // Show skeleton on initial load
-    if (feedLoading && videos.length === 0) {
-        return (
-            <View style={{ flex: 1, backgroundColor: 'black' }}>
-                <TouchableOpacity onPress={() => setCurrentScreen('search')} style={styles.searchButton}>
-                    <Ionicons name="search" size={24} color="white" />
-                </TouchableOpacity>
-                <FeedSkeleton />
-            </View>
-        );
-    }
-
     return (
         <View style={{ flex: 1, backgroundColor: 'black' }} onLayout={(event) => { const { height } = event.nativeEvent.layout; setFeedHeight(height); }}>
             <TouchableOpacity onPress={() => setCurrentScreen('search')} style={styles.searchButton}>
                 <Ionicons name="search" size={24} color="white" />
             </TouchableOpacity>
-            {feedHeight > 0 && (
-                videos.length > 0 ? (
+
+            {feedLoading && videos.length === 0 ? (
+                <FeedSkeleton />
+            ) : videos.length > 0 ? (
+                feedHeight > 0 ? (
                     <FlatList
                         keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
                         data={videos} pagingEnabled showsVerticalScrollIndicator={false}
@@ -127,11 +118,9 @@ const FeedScreen = ({
                             />
                         )}
                     />
-                ) : !feedLoading ? (
-                    <EmptyFeed onRefresh={onRefresh} />
-                ) : (
-                    <FeedSkeleton />
-                )
+                ) : null
+            ) : (
+                <EmptyFeed onRefresh={onRefresh} />
             )}
         </View>
     );
