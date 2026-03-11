@@ -18,3 +18,7 @@ This document tracks lessons learned from corrections, bugs, and architectural d
 ### L2: Optimistic UI Updates for Counters (2026-03-11)
 **Mistake:** `sendComment` added the comment to the list but didn't update the video's `comments_count` in the feed.
 **Rule:** When mutating a sub-entity (comment, like), always also update the parent's counter in the global state immediately (`setVideos(prev => ...)`). Don't rely on a full reload.
+
+### L3: Render/FastAPI Deployment Crashes (2026-03-11)
+**Mistake:** Used `gunicorn` with `UvicornWorker` in `render.yaml`. Render repeatedly failed to ping the port (`No open HTTP ports detected`), leading to `SIGTERM` crashes despite traffic arriving.
+**Rule:** For FastAPI on Render, avoid `gunicorn`. Use `uvicorn main:app --host 0.0.0.0 --port $PORT` directly as the start command to ensure Render's health checks can accurately bind and detect the open port.
