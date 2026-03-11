@@ -71,10 +71,13 @@ const FeedScreen = ({
     const [feedHeight, setFeedHeight] = useState(0);
     const [viewableItemIndex, setViewableItemIndex] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
+    const [isScrolling, setIsScrolling] = useState(false);
     const isFocused = useIsFocused();
 
     const onViewableItemsChanged = useRef(({ viewableItems }) => {
-        if (viewableItems.length > 0) setViewableItemIndex(viewableItems[0].index);
+        if (viewableItems.length > 0) Object.values(viewableItems).forEach(item => {
+            if (item.isViewable) setViewableItemIndex(item.index);
+        });
     }).current;
 
     const onRefresh = useCallback(async () => {
@@ -98,7 +101,9 @@ const FeedScreen = ({
                         data={videos} pagingEnabled showsVerticalScrollIndicator={false}
                         snapToInterval={feedHeight} decelerationRate="fast"
                         onViewableItemsChanged={onViewableItemsChanged}
-                        viewabilityConfig={{ itemVisiblePercentThreshold: 95 }}
+                        viewabilityConfig={{ itemVisiblePercentThreshold: 80, viewAreaCoveragePercentThreshold: 80 }}
+                        onScrollBeginDrag={() => setIsScrolling(true)}
+                        onMomentumScrollEnd={() => setIsScrolling(false)}
                         refreshControl={
                             <RefreshControl
                                 refreshing={refreshing}
@@ -110,7 +115,7 @@ const FeedScreen = ({
                         }
                         renderItem={({ item, index }) => (
                             <VideoPost
-                                item={item} isActive={index === viewableItemIndex}
+                                item={item} isActive={index === viewableItemIndex && !isScrolling && isFocused}
                                 toggleLike={toggleLike} onSavePress={handleGlobalSave}
                                 openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={onOpenComments}
                                 onChefPress={onChefPress} onFollowPress={toggleFollowInFeed}

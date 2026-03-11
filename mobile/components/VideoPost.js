@@ -81,10 +81,16 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
     }, [item.id, player, toggleLike, scaleValue]);
 
     // --- SEEKBAR (web: mouse events, native: responder) ---
+    const seekbarActive = useRef(new Animated.Value(0)).current;
+
+    const animateSeekbar = useCallback((active) => {
+        Animated.timing(seekbarActive, { toValue: active ? 1 : 0, duration: 150, useNativeDriver: false }).start();
+    }, [seekbarActive]);
+
     const seekTo = useCallback((locationX) => {
         if (seekBarWidth.current <= 0 || !duration || duration <= 0) return;
-        const progress = Math.max(0, Math.min(1, locationX / seekBarWidth.current));
-        const time = progress * duration;
+        const p = Math.max(0, Math.min(1, locationX / seekBarWidth.current));
+        const time = p * duration;
         setCurrentTime(time);
         try { player.currentTime = time; } catch (e) { }
     }, [duration, player]);
@@ -92,25 +98,22 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
     // Web mouse events
     const handleMouseDown = useCallback((e) => {
         isDragging.current = true;
+        animateSeekbar(true);
         try { player.pause(); } catch (ex) { }
         const rect = e.currentTarget.getBoundingClientRect();
         seekTo(e.clientX - rect.left);
 
-        const onMouseMove = (ev) => {
-            const x = ev.clientX - rect.left;
-            seekTo(x);
-        };
+        const onMouseMove = (ev) => seekTo(ev.clientX - rect.left);
         const onMouseUp = () => {
             isDragging.current = false;
-            if (!userPaused) {
-                try { player.play(); } catch (ex) { }
-            }
+            animateSeekbar(false);
+            if (!userPaused) { try { player.play(); } catch (ex) { } }
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
         };
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
-    }, [player, seekTo, userPaused]);
+    }, [player, seekTo, userPaused, animateSeekbar]);
 
     const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
 
@@ -122,19 +125,27 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
         onMoveShouldSetResponder: () => true,
         onResponderGrant: (e) => {
             isDragging.current = true;
+            animateSeekbar(true);
             try { player.pause(); } catch (ex) { }
             seekTo(e.nativeEvent.locationX);
         },
         onResponderMove: (e) => seekTo(e.nativeEvent.locationX),
         onResponderRelease: () => {
             isDragging.current = false;
+            animateSeekbar(false);
             if (!userPaused) try { player.play(); } catch (ex) { }
         },
         onResponderTerminate: () => {
             isDragging.current = false;
+            animateSeekbar(false);
             if (!userPaused) try { player.play(); } catch (ex) { }
         },
     };
+
+    const trackHeight = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [4, 8] });
+    const thumbSize = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [8, 18] });
+    const thumbMarginLeft = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [-4, -9] });
+    const thumbBottom = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [-2, -5] });
 
     return (
         <View style={{ width: width, height: containerHeight, backgroundColor: 'black' }}>
@@ -166,17 +177,24 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
 
             <LinearGradient colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.8)']} style={styles.videoGradient} />
 
-            {/* Seekbar — flush with the bottom edge */}
+            {/* Seekbar — interactive and animated */}
             <View
                 ref={seekBarRef}
                 style={styles.seekBarContainer}
                 onLayout={(e) => { seekBarWidth.current = e.nativeEvent.layout.width; }}
                 {...seekBarEvents}
             >
-                <View style={styles.seekBarTrack}>
+                <Animated.View style={[styles.seekBarTrack, { height: trackHeight }]}>
                     <View style={[styles.seekBarFill, { width: `${progress * 100}%` }]} />
-                </View>
-                <View style={[styles.seekBarThumb, { left: `${Math.max(0, progress * 100)}%` }]} />
+                </Animated.View>
+                <Animated.View style={[styles.seekBarThumb, { 
+                    left: `${Math.max(0, progress * 100)}%`,
+                    width: thumbSize,
+                    height: thumbSize,
+                    borderRadius: 20,
+                    marginLeft: thumbMarginLeft,
+                    bottom: thumbBottom
+                }]} />
             </View>
 
             {/* Right sidebar actions */}
@@ -241,14 +259,13 @@ const styles = StyleSheet.create({
         bottom: 5,
         left: 0,
         right: 0,
-        height: 20,
+        height: 30, // Larger hit area
         justifyContent: 'flex-end',
         paddingBottom: 0,
         zIndex: 20,
         cursor: 'pointer',
     },
     seekBarTrack: {
-        height: 4,
         backgroundColor: 'rgba(255,255,255,0.25)',
         position: 'relative',
         overflow: 'hidden',
@@ -259,12 +276,7 @@ const styles = StyleSheet.create({
     },
     seekBarThumb: {
         position: 'absolute',
-        bottom: -1,
-        width: 14,
-        height: 14,
-        borderRadius: 7,
         backgroundColor: THEME_COLOR,
-        marginLeft: -7,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.5,
