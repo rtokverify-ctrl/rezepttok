@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {
+      "text": "Component uses useCallback for the renderItem function.",
+      "passed": false,
+      "evidence": "Missing from syntax"
+    },
+    {
+      "text": "FlatList uses initialNumToRender or windowSize for performance.",
+      "passed": false,
+      "evidence": "Missing from syntax"
+    }
+  ]
+}

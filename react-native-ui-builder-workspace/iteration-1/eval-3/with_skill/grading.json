@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {
+      "text": "Component uses THEME_COLOR for the Follow button.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    },
+    {
+      "text": "Component uses StyleSheet.create instead of inline styles for layout.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {
+      "text": "Component uses THEME_COLOR instead of hardcoded hex colors.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    },
+    {
+      "text": "Component does not use className or Tailwind classes.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    }
+  ]
+}

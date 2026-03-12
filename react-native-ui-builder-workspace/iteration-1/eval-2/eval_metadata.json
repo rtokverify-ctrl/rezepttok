@@ -1,0 +1,6 @@
+{
+  "eval_id": 2,
+  "eval_name": "category-scroller",
+  "prompt": "We need a horizontal FlatList component called 'CategoryScroller' that lists food categories like 'Vegan', 'Meat', 'Dessert'. It needs to be highly performant because it will be placed above the main video feed.",
+  "assertions": []
+}

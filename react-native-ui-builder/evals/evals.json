@@ -1,0 +1,53 @@
+[
+  {
+    "eval_id": 1,
+    "eval_name": "checkout-button",
+    "prompt": "Create a new 'CheckoutButton' component for the shopping list screen. It should say 'Items kaufen' and have a cart icon from Expo vector icons.",
+    "assertions": [
+      {
+        "name": "uses_theme_color",
+        "type": "string_match",
+        "description": "Component uses THEME_COLOR instead of hardcoded hex colors."
+      },
+      {
+        "name": "no_tailwind",
+        "type": "string_absence",
+        "description": "Component does not use className or Tailwind classes."
+      }
+    ]
+  },
+  {
+    "eval_id": 2,
+    "eval_name": "category-scroller",
+    "prompt": "We need a horizontal FlatList component called 'CategoryScroller' that lists food categories like 'Vegan', 'Meat', 'Dessert'. It needs to be highly performant because it will be placed above the main video feed.",
+    "assertions": [
+      {
+        "name": "uses_usecallback",
+        "type": "string_match",
+        "description": "Component uses useCallback for the renderItem function."
+      },
+      {
+        "name": "flatlist_optimization",
+        "type": "string_match",
+        "description": "FlatList uses initialNumToRender or windowSize for performance."
+      }
+    ]
+  },
+  {
+    "eval_id": 3,
+    "eval_name": "profile-header",
+    "prompt": "Build a simple user profile header component. It takes a 'user' object prop with an 'avatar_url' and 'username', and displays them next to a 'Follow' button.",
+    "assertions": [
+      {
+        "name": "uses_theme_color",
+        "type": "string_match",
+        "description": "Component uses THEME_COLOR for the Follow button."
+      },
+      {
+        "name": "uses_stylesheet",
+        "type": "string_match",
+        "description": "Component uses StyleSheet.create instead of inline styles for layout."
+      }
+    ]
+  }
+]

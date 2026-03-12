@@ -95,3 +95,14 @@ Die Applikation nutzt eine **REST API**.
 
 ### 9. Git & Commits
 - Bevor Code-Änderungen über Git committet oder gepusht werden, **muss** zwingend der Nutzer gefragt werden: *„Sollen wir die Änderungen jetzt pushen?"*. Pushen darf niemals ohne ausdrückliche Freigabe passieren. **Nach jeder abgeschlossenen Änderung** soll der Nutzer aktiv gefragt werden.
+
+## 11. Design Aesthetics (RezeptTok Premium UI)
+
+All React Native components built for this project MUST adhere to the following universal design guidelines:
+- **Premium Dark Mode**: The app operates in a sleek, dark aesthetic. Backgrounds should be deep charcoal or true black to emphasize media content.
+- **Accents**: The `THEME_COLOR` (a vibrant coral/orange from `constants/Config`) is used sparingly but impactfully as the sole accent color for primary actions like "Follow" or "Checkout".
+- **Pill Shapes & Rounding**: Buttons (`TouchableOpacity`), tags, and avatars use fully rounded pill-shaped borders (`borderRadius` of at least 24 or 50% for circles). Eliminate sharp corners globally.
+- **Glassmorphism / Translucency**: Secondary surfaces (like inactive tabs, tags, floating overlays) use a translucent "glass" effect (e.g., `backgroundColor: 'rgba(255,255,255,0.1)'` or `0.2`) on top of the dark backgrounds. Do not use opaque light grays unless necessary.
+- **Typography & Layout**: Text should be clean, sans-serif, and predominantly white or off-white (`#eee`) against dark backgrounds. Use flexbox with generous padding to create a breathable, spacious layout. Never clutter elements.
+
+Follow these rules rigidly whenever you are updating an existing `.js` file or generating a new component with the `react-native-ui-builder` skill.

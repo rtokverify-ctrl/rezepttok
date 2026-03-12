@@ -1,0 +1,6 @@
+{
+  "eval_id": 1,
+  "eval_name": "checkout-button",
+  "prompt": "Create a new 'CheckoutButton' component for the shopping list screen. It should say 'Items kaufen' and have a cart icon from Expo vector icons.",
+  "assertions": []
+}

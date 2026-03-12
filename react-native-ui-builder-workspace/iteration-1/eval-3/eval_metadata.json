@@ -1,0 +1,6 @@
+{
+  "eval_id": 3,
+  "eval_name": "profile-header",
+  "prompt": "Build a simple user profile header component. It takes a 'user' object prop with an 'avatar_url' and 'username', and displays them next to a 'Follow' button.",
+  "assertions": []
+}
