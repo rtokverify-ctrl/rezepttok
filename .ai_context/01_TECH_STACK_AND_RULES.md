@@ -55,7 +55,15 @@ Die Applikation nutzt eine **REST API**.
 
 ## 🤖 KI & Workflow Regeln (STRICTLY ENFORCED)
 
-### 1. Verification Before Done
+### 1. 3-Layer Architecture (Directives, Orchestration, Execution)
+- **Layer 1: Directive (What to do)**: Standard Operating Procedures (SOPs) in `tasks/directives/` (z.B. `create_backend_endpoint.md`). Beinhaltet Ziele, Inputs, Tools und Edge Cases. Vor jeder Aufgabe muss hier zuerst nach einer Direktive gesucht werden.
+- **Layer 2: Orchestration (Decision making)**: Die KI (Agent) plant, liest Direktiven, steuert die Tools und verbessert die Direktiven bei neuen Erkenntnissen.
+- **Layer 3: Execution (Doing the work)**: Fehleranfällige und komplexe Aufgaben sollen als deterministische Python/Shell Skripte unter `scripts/` (bzw. `backend/scripts/`) abgelegt und von der KI ausgeführt werden, anstatt sie "manuell" abzuarbeiten.
+
+### 2. Temporäre Dateien (.tmp/)
+- Sämtliche temporären Analysedateien, Log-Outputs, Scrape-Ergebnisse oder Zwischenstände müssen zwingend im Ordner `.tmp/` abgelegt werden, um den Workspace sauber zu halten.
+
+### 3. Verification Before Done
 - Never mark a task complete without proving it works.
 - Run tests, check logs, and explicitly demonstrate correctness before finishing.
 
@@ -82,5 +90,8 @@ Die Applikation nutzt eine **REST API**.
 - Use subagents liberally to keep main context window clean.
 - Offload research, exploration, and parallel analysis to subagents.
 
-### 7. Git & Commits
+### 8. Self-Improvement & Directives (Self-Annealing)
+- Wenn ein deterministisches Skript aus `scripts/` fehlschlägt oder ein Workflow optimiert werden kann: Optimiere das Skript, teste es und *aktualisiere zwingend auch die dazugehörige Direktive* in `tasks/directives/`. Das System lernt dadurch stetig dazu.
+
+### 9. Git & Commits
 - Bevor Code-Änderungen über Git committet oder gepusht werden, **muss** zwingend der Nutzer gefragt werden: *„Sollen wir die Änderungen jetzt pushen?"*. Pushen darf niemals ohne ausdrückliche Freigabe passieren. **Nach jeder abgeschlossenen Änderung** soll der Nutzer aktiv gefragt werden.

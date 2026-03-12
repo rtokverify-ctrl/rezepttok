@@ -21,13 +21,13 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
         p.timeUpdateEventInterval = 0.25; // 250ms updates
     });
 
-    // Play/pause based on visibility
+    // Play/pause based on visibility and user state
     useEffect(() => {
         if (!player) return;
         if (isActive && !userPaused) {
-            try { player.play(); } catch (e) { }
+            player.play();
         } else {
-            try { player.pause(); } catch (e) { }
+            player.pause();
         }
     }, [isActive, userPaused, player]);
 
@@ -67,18 +67,11 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                 Animated.timing(scaleValue, { toValue: 0, duration: 150, delay: 500, useNativeDriver: Platform.OS !== 'web' })
             ]).start(() => setShowHeart(false));
         } else {
-            // Single tap = play/pause
-            setUserPaused(prev => {
-                const newVal = !prev;
-                try {
-                    if (newVal) player.pause();
-                    else player.play();
-                } catch (e) { }
-                return newVal;
-            });
+            // Single tap = toggle play/pause state variable
+            setUserPaused(prev => !prev);
         }
         lastTap.current = now;
-    }, [item.id, player, toggleLike, scaleValue]);
+    }, [item.id, toggleLike, scaleValue]);
 
     // --- SEEKBAR (web: mouse events, native: responder) ---
     const seekbarActive = useRef(new Animated.Value(0)).current;
@@ -142,10 +135,15 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
         },
     };
 
-    const trackHeight = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [4, 8] });
-    const thumbSize = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [8, 18] });
-    const thumbMarginLeft = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [-4, -9] });
-    const thumbBottom = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [-2, -5] });
+    const trackHeight = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [2, 6] });
+    const thumbSize = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [6, 16] });
+    const thumbMarginLeft = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [-3, -8] });
+    // Adjust thumb to sit exactly vertically centered on the track
+    const trackCenterY = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [1, 3] });
+    const thumbBottom = seekbarActive.interpolate({ 
+        inputRange: [0, 1], 
+        outputRange: [-2, -5] // Calculate: (thumbSize - trackHeight)/2
+    });
 
     return (
         <View style={{ width: width, height: containerHeight, backgroundColor: 'black' }}>
@@ -253,30 +251,30 @@ const styles = StyleSheet.create({
     miniTagText: { color: 'white', fontSize: 11, fontWeight: '600' },
     videoDescription: { color: '#eee', fontSize: 15, lineHeight: 20, textShadowColor: 'black', textShadowRadius: 5 },
     overlay: { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', zIndex: 5 },
-    // Seekbar
+    // Seekbar overrides for exact TikTok look
     seekBarContainer: {
         position: 'absolute',
-        bottom: 5,
+        bottom: 0,  // Flush entirely to the bottom
         left: 0,
         right: 0,
-        height: 30, // Larger hit area
-        justifyContent: 'flex-end',
+        height: 20, // Large invisible hit area for easy tapping
+        justifyContent: 'flex-end', // Aligns track to the very bottom
         paddingBottom: 0,
         zIndex: 20,
-        cursor: 'pointer',
     },
     seekBarTrack: {
-        backgroundColor: 'rgba(255,255,255,0.25)',
+        backgroundColor: 'rgba(255,255,255,0.2)', // Slightly more transparent track
         position: 'relative',
-        overflow: 'hidden',
+        height: 4, // Thin track like tiktok
+        width: '100%',
     },
     seekBarFill: {
         height: '100%',
-        backgroundColor: THEME_COLOR,
+        backgroundColor: 'rgba(255,255,255,0.9)', // White fill for the current progress like tiktok
     },
     seekBarThumb: {
         position: 'absolute',
-        backgroundColor: THEME_COLOR,
+        backgroundColor: 'white',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.5,
