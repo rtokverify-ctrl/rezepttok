@@ -1,0 +1,6 @@
+{
+  "eval_id": 1,
+  "eval_name": "shopping-list-note",
+  "prompt": "Create a new feature for the shopping list that allows users to save a custom note on each item. The note is a simple text string. I need the db model update, the schema, and a PATCH endpoint.",
+  "assertions": []
+}

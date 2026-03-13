@@ -1,0 +1,23 @@
+{
+  "skill_name": "fastapi-endpoint-generator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a new feature for the shopping list that allows users to save a custom note on each item. The note is a simple text string. I need the db model update, the schema, and a PATCH endpoint.",
+      "expected_output": "Updated models.py, schemas.py, and a new or updated router file that includes the PATCH endpoint using standard dependencies like get_db and get_current_user.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "We need a new endpoint to fetch a single video's details by its ID, for a new deep-linking feature. Please add the necessary router code and a test.",
+      "expected_output": "A GET endpoint in the videos router, returning a single video. Must include a pytest file.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Build a new generic 'healthcheck' endpoint that queries the database to ensure it's alive, returning {'status': 'ok'}. Put it in its own router.",
+      "expected_output": "A new healthcheck_router.py with the endpoint, proper injection of get_db, and an integration test.",
+      "files": []
+    }
+  ]
+}

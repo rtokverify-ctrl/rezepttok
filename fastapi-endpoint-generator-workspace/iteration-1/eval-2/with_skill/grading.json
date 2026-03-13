@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {
+      "text": "Verification test was generated using TestClient.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    },
+    {
+      "text": "Endpoints are put into a router instead of directly into the main app.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    }
+  ]
+}

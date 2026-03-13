@@ -1,0 +1,6 @@
+{
+  "eval_id": 2,
+  "eval_name": "video-deeplink",
+  "prompt": "We need a new endpoint to fetch a single video's details by its ID, for a new deep-linking feature. Please add the necessary router code and a test.",
+  "assertions": []
+}

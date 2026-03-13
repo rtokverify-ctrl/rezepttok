@@ -1,0 +1,6 @@
+{
+  "eval_id": 3,
+  "eval_name": "healthcheck",
+  "prompt": "Build a new generic 'healthcheck' endpoint that queries the database to ensure it's alive, returning {'status': 'ok'}. Put it in its own router.",
+  "assertions": []
+}

@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {
+      "text": "Healthcheck touches the DB via SQLAlchemy to prove connection.",
+      "passed": false,
+      "evidence": "Missing from syntax"
+    },
+    {
+      "text": "Healthcheck returns valid OK status.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    }
+  ]
+}

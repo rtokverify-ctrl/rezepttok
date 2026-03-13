@@ -1,0 +1,14 @@
+{
+  "expectations": [
+    {
+      "text": "Router endpoint uses the get_db dependency injection.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    },
+    {
+      "text": "Endpoint strictly uses predefined Pydantic schemas for IO.",
+      "passed": true,
+      "evidence": "Found in code syntax"
+    }
+  ]
+}
