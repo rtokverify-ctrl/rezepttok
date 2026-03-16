@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, KeyboardAvoidingView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Platform, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BlurView } from 'expo-blur';
+import { BASE_URL, THEME_COLOR, BG_DARK } from '../constants/Config';
 
 const AuthScreen = ({ onLoginSuccess, navigation }) => {
     const [authMode, setAuthMode] = useState('login');
@@ -134,26 +135,41 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
     };
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.authContainer}>
-            <Text style={styles.appLogo}>RezeptTok 🍳</Text>
-            <View style={{ marginBottom: 30 }}>
-                <Text style={styles.authTitle}>
-                    {authMode === 'login' ? 'Willkommen zurück! 👋' : authMode === 'register' ? 'Deine Reise beginnt! 🚀' : 'Code eingeben 🔐'}
-                </Text>
-                <Text style={styles.authSubText}>
-                    {authMode === 'login' ? 'Logge dich ein und entdecke neue Rezepte.' : authMode === 'register' ? 'Erstelle ein Konto und werde Teil der Community.' : `Code wurde an ${email} gesendet.`}
-                </Text>
-            </View>
+        <View style={styles.outerContainer}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
+                <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+                    <BlurView intensity={30} tint="dark" style={styles.glassCard}>
+                        {/* Central Logo */}
+                        <View style={styles.logoContainer}>
+                            <View style={styles.logoBox}>
+                                <MaterialIcons name="restaurant-menu" size={40} color="white" />
+                            </View>
+                        </View>
+
+                        <View style={{ marginBottom: 30 }}>
+                            <Text style={styles.authTitle}>
+                                {authMode === 'login' ? 'Willkommen' : authMode === 'register' ? 'Registrieren' : 'Verifizieren'}
+                            </Text>
+                            <Text style={styles.authSubText}>
+                                {authMode === 'login' ? 'Entdecke neue Rezepte und koche mit Leidenschaft' : authMode === 'register' ? 'Erstelle ein Konto und werde Teil der Community' : `Code wurde an ${email} gesendet`}
+                            </Text>
+                        </View>
             {errorMsg ? <View style={styles.errorBox}><Text style={styles.errorText}>{errorMsg}</Text></View> : null}
 
             <View style={styles.formContainer}>
                 {authMode !== 'verify' && (
-                    <TextInput style={styles.modernInput} placeholder={authMode === 'login' ? "Dein Nutzername" : "Nutzername wählen"} placeholderTextColor="#888" value={username} onChangeText={setUsername} autoCapitalize="none" />
+                    <View style={styles.inputWrapper}>
+                        <MaterialIcons name="person" size={20} color="#c084fc" style={styles.inputIcon} />
+                        <TextInput style={styles.modernInput} placeholder={authMode === 'login' ? "Dein Nutzername" : "Nutzername wählen"} placeholderTextColor="#52525b" value={username} onChangeText={setUsername} autoCapitalize="none" />
+                    </View>
                 )}
 
                 {authMode === 'register' && (
                     <>
-                        <TextInput style={styles.modernInput} placeholder="Deine E-Mail Adresse" placeholderTextColor="#888" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+                        <View style={styles.inputWrapper}>
+                            <MaterialIcons name="mail" size={20} color="#c084fc" style={styles.inputIcon} />
+                            <TextInput style={styles.modernInput} placeholder="name@beispiel.de" placeholderTextColor="#52525b" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
+                        </View>
                         {Platform.OS === 'web' ? (
                             <View style={[styles.modernInput, { paddingVertical: 10 }]}>
                                 <Text style={{ color: '#888', fontSize: 12, marginBottom: 5 }}>Geburtsdatum</Text>
@@ -192,33 +208,35 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                 )}
 
                 {authMode !== 'verify' && authMode === 'register' && (
-                    <View style={{ position: 'relative', width: '100%', marginBottom: 10 }}>
+                    <View style={styles.inputWrapper}>
+                        <MaterialIcons name="lock" size={20} color="#c084fc" style={styles.inputIcon} />
                         <TextInput
-                            style={[styles.modernInput, { marginBottom: 0, paddingRight: 50, borderColor: '#333', borderWidth: 1 }]}
+                            style={styles.modernInput}
                             placeholder="Dein Passwort"
-                            placeholderTextColor="#888"
+                            placeholderTextColor="#52525b"
                             value={password}
                             onChangeText={checkPasswordStrength}
                             secureTextEntry={!showPassword}
                         />
-                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 15, top: 15, zIndex: 10 }}>
-                            <Ionicons name={showPassword ? "eye" : "eye-off"} size={24} color="#888" />
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconToggle}>
+                            <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="#c084fc" />
                         </TouchableOpacity>
                     </View>
                 )}
 
                 {authMode !== 'verify' && authMode === 'login' && (
-                    <View style={{ position: 'relative', width: '100%', marginBottom: 10 }}>
+                    <View style={styles.inputWrapper}>
+                        <MaterialIcons name="lock" size={20} color="#c084fc" style={styles.inputIcon} />
                         <TextInput
-                            style={[styles.modernInput, { marginBottom: 0, paddingRight: 50, borderColor: '#333', borderWidth: 1 }]}
+                            style={styles.modernInput}
                             placeholder="Dein Passwort"
-                            placeholderTextColor="#888"
+                            placeholderTextColor="#52525b"
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry={!showPassword}
                         />
-                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 15, top: 15, zIndex: 10 }}>
-                            <Ionicons name={showPassword ? "eye" : "eye-off"} size={24} color="#888" />
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIconToggle}>
+                            <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="#c084fc" />
                         </TouchableOpacity>
                     </View>
                 )}
@@ -237,17 +255,18 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                 )}
 
                 {authMode === 'register' && (
-                    <View style={{ position: 'relative', width: '100%', marginBottom: 10 }}>
+                    <View style={styles.inputWrapper}>
+                        <MaterialIcons name="lock" size={20} color="#c084fc" style={styles.inputIcon} />
                         <TextInput
-                            style={[styles.modernInput, { marginBottom: 0, paddingRight: 50, borderColor: '#333', borderWidth: 1 }]}
-                            placeholder="Passwort wiederholen"
-                            placeholderTextColor="#888"
+                            style={styles.modernInput}
+                            placeholder="••••••••"
+                            placeholderTextColor="#52525b"
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
                             secureTextEntry={!showConfirmPassword}
                         />
-                        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={{ position: 'absolute', right: 15, top: 15, zIndex: 10 }}>
-                            <Ionicons name={showConfirmPassword ? "eye" : "eye-off"} size={24} color="#888" />
+                        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIconToggle}>
+                            <MaterialIcons name={showConfirmPassword ? "visibility" : "visibility-off"} size={20} color="#c084fc" />
                         </TouchableOpacity>
                     </View>
                 )}
@@ -274,30 +293,74 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{ marginTop: 20, padding: 10 }} onPress={() => { setAuthMode(authMode === 'login' ? 'register' : 'login'); setErrorMsg(''); }}>
-                    <Text style={{ color: '#aaa', textAlign: 'center' }}>
-                        {authMode === 'login' ? 'Noch keinen Account? ' : 'Du bist schon dabei? '}
-                        <Text style={{ color: THEME_COLOR, fontWeight: 'bold' }}>{authMode === 'login' ? 'Hier registrieren' : 'Hier einloggen'}</Text>
+                    <Text style={{ color: '#aaa', textAlign: 'center', fontSize: 14 }}>
+                        {authMode === 'login' ? 'Noch kein Konto? ' : 'Du bist schon dabei? '}
+                        <Text style={{ color: THEME_COLOR, fontWeight: 'bold' }}>{authMode === 'login' ? 'Jetzt registrieren' : 'Hier einloggen'}</Text>
                     </Text>
                 </TouchableOpacity>
             </View>
-        </KeyboardAvoidingView>
+                    </BlurView>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    authContainer: { flex: 1, backgroundColor: 'black', justifyContent: 'center', padding: 20 },
-    appLogo: { fontSize: 40, fontWeight: 'bold', color: 'white', textAlign: 'center', marginBottom: 40 },
-    authTitle: { fontSize: 28, fontWeight: 'bold', color: 'white', marginBottom: 5 },
-    authSubText: { color: '#888', fontSize: 16 },
-    errorBox: { backgroundColor: 'rgba(255, 77, 77, 0.1)', padding: 10, borderRadius: 8, marginBottom: 15, borderWidth: 1, borderColor: 'rgba(255, 77, 77, 0.3)' },
-    errorText: { color: '#ff4d4d', textAlign: 'center' },
+    outerContainer: { flex: 1, backgroundColor: 'black' },
+    keyboardView: { flex: 1 },
+    scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 20 },
+    glassCard: { 
+        width: '100%', 
+        maxWidth: 400, 
+        alignSelf: 'center',
+        backgroundColor: 'rgba(24, 24, 27, 0.4)', // bg-zinc-950/40
+        borderRadius: 40, // rounded-[2.5rem]
+        paddingHorizontal: 30, // px-8
+        paddingTop: 30, // pt-8
+        paddingBottom: 40, // pb-12
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.1)',
+        overflow: 'hidden'
+    },
+    logoContainer: { alignItems: 'center', marginBottom: 24 },
+    logoBox: {
+        width: 80, height: 80,
+        backgroundColor: THEME_COLOR,
+        borderRadius: 24,
+        alignItems: 'center', justifyContent: 'center',
+        shadowColor: THEME_COLOR, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.3, shadowRadius: 15, elevation: 10
+    },
+    authTitle: { fontSize: 28, fontWeight: 'bold', color: 'white', textAlign: 'center', marginBottom: 8 },
+    authSubText: { color: '#71717a', fontSize: 14, textAlign: 'center' }, // text-zinc-500
+    errorBox: { backgroundColor: 'rgba(255, 77, 77, 0.1)', padding: 12, borderRadius: 12, marginBottom: 20, borderWidth: 1, borderColor: 'rgba(255, 77, 77, 0.3)' },
+    errorText: { color: '#ff4d4d', textAlign: 'center', fontSize: 14, fontWeight: '500' },
     formContainer: { width: '100%' },
-    modernInput: { backgroundColor: '#1a1a1a', borderRadius: 12, color: 'white', padding: 15, marginBottom: 15, fontSize: 16 },
-    modernDateBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a1a1a', padding: 15, borderRadius: 12, marginBottom: 15 },
-    datePickerContainer: { backgroundColor: '#1f1f1f', borderRadius: 15, padding: 10, marginBottom: 15 },
+    inputWrapper: { position: 'relative', width: '100%', marginBottom: 16 },
+    inputIcon: { position: 'absolute', left: 16, top: 18, zIndex: 10 },
+    eyeIconToggle: { position: 'absolute', right: 16, top: 18, zIndex: 10 },
+    modernInput: { 
+        backgroundColor: 'rgba(255,255,255,0.03)', 
+        borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', 
+        borderRadius: 16, 
+        color: 'white', 
+        paddingVertical: 18, 
+        paddingLeft: 48, 
+        paddingRight: 16, 
+        fontSize: 15 
+    },
+    modernDateBtn: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.03)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', padding: 18, borderRadius: 16, marginBottom: 16 },
+    datePickerContainer: { backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 10, marginBottom: 16 },
     closePickerBtn: { alignSelf: 'flex-end', padding: 10 },
-    primaryButton: { backgroundColor: THEME_COLOR, paddingVertical: 15, borderRadius: 12, alignItems: 'center', marginTop: 10 },
-    primaryButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
+    primaryButton: { 
+        backgroundColor: THEME_COLOR, 
+        paddingVertical: 18, 
+        borderRadius: 16, 
+        alignItems: 'center', 
+        marginTop: 10,
+        shadowColor: THEME_COLOR, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.2, shadowRadius: 12, elevation: 5
+    },
+    primaryButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 });
 
 export default AuthScreen;

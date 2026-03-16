@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Recipe App - User Profile</title>
+<script type='text/javascript' nonce='SLP3BN9V2h5Dk/d0K4XF4w==' src='https://contribution.usercontent.google.com/JBhhdBMiE-WXJoJlgK_i7hRdL6BBNtygVTFT7M8pg5ZEarhYW6rYmZb4qwf2HGJWfCvkyEGvghBKk7qNVOr59IuU2qFslPcpbYDjFTTm3YBdvyAc-kP9HTd5ovuoYyJOK8K4JGLKejxK0xlie9wNk7gQWawLEY0g4qi7YacKEMmAdl4nwcEKe4dMrGYUMgEZ2k_14rkkJ876vggFypJJ1iiq53VLAGnPj3qHQvOFCAycG_gYl0iLqFmrqcP5O_rP7L03wZHYNr4BwKmSNjO9QqNRVS7aBQel3kM5lFLuHYxAYfx_DU1HQE4Ll44xPJp4APXb7WYHtGBAHeiwApSBs37FRO8K_a1THgP3kjffcc9z3vLFHdkup330ylRZXhwapzfUk1exRTISi1SkB_i8esxtzsHY31ZSPEJDJ6_TrPeAhH83vYcxqGZjaS8wGROOqkoT2rpUKXU98qqHMF-1oz11Bcns7RCY8d4LqSYyU4vytsmjUSjTqeiJZnVnDF7SnmdyfNy9IlSPN2zas1BWG49gWXa6rge_-1JNF6lCND9QDqUM_2tQ88MzRNNy8V7kuGAE0P0A1Yab3EOwcpvDqBPQmtVPBocAKmx0u1bJ-7cKy9O7afDjlGqZ0JHt_nGKJzmNJi3HjQEHO3LPTcQGbI3dBmmGw1cPYkZPYl7gd_Xa0vW15F3_TnSO0nEekGuvzo-lo53V1bKLnKB6udpEpKhKcXcWfiVozGa8hqYH5sWIev4ObypTOwFkc6--uxKoEngrBEMcmo1yvvigHT-FUxW_3d_UU9fTvazNUDho'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#660ac2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .prismatic-bg {
+            background: linear-gradient(135deg, rgba(102, 10, 194, 0.2) 0%, rgba(0, 0, 0, 0) 50%, rgba(102, 10, 194, 0.1) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+<div class="relative mx-auto max-w-md min-h-screen flex flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
+<!-- Header -->
+<header class="flex items-center justify-between p-4 sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+</button>
+<h2 class="text-lg font-bold tracking-tight">Profile</h2>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">more_vert</span>
+</button>
+</header>
+<!-- Profile Info -->
+<div class="flex flex-col items-center px-6 pt-8 pb-6 gap-6 prismatic-bg">
+<div class="relative">
+<div class="p-1 rounded-full bg-gradient-to-tr from-primary/40 to-purple-400/40">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-28 w-28 border-4 border-background-dark" data-alt="Professional portrait of a young chef smiling" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuCSvZ-vEmF40XGPCqVdQfrKpuq5oa8M2hkZfOi0ar_dv3LdQdBoBld9S5VnNZt7zOtuXlmfKDvyTDqGDm51mcZGtD3QeOwnEPn7xNY-_IuLaJmqRue0JsZvGENiE-XE4JBkgRsX-5XcWexbCyOxsYuP3XBBIqlt1RJhnLTu34_I9qixjYxtIvOjQt2GDcClqUjSsXL5n-M-t7Qk9n0NS8LPIXp1Eano652euFho6VMKM5O6dyP3dxCMuymETHDpVtmw12FX9zBpl_CI&#34;);"></div>
+</div>
+<button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full border-2 border-background-dark shadow-lg">
+<span class="material-symbols-outlined text-sm block">edit</span>
+</button>
+</div>
+<div class="text-center">
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Isabella Romero</h1>
+<p class="text-primary/90 font-medium text-sm mb-1">@isabella_cooks</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm max-w-xs leading-relaxed">
+                    Passion for plant-based recipes and Mediterranean flavors. Let's cook together! 🌿✨
+                </p>
+</div>
+</div>
+<!-- Stats -->
+<div class="flex px-6 py-4 gap-4">
+<div class="flex flex-1 flex-col gap-1 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 p-4 items-center text-center backdrop-blur-sm shadow-sm">
+<p class="text-slate-900 dark:text-white text-xl font-extrabold">12.5k</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Followers</p>
+</div>
+<div class="flex flex-1 flex-col gap-1 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 p-4 items-center text-center backdrop-blur-sm shadow-sm">
+<p class="text-slate-900 dark:text-white text-xl font-extrabold">843</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Following</p>
+</div>
+<div class="flex flex-1 flex-col gap-1 rounded-xl bg-primary/5 dark:bg-primary/10 border border-primary/20 p-4 items-center text-center backdrop-blur-sm shadow-sm">
+<p class="text-slate-900 dark:text-white text-xl font-extrabold">45k</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Likes</p>
+</div>
+</div>
+<!-- Tabs -->
+<div class="mt-4 px-6">
+<div class="flex border-b border-slate-200 dark:border-white/5">
+<button class="pb-4 pt-2 flex-1 font-semibold text-sm transition-all">
+                    My Recipes
+                </button>
+<button class="pb-4 pt-2 flex-1 font-semibold text-sm transition-all">
+                    Saved
+                </button>
+</div>
+</div>
+<!-- Recipe Grid -->
+<div class="grid grid-cols-3 gap-2 p-4 mt-2 flex-1 overflow-y-auto pb-32">
+<!-- Video Item 1 -->
+<div class="aspect-[9/16] relative bg-slate-800 rounded-lg overflow-hidden group shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Vibrant salad bowl with fresh greens" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuC2RN2c0K5-wBqt8TU11FoTDYrT4oJWKAAb2PJHOP9icvs1qCsCLh_bpUp9v4Rd3HByAU18MeWv2y-FRy_mvrkJVI7jIRuE6C6SPZh1ECrPES9ThPGkrFHCFT_vIZIheRFZj4WAYw-926CA-Ynq8jNQUbagof50PpQT8l2JDLIISyQFbLDB6uyFUV2-upjPzeS_WY84EJm_34hA-qltg-iDN4w1WuZKaGQoMbI74sxpuuKaRD6Qv6bMTUgCUjblj51jKoS-_wH5AT1m&#39;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1 text-white text-[10px] font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    14.2k
+                </div>
+</div>
+<!-- Video Item 2 -->
+<div class="aspect-[9/16] relative bg-slate-800 rounded-lg overflow-hidden group shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Close up of a gourmet pasta dish" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuDjjbEYXWXDFZVareuzTu-nWauHdlnvpEZsNaycKPGpHHPx2IaXxsAh59k9s2oJf6h8_Ji5Cl-mvfKC6Q9EXL4bQuVgNmhA4DzahUIGjBWhW1pRgfMLlO2bwdOWPjzhNTW8zGNA61XTle7f-HOmYySOYsgmJp79Avms8DJN7hRuK-F6bBrRxQ7p2MDBNkQpqrsItXT7VTWi54QlmVE6Y_rOlyX0wcO2X6LdAZK8KSIRhjL_WtrhmrWDtS1pndVGqPj4dSPgs6dj5gXg&#39;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1 text-white text-[10px] font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    8.5k
+                </div>
+</div>
+<!-- Video Item 3 -->
+<div class="aspect-[9/16] relative bg-slate-800 rounded-lg overflow-hidden group shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Slice of pizza with melting cheese" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuCe2FBYl0hG51xuzFNk4XoqgurkHGtKrX-pJQQmGVe7r9_9EBNbVZKNhDYZCt5Z-nfS5LiCtsA6GSu4Qz2PVZiCxL2TOAkqGz_sekoQsp-OhmrxvtxmMk9K1EjrThnhUQLiFYbVp0MBJ8RZklAEhTBQsbSmI7sa7zjwv8pm-Ofr208ngLxl6qKQCrsuYCjlxH2CO_BpSUpabrEOlsaKYlTdYSRCALh0YDxGYx20bOL9yzEITCsz3QFrBbs_LH9CErizuKRl26uJVEi6&#39;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1 text-white text-[10px] font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    22k
+                </div>
+</div>
+<!-- Video Item 4 -->
+<div class="aspect-[9/16] relative bg-slate-800 rounded-lg overflow-hidden group shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Hand pouring sauce over pasta" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuDFB_TYkAZ4YKhse9OfDNUJaWwTSpvhJPa9XjYS_86QmkuWD2UsIBBhgXWu3derkWDVxOcc403enHgPHqbxwsUptw3SCzvct9adIoIGQltJUyDEpV3WcpTw8auX95Hbt4oclZODjExKHy8iyCqk7-M97cSPwXqbme5JMD4lu47PeMNuEoab4Qr1YHuIwc-ZTuj4HWEglcQmmVi7t5PljxToq1QpoyRql8FuD5XDjHiftOCI4QXj_IWpr5Zd3k2TL3Kd2yS5id1ULTt1&#39;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1 text-white text-[10px] font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    5.1k
+                </div>
+</div>
+<!-- Video Item 5 -->
+<div class="aspect-[9/16] relative bg-slate-800 rounded-lg overflow-hidden group shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Exotic fruit salad and tropical drinks" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuAV-aN_2NeQkUTX8Wx8bO16RRm-XV0o7fiLrhzxFLTX-Ds7PCckJnq4q8LlEhVxqkGxHBoxoY6yi6nb4BH40Gp9f_QTkPxvr_YbZX3smiPqxL8B6tLoguKDfkHnkFD0tX8G7BPReYu0VhZxDjPOB9XGTMekOLg83ovIZ2_SVAQobj8KQDFzWWWj2SHzXM5geIrrUcZNr1FAqNN2d7uvjZQ_cmVs_iCfygOmsSnk-q78GeKH8EOPvy3mQIWMsrzBS4bW6AohKELMEdVm&#39;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1 text-white text-[10px] font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    10.9k
+                </div>
+</div>
+<!-- Video Item 6 -->
+<div class="aspect-[9/16] relative bg-slate-800 rounded-lg overflow-hidden group shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Homemade pizza on a wooden board" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuAhtqQfkVUna8Ks9EpSHw6HunJRHaBMIfbjXCCpWkCOhQArD7TOiphGb4KZdp4KDiQ9qbwlkvZX6cCUfcRTI4NY4_tuBsOlv7qMLRdi6GQ121mkuv_nbsgs9VEnXXWtN4tDkb5Efb41X9z9BsnIuJx_udibcPsVauSmq4oZ_OS3bf-my-JkUdZG7rNhJoNXqe3Pipk830IeA4wBE5mvgEOwFr-OBkCmhTjMrBqHPDR-u0SK--xXldsha2OvAFroCotxMaPqzA-wlPiu&#39;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-2 left-2 flex items-center gap-1 text-white text-[10px] font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+                    12.4k
+                </div>
+</div>
+</div>
+<!-- Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 mx-auto max-w-md bg-white/90 dark:bg-background-dark/95 border-t border-slate-100 dark:border-white/5 px-6 pb-8 pt-3 flex items-center justify-between backdrop-blur-xl z-50">
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#"><span class="material-symbols-outlined text-[26px]">home</span>
+<span class="text-[10px] font-medium"></span></a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#"><span class="material-symbols-outlined text-[26px]">explore</span>
+<span class="text-[10px] font-medium">Discover</span></a>
+<a class="flex flex-1 flex-col items-center gap-1" href="#"><div class="bg-primary p-2.5 rounded-2xl text-white shadow-lg shadow-primary/30 flex items-center justify-center mb-1">
+<span class="material-symbols-outlined block text-[26px]">add</span>
+</div>
+<span class="text-[10px] font-medium text-primary">Create</span></a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#"><span class="material-symbols-outlined text-[26px]">notifications</span>
+<span class="text-[10px] font-medium">Activity</span></a>
+<a class="flex flex-1 flex-col items-center gap-1 text-primary" href="#"><span class="material-symbols-outlined text-[26px]" style="font-variation-settings: &#39;FILL&#39; 1">person</span>
+<span class="text-[10px] font-medium">Profile</span></a>
+</nav>
+</div>
+</body></html>

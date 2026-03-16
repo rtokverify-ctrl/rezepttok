@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime
+from typing import Optional
 import os
 
 from database import get_db
@@ -11,8 +12,12 @@ from auth import get_current_user
 router = APIRouter()
 
 @router.get("/feed")
-def get_feed(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    recipes = db.query(Recipe).order_by(Recipe.id.desc()).all()
+def get_feed(cursor: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    query = db.query(Recipe)
+    if cursor:
+        query = query.filter(Recipe.created_at < cursor)
+    
+    recipes = query.order_by(Recipe.created_at.desc()).limit(10).all()
     results = []
     for r in recipes:
         owner = db.query(User).filter(User.id == r.owner_id).first()
@@ -31,9 +36,11 @@ def get_feed(db: Session = Depends(get_db), current_user: User = Depends(get_cur
             "ingredients": r.ingredients, "steps": r.steps, "tags": r.tags, "tips": r.tips,
             "likes_count": count, "i_liked_it": my_like is not None, 
             "comments_count": comment_count, "i_saved_it": my_save is not None, "is_mine": (r.owner_id == current_user.id),
-            "i_follow_owner": i_follow
+            "i_follow_owner": i_follow,
+            "created_at": r.created_at
         })
-    return results
+    nextCursor = results[-1]["created_at"] if results else None
+    return {"data": results, "nextCursor": nextCursor}
 
 @router.get("/my-saved-videos/all")
 def get_all_saved_videos(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -158,7 +165,7 @@ def create_comment(recipe_id: int, comment: CommentCreate, db: Session = Depends
 
 @router.post("/upload")
 def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    db_recipe = Recipe(title=recipe.title, video_url=recipe.video_url, chef=user.username, owner_id=user.id, ingredients=recipe.ingredients, steps=recipe.steps, tags=recipe.tags, tips=recipe.tips)
+    db_recipe = Recipe(title=recipe.title, video_url=recipe.video_url, chef=user.username, owner_id=user.id, ingredients=recipe.ingredients, steps=recipe.steps, tags=recipe.tags, tips=recipe.tips, created_at=datetime.now().isoformat())
     db.add(db_recipe)
     db.commit()
     return db_recipe

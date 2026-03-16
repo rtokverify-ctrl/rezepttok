@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
@@ -9,13 +9,15 @@ from models import User
 from schemas import UserCreate, Token, UserVerify
 from auth import get_password_hash, verify_password, create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
+from limiter import limiter
 
 router = APIRouter()
 
 from fastapi import BackgroundTasks
 
 @router.post("/register")
-def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def register(request: Request, user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     if user.age < 16: raise HTTPException(status_code=400, detail="Du musst mindestens 16 Jahre alt sein!")
     email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
     if not re.match(email_regex, user.email): raise HTTPException(status_code=400, detail="Keine gültige Email-Adresse!")
@@ -97,7 +99,8 @@ def resend_code(data: UserVerify, background_tasks: BackgroundTasks, db: Session
     return {"msg": "Code erneut gesendet"}
 
 @router.post("/login", response_model=Token)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(or_(User.username == form_data.username, User.email == form_data.username)).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Falscher Username oder Passwort")

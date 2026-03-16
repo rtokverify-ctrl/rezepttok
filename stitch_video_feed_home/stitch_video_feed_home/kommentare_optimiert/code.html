@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type='text/javascript' nonce='3asu7dTppaAhEPs3wyEEwQ==' src='https://contribution.usercontent.google.com/VHD4Co-1RBKDHub3gFETPWYu2-i5rKKCzZa6z1AojLs86Cohf5jtvpgSG7T4yxyXfg_3KqUbmvx4USfn0NHwwNA4S-4hgpSrZKBViFdDYwjQmLrL-K9RRA2Tmhvo7VDKqm8MZQvp726kOcAz0i52HBIIav9OSWkbbsZdoBcGF1uGbLIYkLXAOk-p5XVV5yNiKKRXPqZc0aco6pOWY4m9fra-9r6c1XXiSDFZTLgV3Bjk7T7FAVsvZqMMJ2EZ_U7dE4MNLsCDb53YAnzKILmqodtY1GNdZvLLO5ZtpW4wYRqaykRD9BhfWb-W0AVR8kRrHMjPRq0Fj0n1L1fzNw5ntrH9UoO638DJNkBGcqVLjLrSXV92DCVvbxiDQbaXV82ASM2x7OIpJ06QAXYSuROzZ0cMXk9UFdJhDecH2cwGcpnn8mumvyYHuMkW-Gg52exiZmjPOMtpPpqc5UzQOcyCiqZKZj6_aoR3dgKbqoP2V8Ho7jaBxuMd3AJwzXSYPnJjAksmrIz05KqdKBdTJCVZDu57jOhFVZTSq5fc9zun8cDldM-rgX67BfEg7QiZP6fR4rSvOi61LMOaYlaZ8VaFUhWG5iPbTk7XhW9cbu5HlppD8uFQ9yTQt5Kd1yPAr5RIrVhVwHvGS7AUOlwsR7b19wJySh7K8D4KJi99E9R0Gi56ZcRTmtoTN6IM-hzO9DLF_YL8NJlhWsVet5FyR8ok9dtmgkyePeGHqVQ4dhr1rZd1t8iHKtMObvYLLqu8UcK5YMg2HrXMC0QQ_W_wx5caF1ggyn_awIiB2LxppS4v'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#660ac2",
+              "background-light": "#f7f5f8",
+              "background-dark": "#191022",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<title>Recipe Comments Overlay</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-slate-900 font-display">
+<!-- Video Background Mockup -->
+<div class="relative h-screen w-full max-w-md mx-auto overflow-hidden bg-black shadow-2xl">
+<!-- Abstract Video Background Image -->
+<div class="absolute inset-0 bg-cover bg-center opacity-60" data-alt="A chef plating a gourmet pasta dish in a dark kitchen" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuCm4Bo-dH3gQOrrJshFCCvpHPOEOhlOnk5n10wCHYIyeXCfcxrDRqKSi8Bz9v48O8MZ2dX1_jE3lWHJGQH9X5KXgApKWvzU2CSI8-qEFuDgA6naDqZ4L3lYmOu9vZv2awcZg9OLNozsLygQ8_oEswd7VoMN3plUf1WfZwynijsH3nJyoBwgn_Z9K04106iWPRpN4WBEGR_LUsFs-FXCNVCfkMiu0zpeRzzIZes4XziiuSoqZl-NkciDmRxjkZsgkl608ObbXMnNZMeR&#39;)"></div>
+<!-- Video UI Overlays (Icons on the right) -->
+<div class="absolute right-4 bottom-32 flex flex-col gap-6 items-center">
+<div class="flex flex-col items-center gap-1">
+<div class="w-12 h-12 rounded-full bg-slate-800/80 flex items-center justify-center text-slate-100">
+<span class="material-symbols-outlined text-2xl">favorite</span>
+</div>
+<span class="text-xs font-bold text-slate-100">24.5K</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-2xl">chat_bubble</span>
+</div>
+<span class="text-xs font-bold text-slate-100">1.2K</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<div class="w-12 h-12 rounded-full bg-slate-800/80 flex items-center justify-center text-slate-100">
+<span class="material-symbols-outlined text-2xl">bookmark</span>
+</div>
+<span class="text-xs font-bold text-slate-100">5.8K</span>
+</div>
+</div>
+<!-- BOTTOM SHEET OVERLAY -->
+<div class="absolute inset-0 flex flex-col justify-end bg-black/40">
+<div class="bg-background-dark w-full rounded-t-xl flex flex-col h-3/4 animate-slide-up border-t border-primary/20 rounded-t-2xl">
+<!-- BottomSheetHandle -->
+<button class="flex h-6 w-full items-center justify-center shrink-0">
+<div class="h-1.5 w-12 rounded-full bg-primary/30"></div>
+</button>
+<!-- Header -->
+<div class="flex items-center px-4 py-2 justify-between border-b border-primary/10"><div class="w-10"></div><h2 class="text-slate-100 text-base font-semibold leading-tight tracking-tight flex-1 text-center">1,248 Comments</h2><div class="flex w-10 items-center justify-end"><button class="text-slate-400 hover:text-white transition-colors flex items-center justify-center"><span class="material-symbols-outlined text-2xl">close</span></button></div></div>
+<!-- Comments List -->
+<div class="flex-1 overflow-y-auto px-5 py-6 space-y-8">
+<!-- Comment 1 -->
+<div class="flex w-full flex-row items-start justify-start gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0 border border-primary/20" data-alt="Avatar of a male chef" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuCptWeeRqvolGtizqypd_Sv2cFsX0MD6Dd29qhrZSjDPHR_7xczU28rSrIe5ajnqs5gATw1vJ3ROjW6PORgrtpwEyDkbZGwBiS5qNe8LI_dGDDmvYbJ3PKptbWoKC1kj_MOLIvmjemvAFhiiV-1_EP-IK2iWChmKQmx3eWU-KupUNVyY1vV-p_M1Kyvo4or3sMjosSHppNUTCSby7_HohRvlNbOKYvEjTxqoE3UpNgpo5vVwAa6_d-0GLEiHDI-yAA9AENnt-2Amgwp&#34;);"></div>
+<div class="flex h-full flex-1 flex-col items-start justify-start">
+<div class="flex w-full flex-row items-center justify-start gap-x-2">
+<p class="text-slate-100 text-sm font-bold text-[13px] text-slate-300 mb-0.5">ChefMario</p>
+<p class="text-primary text-[10px] font-bold px-1 bg-primary/20 rounded uppercase tracking-wider">Creator</p>
+<p class="text-slate-400 text-xs font-normal">2h ago</p>
+</div>
+<p class="text-slate-200 text-sm font-normal mt-1 leading-relaxed text-[14px]">This spice blend is a game changer! Thanks for sharing the proportions.</p>
+<div class="flex w-full flex-row items-center justify-start gap-6 pt-2"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-slate-500 text-[18px]">favorite</span><p class="text-slate-500 text-xs font-medium">452</p></div><button class="text-slate-500 text-xs font-bold hover:text-slate-300">Reply</button></div>
+</div>
+</div>
+<!-- Comment 2 -->
+<div class="flex w-full flex-row items-start justify-start gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0 border border-primary/20" data-alt="Avatar of a female food enthusiast" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuBAiMxThpxEzlS_BsE3seoMGbdzNC-P1DlORsV03BhgmdFB3UT94FpPI2_bQD3RDi7ROCv_PzZU1lbYknzg00K1JH4DFEt-WL2xhhqjYZFTKOs0yXjobDI5gsSpVfWPOjQPbysOrRDBnlsCt0Dd6IL_bf_aVg_vQQJoXp-E_15x_VHR9DwRakPjAK1CuAgu8TxiM8lLGG8KgdWSJx4J6Oubn9-QmgtwoEG8-FqNEGt3zlZX3NQbEzbxzPzeyNq2iYRPTOi0iKZILb0P&#34;);"></div>
+<div class="flex h-full flex-1 flex-col items-start justify-start">
+<div class="flex w-full flex-row items-start justify-start gap-x-2">
+<p class="text-slate-100 text-sm font-bold text-[13px] text-slate-300 mb-0.5">FoodieSarah</p>
+<p class="text-slate-400 text-xs font-normal">5h ago</p>
+</div>
+<p class="text-slate-200 text-sm font-normal mt-1 leading-relaxed text-[14px]">Can I substitute the heavy cream with coconut milk for a vegan option? Looks amazing!</p>
+<div class="flex w-full flex-row items-center justify-start gap-6 pt-2"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-slate-500 text-[18px]">favorite</span><p class="text-slate-500 text-xs font-medium">452</p></div><button class="text-slate-500 text-xs font-bold hover:text-slate-300">Reply</button></div>
+<!-- Nested Reply -->
+<div class="flex w-full flex-row items-start justify-start gap-3 mt-5 pl-2 border-l-2 border-primary/10">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-8 shrink-0 border border-primary/20" data-alt="Avatar of the original creator" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuDsZVlMv-MmrpkfYiVyRWU6Lagnj3-aybDofgHNBF11u5BaNFLfPLighq2A-J4U_LodWdQJn6MoNx6QVpt9Hz-NdHkvVfTutrELPGUF5K0v52BQq3F3a3T33KUhH2UUHOm_AEQSO-3mSTiBKcIC4oEv7f2FzQ8RRsCwPpp7yZqiFefP1kry9EYgv7NgJsc4K-wM_oJD56TNHqgeg4o3f-YCF4WaFhKFULgQBrYJloocGbZCfuxZRCoaAm717iZ6G68IdRxBonZnCh9I&#34;);"></div>
+<div class="flex h-full flex-1 flex-col items-start justify-start">
+<div class="flex w-full flex-row items-center justify-start gap-x-2">
+<p class="text-slate-100 text-xs font-bold">ChefMario</p>
+<p class="text-slate-400 text-[10px] font-normal">3h ago</p>
+</div>
+<p class="text-slate-200 text-xs font-normal mt-1"><span class="text-primary">@FoodieSarah</span> Yes! Coconut milk works perfectly for a dairy-free version.</p>
+<div class="flex items-center gap-1 pt-1">
+<span class="material-symbols-outlined text-slate-400 text-sm">favorite</span>
+<p class="text-slate-400 text-[10px] font-normal">120</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Comment 3 -->
+<div class="flex w-full flex-row items-start justify-start gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 shrink-0 border border-primary/20" data-alt="Avatar of a male user" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuCmNRRxcDPh0uxxjgZO8smizOlmLktglTtP7RZtAZ1x4ai2f9og0-6SCkp5NotllMk_1yHKJLoM7y5iysz-VNwaboYlhz46uOfbZgqN7kzIB4nIzoU-48jRbrbIa728kv_RVkl5VOJ251xfozwC-BLoyK9WTz8reBndZ3TlTqwBYgBjm626Ozb7Xp_eP8CuUTFMNOEWXekfgSpk-SEkURhLVCJYVUPyw6mhi1BnKnRNnlOWDtIyoJg4odEB4nTCutMLfHcttmLWM_cb&#34;);"></div>
+<div class="flex h-full flex-1 flex-col items-start justify-start">
+<div class="flex w-full flex-row items-start justify-start gap-x-2">
+<p class="text-slate-100 text-sm font-bold text-[13px] text-slate-300 mb-0.5">KitchenKing</p>
+<p class="text-slate-400 text-xs font-normal">7h ago</p>
+</div>
+<p class="text-slate-200 text-sm font-normal mt-1 leading-relaxed text-[14px]">Tried this tonight and my whole family loved it. 10/10 recommendation!</p>
+<div class="flex w-full flex-row items-center justify-start gap-6 pt-2"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-slate-500 text-[18px]">favorite</span><p class="text-slate-500 text-xs font-medium">452</p></div><button class="text-slate-500 text-xs font-bold hover:text-slate-300">Reply</button></div>
+</div>
+</div>
+</div>
+<!-- Input Footer -->
+<div class="p-4 border-t border-primary/10 bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-9 shrink-0 border border-primary/30" data-alt="Your profile avatar" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuCLx4XRHWDiE9Z2EwNGTc9XsgYt9ywBUNxl5onTBasfQ8Viia5lHlgvrE2u-IWYnXkjnos1SXYNhLI-w2XiCFFzM5_NbjaToOqjQ8jZ30R73ROt68gZ8HvEs74DCadOxj4_oqNOD1QaYrmT_tkbnGwDjhLseQaFlaVqji5Lyv7reSCQDdm4FnMNI3AnaF2PibS0k71Gu40OmFeO9ts5twM3vilRH7VsLDQvUkXIEdB0xrQvjf2b5FMzDXsKV9Sqba6qyQX5buhW_z1n&#34;);"></div>
+<div class="flex-1 relative">
+<input class="w-full bg-white/5 border border-white/5 rounded-full py-3 px-5 text-slate-100 text-[14px] placeholder-slate-500 focus:ring-1 focus:ring-primary/50 focus:bg-white/10 outline-none transition-all" placeholder="Add a comment..." type="text"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-3 text-slate-400">
+<span class="material-symbols-outlined text-xl">alternate_email</span>
+<span class="material-symbols-outlined text-xl">mood</span>
+</div>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white rounded-full w-10 h-10 flex items-center justify-center transition-transform active:scale-95 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-xl">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

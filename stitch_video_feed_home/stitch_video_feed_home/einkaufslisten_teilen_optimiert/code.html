@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shopping List Management</title>
+<script type='text/javascript' nonce='luPWWlV3TVKck2ZfJabfkw==' src='https://contribution.usercontent.google.com/SCWDcrRvAnPLBoYotQLdI4xUElOReviL1dvHsg9aeRb-7BAf5q3_iQED9xdDhtl93FbJcXw0CQjIz0MZzIf66_VEDDApiQS2RStrA3wErhop5UVcI0gCr2aGFU2uxV0ozBw8wistDvL_5zn2ecHUJ_RRVOocLnhCATTjGCLe-2eSUZ7HCrAvfuexn9uPNJos5xb382dp6Hwo6AzW8L0oPcboWWNWP5LOuG64avZUSENqqgOwUlcbQ3yZRKgirpxp6CFIu5j7ksHFQwZStKMzeYwq1CN0wB8-X4bao8U-2EFifxrF7p40ufa-mpuR80ilfwk7CPkn27eKoccXxwiABuGTBH-h5WpA6rGB3yIN0xB-OwdvcCbTYbIQ_06DB2KZioiIKDwtuf3rEJ1ZnzhLgbg4hKH0KhSEDvJ0sojfmaynuuPlvbyrd8bxw9CLVAPSV-dr1XdFoVCWnirCkYuDHSN4fkZ80DpdUHpnbc7St5SDUo9O11i5xJM3uGGftr-Ge4_6GSin7xQvH6_3-has-eppzwTWt-gV0JpRn2PaM1FZC6nKa45oSkfsdWoCNr2dB3gCsgpYX8M6d0fUR7wnatZ_Nmv4SSrRrJ0zBqSwjJjwuxrROrzYzSsCCrZ3mTXQ9uVn7JNDyz58U9IKuQQMZRkjzjCPyRHIlAmKd056GXEbyDW_8B4As-Q3yTBQRFFBDHG1v-IBsxMMKGB62cYymA_ajLJnSd5SmArjOPuVCkGsIhiSdhszizC_KIs0ayBXi_LDNdj7EIE8oVUkWIGMdnvfDwD78V4DcsuQcWQ1'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#660ac2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass {
+            background: rgba(102, 10, 194, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-dark {
+            background: rgba(25, 16, 34, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-20 bg-background-dark/80 backdrop-blur-md px-6 py-5 flex items-center justify-between border-b border-white/5">
+<div class="flex items-center gap-3"><button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-slate-300 hover:bg-white/10 transition-all"><span class="material-symbols-outlined">arrow_back</span></button><h1 class="text-lg font-bold tracking-tight text-white ml-1">Shopping Lists</h1></div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined">share</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- List Tabs -->
+<div class="px-6 py-6 overflow-x-auto">
+<div class="flex gap-2 min-w-max">
+<button class="px-6 py-2.5 rounded-full bg-primary text-white font-bold text-sm tracking-wide shadow-lg shadow-primary/20">
+                    Wochenende
+                </button>
+<button class="px-6 py-2.5 rounded-full bg-white/5 text-slate-400 font-bold text-sm tracking-wide hover:bg-white/10 transition-all">
+                    Party
+                </button>
+<button class="px-6 py-2.5 rounded-full bg-white/5 text-slate-400 font-bold text-sm tracking-wide hover:bg-white/10 transition-all">
+                    Daily
+                </button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-primary hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Add Item Input -->
+<div class="px-6 pb-8">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-5 text-slate-500">add_shopping_cart</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-2xl py-4.5 pl-14 pr-6 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 focus:bg-white/10 transition-all outline-none" placeholder="Add item to Wochenende..." type="text"/>
+</div>
+</div>
+<!-- Shopping Items List -->
+<div class="px-6 space-y-4">
+<h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">To Buy</h3>
+<!-- Item Card -->
+<div class="bg-white/5 border border-white/5 p-5 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 border-2 border-primary/50 rounded-lg flex items-center justify-center cursor-pointer hover:border-primary transition-all bg-transparent">
+<!-- Unchecked -->
+</div>
+<div>
+<p class="font-semibold text-slate-100">Avocados</p>
+<p class="text-xs text-slate-400">3 pieces</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-400 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="bg-white/5 border border-white/5 p-5 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 border-2 border-primary/50 rounded-lg flex items-center justify-center cursor-pointer hover:border-primary transition-all bg-transparent">
+</div>
+<div>
+<p class="font-semibold text-slate-100">Organic Whole Milk</p>
+<p class="text-xs text-slate-400">2 liters</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-400 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="bg-white/5 border border-white/5 p-5 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 border-2 border-primary/50 rounded-lg flex items-center justify-center cursor-pointer hover:border-primary transition-all bg-transparent">
+</div>
+<div>
+<p class="font-semibold text-slate-100">Greek Yogurt</p>
+<p class="text-xs text-slate-400">500g</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-2 text-slate-400 hover:text-red-400 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<h3 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">Completed</h3>
+<!-- Completed Item Card -->
+<div class="bg-white/[0.02] border border-transparent p-5 rounded-2xl flex items-center justify-between opacity-50">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 bg-primary rounded-md flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[18px]">check</span>
+</div>
+<div>
+<p class="font-semibold text-slate-400 line-through">Fresh Basil</p>
+<p class="text-xs text-slate-500 line-through">1 bunch</p>
+</div>
+</div>
+</div>
+<div class="bg-white/[0.02] border border-transparent p-5 rounded-2xl flex items-center justify-between opacity-50">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 bg-primary rounded-md flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[18px]">check</span>
+</div>
+<div>
+<p class="font-semibold text-slate-400 line-through">Cherry Tomatoes</p>
+<p class="text-xs text-slate-500 line-through">250g</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-30 bg-background-dark/95 backdrop-blur-lg border-t border-white/5">
+<div class="flex justify-around items-center h-20 px-6 max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1.5 text-slate-500 hover:text-primary transition-all" href="#"><span class="material-symbols-outlined">home</span><span class="text-[9px] font-black uppercase tracking-widest">Home</span></a>
+<a class="flex flex-col items-center gap-1.5 text-slate-500 hover:text-primary transition-all" href="#"><span class="material-symbols-outlined">explore</span><span class="text-[9px] font-black uppercase tracking-widest">Discover</span></a>
+<div class="relative -top-6">
+<div class="p-4.5 rounded-full bg-primary text-white shadow-2xl shadow-primary/50 ring-8 ring-background-dark hover:scale-110 active:scale-90 transition-all cursor-pointer"><span class="material-symbols-outlined scale-150">add</span></div>
+</div>
+<a class="flex flex-col items-center gap-1.5 text-slate-500 hover:text-primary transition-all" href="#"><span class="material-symbols-outlined">notifications</span><span class="text-[9px] font-black uppercase tracking-widest">Activity</span></a>
+<a class="flex flex-col items-center gap-1.5 text-slate-500 hover:text-primary transition-all" href="#"><span class="material-symbols-outlined">person</span><span class="text-[9px] font-black uppercase tracking-widest">Profile</span></a>
+</div>
+<!-- Safe area for mobile -->
+<div class="h-6"></div>
+</nav>
+</body></html>

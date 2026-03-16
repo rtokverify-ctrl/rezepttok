@@ -66,17 +66,17 @@ const EmptyFeed = ({ onRefresh }) => (
 const FeedScreen = ({
     videos, toggleLike, handleGlobalSave, setSelectedRecipe,
     setModalVisible, onOpenComments, onChefPress, toggleFollowInFeed,
-    setCurrentScreen, loadFeed, feedLoading
+    setCurrentScreen, loadFeed, feedLoading, nextCursor
 }) => {
     const [feedHeight, setFeedHeight] = useState(0);
-    const [viewableItemIndex, setViewableItemIndex] = useState(0);
+    const [activeVideoIndex, setActiveVideoIndex] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
     const [isScrolling, setIsScrolling] = useState(false);
     const isFocused = useIsFocused();
 
     const onViewableItemsChanged = useRef(({ viewableItems }) => {
         if (viewableItems.length > 0) Object.values(viewableItems).forEach(item => {
-            if (item.isViewable) setViewableItemIndex(item.index);
+            if (item.isViewable) setActiveVideoIndex(item.index);
         });
     }).current;
 
@@ -86,10 +86,28 @@ const FeedScreen = ({
         setRefreshing(false);
     }, [loadFeed]);
 
+    const handleLoadMore = useCallback(() => {
+        if (nextCursor && loadFeed) {
+            loadFeed(false, nextCursor);
+        }
+    }, [nextCursor, loadFeed]);
+
     return (
         <View style={{ flex: 1, backgroundColor: 'black' }} onLayout={(event) => { const { height } = event.nativeEvent.layout; setFeedHeight(height); }}>
+            
+            {/* Top Navigation */}
+            <View style={styles.topNavContainer}>
+                <TouchableOpacity>
+                    <Text style={styles.topNavTextInactive}>Folge ich</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.topNavActiveContainer}>
+                    <Text style={styles.topNavTextActive}>Für dich</Text>
+                    <View style={styles.topNavActiveIndicator} />
+                </TouchableOpacity>
+            </View>
+
             <TouchableOpacity onPress={() => setCurrentScreen('search')} style={styles.searchButton}>
-                <Ionicons name="search" size={24} color="white" />
+                <Ionicons name="search" size={22} color="white" />
             </TouchableOpacity>
 
             {feedLoading && videos.length === 0 ? (
@@ -101,7 +119,14 @@ const FeedScreen = ({
                         data={videos} pagingEnabled showsVerticalScrollIndicator={false}
                         snapToInterval={feedHeight} decelerationRate="fast"
                         onViewableItemsChanged={onViewableItemsChanged}
-                        viewabilityConfig={{ itemVisiblePercentThreshold: 80, viewAreaCoveragePercentThreshold: 80 }}
+                        viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
+                        windowSize={3}
+                        maxToRenderPerBatch={2}
+                        updateCellsBatchingPeriod={50}
+                        initialNumToRender={2}
+                        removeClippedSubviews={true}
+                        onEndReached={handleLoadMore}
+                        onEndReachedThreshold={0.5}
                         onScrollBeginDrag={() => setIsScrolling(true)}
                         onMomentumScrollEnd={() => setIsScrolling(false)}
                         refreshControl={
@@ -115,7 +140,7 @@ const FeedScreen = ({
                         }
                         renderItem={({ item, index }) => (
                             <VideoPost
-                                item={item} isActive={index === viewableItemIndex && !isScrolling && isFocused}
+                                item={item} isActive={index === activeVideoIndex && !isScrolling && isFocused}
                                 toggleLike={toggleLike} onSavePress={handleGlobalSave}
                                 openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={onOpenComments}
                                 onChefPress={onChefPress} onFollowPress={toggleFollowInFeed}
@@ -132,9 +157,19 @@ const FeedScreen = ({
 };
 
 const styles = StyleSheet.create({
+    topNavContainer: {
+        position: 'absolute', top: 55, left: 0, right: 0, zIndex: 50,
+        flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 24,
+    },
+    topNavTextInactive: { color: 'rgba(255,255,255,0.6)', fontWeight: '600', fontSize: 16 },
+    topNavTextActive: { color: 'white', fontWeight: 'bold', fontSize: 18, textShadowColor: 'rgba(0,0,0,0.3)', textShadowRadius: 4 },
+    topNavActiveContainer: { alignItems: 'center', position: 'relative' },
+    topNavActiveIndicator: { position: 'absolute', bottom: -8, width: 16, height: 4, backgroundColor: 'white', borderRadius: 2 },
     searchButton: {
-        position: 'absolute', top: 50, right: 20, zIndex: 50,
-        backgroundColor: 'rgba(0,0,0,0.5)', padding: 10, borderRadius: 20,
+        position: 'absolute', top: 48, right: 16, zIndex: 50,
+        width: 40, height: 40, borderRadius: 20,
+        backgroundColor: 'rgba(0,0,0,0.2)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+        justifyContent: 'center', alignItems: 'center'
     },
     emptyContainer: {
         flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40,

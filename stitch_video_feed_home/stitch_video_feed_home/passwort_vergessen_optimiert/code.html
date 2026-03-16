@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type='text/javascript' nonce='z015yopSxYnj2CVDrELf/Q==' src='https://contribution.usercontent.google.com/OWJh4ZEKj9WO1CJjXlHux-xhIKdQtyVaDsxdV53kH5b9kmOy3xwpU_-KXgVlUR27FJ9AkC1SXRjCWHXTij6pIpgLbN4j86zwbnLdxNPSO-Z36Y9C_GMHckQI5OB9Gs0RbeKW2dcIYITMuPFavRtsxfmRe3xy7JaCgb4ELu5tAAxgcISbOtf5dtJ0gWKeLaE9VnfhUDGZI_329mJUbc1yGUZ_zBGzmlA8Q7AGOgATQIcFG0dl_KBhBLDe_V909fvI5T4jXtEx8x9C6dce-__rO4o5Wjxha0wj5AWfL6f6Q6PqXnETtQZh7yfKC50-WIEFZ_X9LTppFg9TBikJm9npTBFF8vFd0oKH7jty0pQ3IW_OXvjJJyzJIHlGrCsUp1h9_hFP6_t3rzYpwJjVZ-rdwKWtmXVzvuHtnQkz-ycGSEu2SLCk35cotD_KLg675xMJCGtBgy46w9JH3xSOb0v1Em7Ao59911N6woRDgyjDPS5fdarRxiMffnSWVHLKk08nF2P-_80ivoixfd7XrP0fOdu6laAZNGrEKKVEsMWZImAhWr_y-5Oj6HZ2j99FXkjmmXCtkuZMOESjH3F9vJN_cvgCGYO1PhLoer_-EDEfz5MiEvo4ItUhw7buVBFX-40nXMu6uKAXtWuNSb3eaL3fKHADctIg1wfa4u59F6wnUkG2_5OdiGUNqm0avQbNEnYJ0-miPI4JE8vXO8jFvIhSLjBZBFm_BCpqFpFO7BtD2TetUP1nR4JRm967Kkk64OQBNtjXoknhpFlV9F4RhQiZ_5_aGhG9qVAunG1etyo8'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#660ac2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#000000",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(102, 10, 194, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(102, 10, 194, 0.2);
+        }
+        .prismatic-bg {
+            background: radial-gradient(circle at 20% 20%, rgba(102, 10, 194, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(102, 10, 194, 0.1) 0%, transparent 40%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-dark font-display text-slate-100 min-h-screen flex flex-col antialiased prismatic-bg">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between p-8">
+<button class="flex items-center justify-center size-12 rounded-xl bg-primary/10 border border-primary/20 text-slate-100 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="size-12"></div> <!-- Spacer for balance -->
+</header>
+<main class="flex-1 flex flex-col px-6 max-w-md mx-auto w-full">
+<!-- Hero Section -->
+<div class="pt-4 pb-12">
+<div class="size-14 mb-10 rounded-2xl bg-gradient-to-br from-primary via-primary to-purple-400 flex items-center justify-center shadow-2xl shadow-primary/30">
+<span class="material-symbols-outlined text-white text-3xl">lock_reset</span>
+</div>
+<h1 class="text-white text-3xl font-bold tracking-tight mb-3">
+                Passwort vergessen?
+            </h1>
+<p class="text-slate-400 text-base leading-relaxed opacity-80">
+                Kein Problem! Gib deine E-Mail-Adresse ein und wir senden dir Anweisungen zum Zurücksetzen deines Passworts.
+            </p>
+</div>
+<!-- Form Section -->
+<div class="space-y-8">
+<div class="flex flex-col gap-2">
+<label class="text-slate-400 text-[13px] font-medium px-1 tracking-wide">
+                    E-Mail Adresse
+                </label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-primary/40 focus:border-primary/50 transition-all backdrop-blur-md" placeholder="beispiel@mail.de" type="email"/>
+</div>
+</div>
+<button class="w-full h-14 bg-gradient-to-r from-primary to-[#7c1cf2] hover:opacity-90 text-white font-semibold text-base rounded-xl shadow-lg shadow-primary/20 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2 mt-4">
+<span>Link senden</span>
+<span class="material-symbols-outlined text-xl">send</span>
+</button>
+</div>
+<!-- Footer Decoration / Extra Info -->
+<div class="mt-auto pb-10 pt-10 text-center">
+<p class="text-slate-500 text-sm tracking-wide">
+                Zurück zum <a class="text-primary font-semibold hover:underline" href="#">Anmelden</a>
+</p>
+</div>
+</main>
+<!-- Decorative Prismatic Element -->
+<div class="fixed bottom-0 right-0 -z-10 w-64 h-64 bg-primary/20 blur-[120px] rounded-full"></div>
+<div class="fixed top-0 left-0 -z-10 w-48 h-48 bg-primary/10 blur-[100px] rounded-full"></div>
+</body></html>

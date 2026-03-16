@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { THEME_COLOR, NAVBAR_HEIGHT } from '../../constants/Config';
-import { View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { THEME_COLOR, BG_DARK, BG_LIGHT, NAVBAR_HEIGHT } from '../../constants/Config';
+import { View, Platform, StyleSheet } from 'react-native';
+import { BlurView } from 'expo-blur';
 
 export default function TabLayout() {
     return (
@@ -10,46 +10,74 @@ export default function TabLayout() {
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: {
-                    height: NAVBAR_HEIGHT,
-                    backgroundColor: 'black',
-                    borderTopWidth: 1,
-                    borderTopColor: '#222',
                     position: 'absolute',
+                    bottom: 0,
+                    elevation: 0,
+                    height: NAVBAR_HEIGHT,
+                    backgroundColor: Platform.OS === 'ios' ? 'transparent' : `${BG_DARK}f2`, // f2 for 95% opacity hex
+                    borderTopWidth: 1,
+                    borderTopColor: 'rgba(255,255,255,0.05)',
+                    paddingBottom: 10,
+                    paddingTop: 5,
                 },
-                tabBarShowLabel: false,
-                tabBarActiveTintColor: 'white',
-                tabBarInactiveTintColor: '#555',
+                tabBarBackground: () => (
+                    Platform.OS === 'ios' ? (
+                        <BlurView intensity={90} tint="dark" style={StyleSheet.absoluteFill} />
+                    ) : null
+                ),
+                tabBarShowLabel: true,
+                tabBarActiveTintColor: THEME_COLOR,
+                tabBarInactiveTintColor: '#94a3b8', // slate-400
+                tabBarLabelStyle: {
+                    fontSize: 10,
+                    fontWeight: '500',
+                    textTransform: 'uppercase',
+                    letterSpacing: 1.5,
+                }
             }}
         >
             <Tabs.Screen
                 name="feed"
                 options={{
                     title: 'Home',
-                    tabBarIcon: ({ color }) => <Ionicons name="home" size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <MaterialIcons name="home" size={26} color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="search"
                 options={{
-                    href: null, // Hide from tab bar
-                }}
-            />
-            <Tabs.Screen
-                name="cooking"
-                options={{
-                    title: 'Cooking',
-                    tabBarIcon: ({ color }) => <MaterialCommunityIcons name="chef-hat" size={28} color={color} />,
+                    title: 'Discover',
+                    tabBarIcon: ({ color }) => <MaterialIcons name="explore" size={26} color={color} />, // compass like explore
                 }}
             />
             <Tabs.Screen
                 name="upload"
                 options={{
-                    title: 'Upload',
-                    tabBarIcon: ({ color }) => (
-                        <View style={{ width: 45, height: 30, borderRadius: 8, overflow: 'hidden' }}>
-                            <LinearGradient colors={[THEME_COLOR, '#33CCFF']} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Ionicons name="add" size={28} color="white" />
-                            </LinearGradient>
+                    title: 'Create',
+                    tabBarLabel: ({ focused }) => (
+                         <View><MaterialIcons name="circle" size={0} color="transparent"/><View style={{marginTop: -4}}><MaterialIcons name="circle" size={0}/></View></View> // visually hidden text
+                    ), 
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{
+                            marginTop: -28, // Floating effect
+                            shadowColor: THEME_COLOR,
+                            shadowOffset: { width: 0, height: 10 },
+                            shadowOpacity: 0.4,
+                            shadowRadius: 10,
+                            elevation: 8,
+                        }}>
+                            <View style={{
+                                width: 56, 
+                                height: 56, 
+                                borderRadius: 28, 
+                                backgroundColor: THEME_COLOR, 
+                                justifyContent: 'center', 
+                                alignItems: 'center',
+                                borderWidth: 4,
+                                borderColor: BG_DARK
+                            }}>
+                                <MaterialIcons name="add" size={32} color="white" />
+                            </View>
                         </View>
                     ),
                 }}
@@ -57,15 +85,22 @@ export default function TabLayout() {
             <Tabs.Screen
                 name="notifications"
                 options={{
-                    title: 'Notifications',
-                    tabBarIcon: ({ color }) => <Ionicons name="notifications" size={24} color={color} />,
+                    title: 'Activity',
+                    tabBarIcon: ({ color }) => <MaterialIcons name="notifications" size={26} color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="profile"
                 options={{
                     title: 'Profile',
-                    tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
+                    tabBarIcon: ({ color }) => <MaterialIcons name="person" size={26} color={color} />,
+                }}
+            />
+            {/* Hidden screens from the main tab bar */}
+            <Tabs.Screen
+                name="cooking"
+                options={{
+                    href: null,
                 }}
             />
         </Tabs>

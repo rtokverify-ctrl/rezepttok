@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Activity - Recipe Share</title>
+<script type='text/javascript' nonce='ot6sRXLSRLaxVKh5LpBh2w==' src='https://contribution.usercontent.google.com/C29Eh5SzMJzKTPp-ct5-YumTM3L-PxUkfxud8NzCDzBB_LgmSLllEEROJT-EpZaqZkWRiAoSpNViYzziLKZkZlSfEdTUhzPge3ADCclvAUIkGjRnftAYFCOpoI0VcbQAnliMuyWqzodWL1Cpk1jrWew9QyIL68OIFOps6_opfX3DJGbcpOvyFUzZAqhUU_HwIelAHrMKdYHYbHSyV1QParKxNOuq-kjnsZtXcilEDDnjEXF_2k43qOWYUW92JxZ2dI7VOjDN9jSHeIYz4Q1yk5hzsbgT6dGyU0oXgrZZscvZ5xzApbLZroL_CcVTeh7DUP7_zXTOQlWloaAr70HO-2ZKnL-CLrOsoV15KqcvIWWA6ujyrrOEdHANrt7tfFu92RgB4G1k1ELJtpsDihScV2YZgIpGmlZ8pZqDmJMFYwXcQhQVNm7qzg_Q9aOMQbuQZjAjgRU-6RO61lUGSABBXSLdHIUN3NQzMy2ms6O_bYYDHbM2MPNuaE2DTfeuhV_4dLZ-LRBhjnheKgdg68nuoe3eticxNat9eDI7shZS9aCu_n1LIglPTh2WHY6m_Wmlk9HvisEVN_R0isKxQpUG_TDzyerX4b8npnYrmIcQ2_U24JpfMODz5hXfAvXHNBI3Mmy-9ckBYo7qW9-MG1RUdJZ8Iq693pt-WkWvrcZqpXk-GhJf8q7S3y_VIIhy_HtweDcjkySF9Wxxo4736cDHIbWDoos3xiZjr0JDavJV8zRnucg4QFmB_-FEIfvL8mB6kuLD9cNvzdha7CLELEKrWGhJYlqeEW7EEdYOFV_p'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#660ac2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 px-6 py-5 flex items-center justify-between">
+<h1 class="text-2xl font-bold tracking-tight">Activity</h1>
+<button class="relative p-2 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl">send</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-background-dark"></span>
+</button>
+</header>
+<!-- Activity Tabs -->
+<nav class="flex px-6 gap-8 border-b border-primary/10 bg-background-light dark:bg-background-dark overflow-x-auto no-scrollbar">
+<button class="py-4 border-b-2 border-primary text-primary font-bold text-sm whitespace-nowrap">All</button>
+<button class="py-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 font-bold text-sm hover:text-primary transition-colors whitespace-nowrap">Likes</button>
+<button class="py-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 font-bold text-sm hover:text-primary transition-colors whitespace-nowrap">Comments</button>
+<button class="py-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 font-bold text-sm hover:text-primary transition-colors whitespace-nowrap">Mentions</button>
+</nav>
+<!-- Content List -->
+<main class="flex-1 overflow-y-auto">
+<!-- Section Title -->
+<div class="px-4 py-3 bg-primary/5">
+<p class="text-xs font-bold uppercase tracking-wider text-slate-500">New Notifications</p>
+</div>
+<!-- Like Notification -->
+<div class="flex items-center gap-5 px-6 py-5 hover:bg-primary/5 transition-colors border-b border-primary/5">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 bg-cover bg-center overflow-hidden shrink-0" data-alt="Portrait of a male chef avatar" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuAKEtqFMQej7WZPdvq_pkn7p_8dkUKS_sGX2Er_QXg-v8fdwxr502hgATCw1BoIUWqIYhjl1MSBxVBgo3wy_JKGpC0_0K2CHZ0tHClPb0uLWnALvv1MlzkkUObZvs4cK6eImSSxtB1hr1a074170S2mgIcxrPqQYcMDKh96G_2arzjeEHhYLHK4tmPxL89TUlOp9tLu1wMkPVKrTazy_h5HiD1GoNYtXQ0WSU-ZBUg_NGBhuXmTmOEOdrZqOvyozF6w0GM-Ec9a5VAx&#39;)"></div>
+<div class="absolute -bottom-1 -right-1 bg-red-500 rounded-full p-1 border-2 border-background-dark">
+<span class="material-symbols-outlined material-symbols-fill text-[12px] text-white">favorite</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-[15px] font-medium leading-snug">
+<span class="font-bold">ChefMario</span> liked your video <span class="text-slate-400">"Homemade Pasta"</span>
+</p>
+<p class="text-xs text-slate-500 mt-1">15 minutes ago</p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-slate-800 bg-cover bg-center shrink-0 border border-primary/10" data-alt="Close up of a pasta dish" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuBh9eO_ddjpjoho0CDlReYh38X_w64BZMnVNPBHSN-Vc84a8fiW8-A2N8ztbTo4U996scXUmpa53NO1jd8QjFUSp4N1zRMhdvnbh0VnABdALPCv_08dgkBAAainITUWlPbyI__Tvsc-joch_E4RQ__uwVQlz-849cV8i8mfrLnf7L2koaRMaOczzgHLRGCI9i9cZAwIfnJhPcZ7MHCPyuI418xpeYznenDU9KhQQw8oRFJ6Xjz0Gp1iwh8hxTfKxO8tFewvQr-1Z_5W&#39;)"></div>
+</div>
+<!-- Follow Notification -->
+<div class="flex items-center gap-5 px-6 py-5 hover:bg-primary/5 transition-colors border-b border-primary/5">
+<div class="relative">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 bg-cover bg-center overflow-hidden shrink-0" data-alt="Portrait of a female foodie avatar" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuCHzXvhCMBe2oYFVB5sxC7iFC4L-FnYlJikH4T8fQcsN44EXA7d3jPbUXwlmuxfd-ojPFyt0d18FS-XuCqoZ6dK7gXianFVZ19QvxptH9hFHi78hA63Ne1uxTgtjVScpi9HhrPSjyE2AHKpETWX9KNFm3n7ARq-D3dW2QpJniNcye6wpKQOuFJ5y9WbbBWBOlD2NlO3xlZkeDn24bZnHwZj4yvQke1cvHm0ogE23K5QpW_Whn4nbfLeCY9GgcjRDMpcvzFKHTjxlhIs&#39;)"></div>
+<div class="absolute -bottom-1 -right-1 bg-primary rounded-full p-1 border-2 border-background-dark">
+<span class="material-symbols-outlined text-[12px] text-white">person_add</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-[15px] font-medium leading-snug">
+<span class="font-bold">FoodieSarah</span> started following you
+                </p>
+<p class="text-xs text-slate-500 mt-1">1h ago</p>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow-md shadow-primary/20 shrink-0">
+                Follow
+            </button>
+</div>
+<!-- Comment Notification -->
+<div class="flex items-center gap-5 px-6 py-5 hover:bg-primary/5 transition-colors border-b border-primary/5">
+<div class="relative shrink-0">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 bg-cover bg-center overflow-hidden shrink-0" data-alt="Portrait of an older woman avatar" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuA-suVTcg2U5NH4hsiwO-KHPAwWzpqRB28mJvL5yu-0xts0Kv14kvDm9aEbfC780-sGUf4IueNWKH2Rmlq4u7RrDzjha2DW3zH1kEtdTE0RV8RlXYptDrN4BIbsAgioWr5ijWPv5HEc9baUReMSKcCJoeU6eWyIZtcaaPCEyC2PWxeLO3gctaK2ZEd5zr15Um9wzY0zS15oBotrbcZydG475Wlef4yDnI7OPFdEWuVpUcehpVw7r5ORK1Te0R3NZfMviD8zMRCUi0k8&#39;)"></div>
+<div class="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-1 border-2 border-background-dark">
+<span class="material-symbols-outlined text-[12px] text-white">chat_bubble</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-[15px] font-medium leading-snug">
+<span class="font-bold">Nonna Maria</span> commented: <span class="italic text-slate-300">"Looks delicious! My grandmother used to make it like this."</span>
+</p>
+<div class="flex items-center gap-3 mt-2">
+<p class="text-xs text-slate-500">3h ago</p>
+<button class="text-xs font-bold text-primary">Reply</button>
+</div>
+</div>
+<div class="w-12 h-12 rounded-lg bg-slate-800 bg-cover bg-center shrink-0 border border-primary/10" data-alt="Close up of a pasta dish" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuAudItWBnJ2J5CFSGylnTqUFI8IAF6mpijdnvw0VzymFsaqQB2C9mpLJeInJG9r452TvHCEG-oyGKyAhGRftqR-w9A8lvMJTc5n65ItASPTd_scCGJDbAwzhMVszVep3dhJVTPuErlKrNjJJ-hJQcSl1HVH_XFTjMZ27kw5czbTDWzAUClHKfX70AA7gR7CGrngXjeH_jdBwe4aTKeqDng1byl3GZsh37g0ZHA9mPl7Wls8etQdUC80fIUExhKN7J5Y0dXqH6WK_4cb&#39;)"></div>
+</div>
+<!-- Section Title Earlier -->
+<div class="px-4 py-3 bg-primary/5">
+<p class="text-xs font-bold uppercase tracking-wider text-slate-500">Earlier</p>
+</div>
+<!-- Mention Notification -->
+<div class="flex items-center gap-5 px-6 py-5 hover:bg-primary/5 transition-colors border-b border-primary/5">
+<div class="relative shrink-0">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 bg-cover bg-center overflow-hidden shrink-0" data-alt="Portrait of a young male avatar" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuAaij7R0U2FT2uZ9HHenP0BG3yERb7tsOLPxx67Kryo0XiiNiVFfb9Zc5xfFAMwW-UE9xn426abcs-75Hydg7U63srqOL28nglIpDOdimCRBN31MbQ5V3BrVSVq3nPaFbMhhFoxX_Iv41ZYl5Spf4MmixBOcQkhDQ1hpwdBcHNGy1UqS8EEON04qVaadIMTOyADHY0sGNau-8Us2YXjOJhisPnO1J3F9RjbH1o1Lf0_SPRzwc6DB27nu6oXaNUt80IsCaBvNKARfuBO&#39;)"></div>
+<div class="absolute -bottom-1 -right-1 bg-primary rounded-full p-1 border-2 border-background-dark">
+<span class="material-symbols-outlined text-[12px] text-white">alternate_email</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-[15px] font-medium leading-snug">
+<span class="font-bold">RecipeMaster</span> mentioned you in a comment.
+                </p>
+<p class="text-xs text-slate-500 mt-1">Yesterday</p>
+</div>
+<div class="w-12 h-12 rounded-lg bg-slate-800 bg-cover bg-center shrink-0 border border-primary/10" data-alt="A bowl of hot soup" style="background-image: url(&#39;https://lh3.googleusercontent.com/aida-public/AB6AXuAWHOsf2wPITSVYyiLX9KzWtV4q8xATEwQtaiIDiCg3jSxARfht8eDJwZabANx70-rQhF9FRVt2WB8YG_EXVdkWalFPLKvVFmtGXrIDGg1E_kBR3ZXQ8a_RryKYQysPem3ZmxgdjBMBQVBvpYbFtSvkI3GGEhuAkyHkpfoN9FzFr-40clN3Akk5Pm3h_Lu84OeOtUxR6TJnZpUb893wfFOtq1yI4waPXiDP4C3B5uraMRnqiFMSphdcq7LN4NNXa5M0NyNq6CqMbgID&#39;)"></div>
+</div>
+<div class="h-20"></div> <!-- Spacer for Bottom Nav -->
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-background-dark/95 backdrop-blur-xl border-t border-primary/10 px-6 pb-8 pt-3">
+<div class="flex justify-between items-center max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">home</span>
+<span class="text-[11px] font-semibold mt-0.5">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">search</span>
+<span class="text-[11px] font-semibold mt-0.5">Discover</span>
+</a>
+<a class="flex flex-col items-center gap-1 group -mt-6" href="#">
+<div class="bg-primary p-3 rounded-2xl shadow-xl shadow-primary/40 text-white flex items-center justify-center transform hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</div>
+<span class="text-[11px] font-semibold mt-0.5">Create</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined material-symbols-fill text-primary">favorite</span>
+<span class="text-[11px] font-semibold mt-0.5">Activity</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">account_circle</span>
+<span class="text-[11px] font-semibold mt-0.5">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

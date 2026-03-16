@@ -30,7 +30,7 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
                     <View style={styles.modalHeader}>
                         <Text style={styles.modalTitle}>Kommentare ({comments.length})</Text>
                         <TouchableOpacity onPress={onClose}>
-                            <Ionicons name="close" size={24} color="black" />
+                            <Ionicons name="close" size={24} color="white" />
                         </TouchableOpacity>
                     </View>
                     {loading ? (
@@ -79,19 +79,19 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
 };
 
 const styles = StyleSheet.create({
-    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-    modalContent: { backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20 },
-    modalHandle: { width: 40, height: 4, backgroundColor: '#ccc', borderRadius: 2, alignSelf: 'center', marginTop: 10 },
-    modalHeader: { flexDirection: 'row', justifyContent: 'space-between', padding: 20, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#eee' },
-    modalTitle: { fontSize: 18, fontWeight: 'bold' },
-    commentItem: { flexDirection: 'row', padding: 15, borderBottomWidth: 1, borderBottomColor: '#eee' },
-    commentAvatar: { width: 35, height: 35, borderRadius: 17.5, backgroundColor: '#ccc', justifyContent: 'center', alignItems: 'center', marginRight: 10 },
+    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
+    modalContent: { backgroundColor: '#111', borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+    modalHandle: { width: 40, height: 4, backgroundColor: '#444', borderRadius: 2, alignSelf: 'center', marginTop: 10 },
+    modalHeader: { flexDirection: 'row', justifyContent: 'space-between', padding: 20, alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#222' },
+    modalTitle: { fontSize: 18, fontWeight: 'bold', color: 'white' },
+    commentItem: { flexDirection: 'row', padding: 15, borderBottomWidth: 1, borderBottomColor: '#222' },
+    commentAvatar: { width: 35, height: 35, borderRadius: 17.5, backgroundColor: '#333', justifyContent: 'center', alignItems: 'center', marginRight: 10 },
     commentAvatarImage: { width: 35, height: 35, borderRadius: 17.5, marginRight: 10 },
-    commentUser: { fontWeight: 'bold', fontSize: 14, color: '#333', marginRight: 5 },
-    commentTime: { color: '#999', fontSize: 12 },
-    commentText: { color: '#444', marginTop: 2, fontSize: 15 },
-    commentInputContainer: { flexDirection: 'row', padding: 10, borderTopWidth: 1, borderTopColor: '#eee', alignItems: 'center', paddingBottom: 25 },
-    commentInput: { flex: 1, backgroundColor: '#f0f0f0', borderRadius: 20, paddingHorizontal: 15, paddingVertical: 10, marginRight: 10, fontSize: 16 },
+    commentUser: { fontWeight: 'bold', fontSize: 14, color: 'white', marginRight: 8 },
+    commentTime: { color: '#888', fontSize: 12 },
+    commentText: { color: '#ddd', marginTop: 4, fontSize: 15 },
+    commentInputContainer: { flexDirection: 'row', padding: 12, borderTopWidth: 1, borderTopColor: '#222', alignItems: 'center', paddingBottom: Platform.OS === 'ios' ? 25 : 12, backgroundColor: '#0a0a0a' },
+    commentInput: { flex: 1, backgroundColor: '#222', color: 'white', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, marginRight: 10, fontSize: 15 },
     sendButton: { backgroundColor: THEME_COLOR, width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
 });
 

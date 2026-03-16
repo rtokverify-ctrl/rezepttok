@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable, StyleSheet, Dimensions, Animated, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable, StyleSheet, Dimensions, Animated, Platform, PanResponder } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
+import { useEvent } from 'expo';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { THEME_COLOR, BASE_URL, getFullUrl } from '../constants/Config';
@@ -10,7 +11,6 @@ const { width } = Dimensions.get('window');
 const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, containerHeight }) => {
     const [userPaused, setUserPaused] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
     const seekBarRef = useRef(null);
     const seekBarWidth = useRef(0);
     const isDragging = useRef(false);
@@ -25,8 +25,10 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
     useEffect(() => {
         if (!player) return;
         if (isActive && !userPaused) {
+            console.log(`Video ${item.id} spielt ab`);
             player.play();
         } else {
+            console.log(`Video ${item.id} pausiert`);
             player.pause();
         }
     }, [isActive, userPaused, player]);
@@ -36,20 +38,17 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
         if (isActive) setUserPaused(false);
     }, [isActive]);
 
-    // Track time via polling (most reliable on web)
+    const timeUpdate = useEvent(player, 'timeUpdate', { currentTime: 0 });
+    const duration = player?.duration || 0;
+    
+    // Instead of interval updating state, use the event directly
+    const currentTimeToUse = isDragging.current ? currentTime : timeUpdate.currentTime;
+
     useEffect(() => {
-        if (!player || !isActive) return;
-        const interval = setInterval(() => {
-            if (isDragging.current) return;
-            try {
-                const d = player.duration;
-                const t = player.currentTime;
-                if (d && !isNaN(d) && d > 0) setDuration(d);
-                if (t !== undefined && !isNaN(t)) setCurrentTime(t);
-            } catch (e) { }
-        }, 200);
-        return () => clearInterval(interval);
-    }, [player, isActive]);
+        if (!isDragging.current && timeUpdate.currentTime !== undefined) {
+            setCurrentTime(timeUpdate.currentTime);
+        }
+    }, [timeUpdate.currentTime]);
 
     // --- TAP HANDLER ---
     const lastTap = useRef(0);
@@ -108,32 +107,41 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
         document.addEventListener('mouseup', onMouseUp);
     }, [player, seekTo, userPaused, animateSeekbar]);
 
-    const progress = duration > 0 ? Math.min(currentTime / duration, 1) : 0;
+    // React Native PanResponder
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderGrant: (e, gestureState) => {
+                isDragging.current = true;
+                animateSeekbar(true);
+                try { player.pause(); } catch (ex) { }
+                seekTo(e.nativeEvent.locationX);
+            },
+            onPanResponderMove: (e, gestureState) => {
+                // Approximate locationX based on initial touch + dx
+                const initialLeft = e.nativeEvent.locationX - gestureState.dx;
+                seekTo(initialLeft + gestureState.dx);
+            },
+            onPanResponderRelease: () => {
+                isDragging.current = false;
+                animateSeekbar(false);
+                if (!userPaused) try { player.play(); } catch (ex) { }
+            },
+            onPanResponderTerminate: () => {
+                isDragging.current = false;
+                animateSeekbar(false);
+                if (!userPaused) try { player.play(); } catch (ex) { }
+            }
+        })
+    ).current;
+
+    const progress = duration > 0 ? Math.min(currentTimeToUse / duration, 1) : 0;
 
     // Web-compatible seekbar props
     const seekBarEvents = Platform.OS === 'web' ? {
         onMouseDown: handleMouseDown,
-    } : {
-        onStartShouldSetResponder: () => true,
-        onMoveShouldSetResponder: () => true,
-        onResponderGrant: (e) => {
-            isDragging.current = true;
-            animateSeekbar(true);
-            try { player.pause(); } catch (ex) { }
-            seekTo(e.nativeEvent.locationX);
-        },
-        onResponderMove: (e) => seekTo(e.nativeEvent.locationX),
-        onResponderRelease: () => {
-            isDragging.current = false;
-            animateSeekbar(false);
-            if (!userPaused) try { player.play(); } catch (ex) { }
-        },
-        onResponderTerminate: () => {
-            isDragging.current = false;
-            animateSeekbar(false);
-            if (!userPaused) try { player.play(); } catch (ex) { }
-        },
-    };
+    } : panResponder.panHandlers;
 
     const trackHeight = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [2, 6] });
     const thumbSize = seekbarActive.interpolate({ inputRange: [0, 1], outputRange: [6, 16] });
@@ -173,7 +181,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                 </View>
             )}
 
-            <LinearGradient colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.8)']} style={styles.videoGradient} />
+            <LinearGradient colors={['transparent', 'rgba(0,0,0,0.2)', 'rgba(0,0,0,0.8)']} locations={[0, 0.5, 1]} style={styles.videoGradient} />
 
             {/* Seekbar — interactive and animated */}
             <View
@@ -203,23 +211,23 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => toggleLike(item.id)} style={styles.actionButton}>
-                    <Ionicons name="heart" size={35} color={item.is_liked ? THEME_COLOR : 'white'} />
+                    <Ionicons name="heart" size={38} color={item.is_liked ? THEME_COLOR : 'white'} />
                     <Text style={styles.actionText}>{item.likes}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => openComments && openComments(item.id)} style={styles.actionButton}>
-                    <Ionicons name="chatbubble-ellipses" size={35} color="white" />
+                    <Ionicons name="chatbubble-ellipses" size={38} color="white" />
                     <Text style={styles.actionText}>{item.comments_count || 0}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => onSavePress(item)} style={styles.actionButton}>
-                    <Ionicons name="bookmark" size={35} color={item.saved ? '#FFD700' : 'white'} />
+                    <Ionicons name="bookmark" size={38} color={item.saved ? '#FFD700' : 'white'} />
                     <Text style={styles.actionText}>{item.saved ? "Gespeichert" : "Speichern"}</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => openModal(item)} style={styles.actionButton}>
-                    <MaterialCommunityIcons name="chef-hat" size={35} color="white" />
-                    <Text style={styles.actionText}>Rezept</Text>
+                {/* Skillet Action Button for Recipe */}
+                <TouchableOpacity onPress={() => openModal(item)} style={styles.skilletButton}>
+                    <MaterialCommunityIcons name="chef-hat" size={28} color="white" />
                 </TouchableOpacity>
             </View>
 
@@ -240,11 +248,21 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
 };
 
 const styles = StyleSheet.create({
-    videoGradient: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 250 },
-    rightSidebar: { position: 'absolute', right: 10, bottom: 80, alignItems: 'center' },
+    videoGradient: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 350 }, // increased height to cover more
+    rightSidebar: { position: 'absolute', right: 10, bottom: 90, alignItems: 'center' }, // moved up above TabBar
     actionButton: { marginBottom: 20, alignItems: 'center' },
-    actionText: { color: 'white', fontWeight: 'bold', fontSize: 13, textShadowColor: 'black', textShadowRadius: 5 },
-    bottomInfo: { position: 'absolute', bottom: 15, left: 15, right: 80 },
+    skilletButton: { 
+        width: 56, 
+        height: 56, 
+        borderRadius: 28, 
+        backgroundColor: THEME_COLOR, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        shadowColor: THEME_COLOR, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 5,
+        marginTop: 10 
+    },
+    actionText: { color: 'white', fontWeight: '600', fontSize: 13, textShadowColor: 'black', textShadowRadius: 8, marginTop: 4 },
+    bottomInfo: { position: 'absolute', bottom: 90, left: 15, right: 80 }, // moved up above TabBar
     chefName: { color: 'white', fontWeight: 'bold', fontSize: 17, marginBottom: 4, textShadowColor: 'black', textShadowRadius: 5 },
     tagRow: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 6 },
     miniTag: { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 2, marginRight: 5, marginBottom: 2 },
@@ -254,7 +272,7 @@ const styles = StyleSheet.create({
     // Seekbar overrides for exact TikTok look
     seekBarContainer: {
         position: 'absolute',
-        bottom: 0,  // Flush entirely to the bottom
+        bottom: 80,  // Move up to sit exactly on top of TabBar height
         left: 0,
         right: 0,
         height: 20, // Large invisible hit area for easy tapping

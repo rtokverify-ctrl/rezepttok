@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script type='text/javascript' nonce='cf7/+WQlGERApuJX6Az6Vw==' src='https://contribution.usercontent.google.com/YfYiyJe0VsDcDpb06MY0TqWsHSa-eyKVFa5sx5wvDbIxmAGNauodvkEey0xMEu4-mNhzVy-VOu48vOToJ-8hhxGu9BRiEcGEQdGy2Vi1yH3amcRlCrkrBH8tAb7-UCn3lNgMzA-7pvePX4NCC4AccPiZCwa3q6Izlx2JXWOQjYlUwDerx9NiIvUiWAybYDqELT_t0_Q7gv8XMsm7LWLc21GNw1fqzGutIb-fKfoKdsXbxuG8GHLaSGyLb9VUbl4VsJOTkx7V5Q1wjgnDNtzaFGi-SXJnPz7hHDu-Nmi4vz8jEtnTM96Ad2_CGFwH04k-9OC1uJtwq-1io33lqEORsd3ZVDZPwnaKIY39Y4DJdaWlqHWkNBalKdnD371lWkwLn98HXyAJsCL3twXemJODpP_g_zvko8x0Xb8hdiYU-fbsXfK4aAhK-jZTd5Fm3asBJIcnfWmqtEFIQcmG0z_VrumZimI8WBuEimvozedKKHFtYNa5siFvJrp-o9Z0A4gr-Ebs_VaNnhzz3yHGjZCI-4XXBJZ_WDokacQwdROcDSWebOucyJrDZaIEKCDYzwyjmwcbs71de4T-yOmUjwzx2Dq9t8iTpoXPk7HCGbThxwIPMFaFjMvPs3REy4XWw-dzaDAdqwQkUjWVwaZ8-ZifTBr3FERBB5WmLFsg2HZjkfZhJsUSFeDdnnMzS-GgYq0FnhSmNXhGY-TXM2grkxAXtIvxrdkKAaNRu8AeZvVjkZ7mKVW4Q6_T_QY-17xhicDtxKgKzK6823RhpR7k0YtYHRDJPOuX2LOX7mJfRWIt'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#660ac2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-slate-100">
+<div class="relative min-h-screen w-full flex flex-col items-center justify-center p-4">
+<!-- Background Mockup Content -->
+<div class="absolute inset-0 z-0 overflow-hidden opacity-40">
+<div class="grid grid-cols-2 gap-4 p-4">
+<div class="aspect-[3/4] rounded-xl bg-primary/10 border border-primary/20"></div>
+<div class="aspect-[3/4] rounded-xl bg-primary/10 border border-primary/20"></div>
+<div class="aspect-[3/4] rounded-xl bg-primary/10 border border-primary/20"></div>
+<div class="aspect-[3/4] rounded-xl bg-primary/10 border border-primary/20"></div>
+</div>
+</div>
+<!-- Backdrop Overlay -->
+<div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-10"></div>
+<!-- Bottom Sheet Container -->
+<div class="fixed bottom-0 left-0 right-0 z-20 flex flex-col items-center">
+<div class="w-full max-w-lg bg-background-dark/95 backdrop-blur-xl border-t border-primary/20 rounded-t-xl shadow-2xl overflow-hidden">
+<!-- BottomSheetHandle -->
+<div class="flex h-6 w-full items-center justify-center">
+<div class="h-1.5 w-12 rounded-full bg-primary/30"></div>
+</div>
+<div class="px-6 pt-2 pb-8"><div class="flex justify-between items-center mb-5">
+<h1 class="text-xl font-bold tracking-tight text-slate-100">Save to Collection</h1>
+<button class="p-1.5 rounded-full bg-slate-800/50 text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<!-- Create New List Card -->
+<button class="w-full group mb-8">
+<div class="flex items-center gap-3 bg-primary/10 border border-primary/20 p-3.5 rounded-xl transition-all active:scale-[0.98] hover:bg-primary/20">
+<div class="flex items-center justify-center rounded-lg bg-primary text-white shrink-0 size-10 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-2xl">add</span>
+</div>
+<div class="flex flex-col items-start">
+<p class="text-slate-100 text-[15px] font-semibold">Create New List</p>
+<p class="text-primary/70 text-xs">Organize your favorite recipes</p>
+</div>
+<div class="ml-auto text-primary/50 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</button>
+<h3 class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.15em] px-1 mb-3">Existing Lists</h3>
+<!-- List Items -->
+<div class="space-y-2.5">
+<!-- List Item 1 -->
+<div class="flex items-center gap-3.5 bg-slate-900/30 hover:bg-slate-800/30 p-2.5 rounded-xl border border-slate-800/40 transition-colors group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12 border border-slate-700/30" data-alt="Grilled vegetable skewers on a plate" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuBHYQQWydPqWbEk-vbvhEQ2CQUwGqsxaUqgl0ZB0_QH3O8ogd6fAA2yT5Ko9xpPMTQCj3fgCDk7KyS8yopXipNdGJ1v0Z1ofzZcRx1vAcwU0jTg-wDg3Vy1qeAJop7sHqbPaAQ8zdVql_ojbZB0u-mp43JWmcvnXsHxbRYEPBjfSWaxRrOUBT5YcdEDVrM9k9G4yJOwqWmd2tcwdvTwZeN9zi_4TqQ_Oj7MoEkChBTu32_2tMMaiIQK8q5Uy_I3RoDFx5ufcXr8MPNO&#34;);">
+</div>
+<div class="flex-1">
+<p class="text-slate-100 text-sm font-semibold">Wochenende</p>
+<p class="text-slate-500 text-[11px]">12 recipes</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-slate-800 p-0.5 transition-all has-[:checked]:bg-primary">
+<div class="h-full w-[20px] rounded-full bg-white shadow-sm transition-all"></div>
+<input checked="" class="invisible absolute peer" type="checkbox"/>
+<style>
+                                        label:has(input:checked) div { transform: translateX(20px); }
+                                    </style>
+</label>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center gap-3.5 bg-slate-900/30 hover:bg-slate-800/30 p-2.5 rounded-xl border border-slate-800/40 transition-colors group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12 border border-slate-700/30" data-alt="Healthy salad bowl with avocado" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuBAZxG-vQqCG8NWptSWrnBkg-zbFy6a3bzOpxv2s0A1_SSg-iIMsKIU1umASbNP-8Bq4QtAo7i0OUJv_zd1RTg3vLa9xXCbTFewFPJo_xlqnZTHFv6l4chl_LOsE77tLR8p-crMeD1z5Xb2Fo-_pVRVi9zLGghpz46lYv9ejI2kE6eEQBtjlTbyJ4wlvPSyMXZ2C__ctNkK_LAD098lm8cx_8whb49PAEs6aa-peQpBrNZdKkG6XAl1R21k3o4bpFZSeJM-0oVl6mZU&#34;);">
+</div>
+<div class="flex-1">
+<p class="text-slate-100 text-sm font-semibold">Healthy</p>
+<p class="text-slate-500 text-[11px]">8 recipes</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-slate-800 p-0.5 transition-all has-[:checked]:bg-primary">
+<div class="h-full w-[20px] rounded-full bg-white shadow-sm transition-all"></div>
+<input class="invisible absolute peer" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center gap-3.5 bg-slate-900/30 hover:bg-slate-800/30 p-2.5 rounded-xl border border-slate-800/40 transition-colors group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-12 border border-slate-700/30" data-alt="Cocktail glasses and party appetizers" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuBOborCSl8Z5GVg62YV2SYmgnAvV2r2R1ka8yZYRx_lviVd_4p3ILILhjafOIaSdJo-GrizDNNuajszH1DW5AzSqTH2foob8m6rEH529bdyHi3L_E-mrmGoR3t8XhltDfNy9B3AA4G57FG-EjUDG46exGtOwpsXJSbHJJquEpxNv6WHxrdqmQvx2_B5XLfNMlzjwPGggmwRzjnJdIxlZn-aOltzFetJztd1s6FKU2YAPbAqSZ_ugUCN7DPr6-MpwaoqsjhZiw9_Az6j&#34;);">
+</div>
+<div class="flex-1">
+<p class="text-slate-100 text-sm font-semibold">Party</p>
+<p class="text-slate-500 text-[11px]">24 recipes</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-slate-800 p-0.5 transition-all has-[:checked]:bg-primary">
+<div class="h-full w-[20px] rounded-full bg-white shadow-sm transition-all"></div>
+<input class="invisible absolute peer" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+<!-- Bottom Action -->
+<div class="mt-10 flex gap-3">
+<button class="flex-1 py-3.5 bg-slate-800/80 hover:bg-slate-800 text-slate-100 text-sm font-bold rounded-xl transition-all active:scale-[0.98]">
+                            Cancel
+                        </button>
+<button class="flex-[1.8] py-3.5 bg-primary hover:bg-primary/90 text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/25 transition-all active:scale-[0.98]">
+                            Save Changes
+                        </button>
+</div></div>
+<!-- Safe area padding for mobile -->
+<div class="h-6"></div>
+</div>
+</div>
+</div>
+</body></html>

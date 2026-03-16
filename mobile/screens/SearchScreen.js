@@ -7,11 +7,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
 
 const { width } = Dimensions.get('window');
-const GRID_GAP = 2;
-const GRID_COLS = 3;
-const TILE_SIZE = (width - GRID_GAP * (GRID_COLS + 1)) / GRID_COLS;
+const GRID_GAP = 12;
+const GRID_COLS = 2; // Change to 2 column layout
+const TILE_SIZE = (width - (32 + GRID_GAP)) / GRID_COLS; // 32 is padding (16*2)
 
-const TRENDING_TAGS = ['Pasta', 'Vegan', 'Dessert', 'Schnell', 'Asiatisch', 'Salat', 'Deutsch', 'Backen'];
+const TRENDING_TAGS = ['Für dich', 'Pasta', 'Vegan', 'Dessert', 'Schnell', 'Asiatisch', 'Salat', 'Deutsch', 'Backen'];
 
 const SearchScreen = ({ userToken, navigation, onChefPress }) => {
     const [searchText, setSearchText] = useState('');
@@ -71,15 +71,13 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
     const renderVideoTile = ({ item }) => (
         <TouchableOpacity style={styles.videoTile} activeOpacity={0.8}>
             <View style={styles.videoTileInner}>
-                <Ionicons name="play" size={24} color="rgba(255,255,255,0.8)" />
+                <Ionicons name="play-circle" size={32} color="rgba(255,255,255,0.8)" style={{ position: 'absolute', top: 10, right: 10 }} />
                 <Text style={styles.videoTileTitle} numberOfLines={2}>{item.title}</Text>
             </View>
-            {item.likes_count !== undefined && (
-                <View style={styles.videoTileLikes}>
-                    <Ionicons name="heart" size={10} color="white" />
-                    <Text style={styles.videoTileLikesText}>{item.likes_count}</Text>
-                </View>
-            )}
+            <View style={styles.videoTileLikes}>
+                <Ionicons name="play" size={14} color="white" />
+                <Text style={styles.videoTileLikesText}>{item.views || item.likes_count || 0}</Text>
+            </View>
         </TouchableOpacity>
     );
 
@@ -118,15 +116,38 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
                     <Text style={styles.searchingText}>Suche...</Text>
                 </View>
             ) : !hasSearched ? (
-                /* Trending Tags */
+                /* Trending Tags & Grid */
                 <View style={styles.trendingContainer}>
-                    <Text style={styles.trendingTitle}>🔥 Trending</Text>
-                    <View style={styles.tagsWrap}>
-                        {TRENDING_TAGS.map((tag, i) => (
-                            <TouchableOpacity key={i} style={styles.tagChip} onPress={() => handleTagPress(tag)} activeOpacity={0.7}>
-                                <Text style={styles.tagChipText}>#{tag}</Text>
-                            </TouchableOpacity>
-                        ))}
+                    {/* Categories */}
+                    <View style={styles.tagsScrollWrapper}>
+                        <FlatList
+                            data={TRENDING_TAGS}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(tag) => tag}
+                            contentContainerStyle={styles.tagsWrap}
+                            renderItem={({ item, index }) => {
+                                const isActive = index === 0;
+                                return (
+                                    <TouchableOpacity 
+                                        style={[styles.tagChip, isActive && styles.tagChipActive]} 
+                                        onPress={() => item !== 'Für dich' && handleTagPress(item)} 
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text style={[styles.tagChipText, isActive && styles.tagChipTextActive]}>{item}</Text>
+                                    </TouchableOpacity>
+                                );
+                            }}
+                        />
+                    </View>
+                    
+                    <Text style={styles.trendingTitle}>Trending in Deutschland</Text>
+                    <View style={styles.videoGrid}>
+                        {/* Placeholder trending videos for visual until real data */}
+                        {renderVideoTile({ item: { title: "Cremige Trüffel Pasta in 15 Min", views: "1.2M", likes_count: 500 }})}
+                        {renderVideoTile({ item: { title: "Der perfekte Pizzateig", views: "850K", likes_count: 300 }})}
+                        {renderVideoTile({ item: { title: "Gesunde Bowl", views: "420K", likes_count: 120 }})}
+                        {renderVideoTile({ item: { title: "Bestes Tiramisu", views: "2.1M", likes_count: 800 }})}
                     </View>
                 </View>
             ) : (
@@ -181,23 +202,25 @@ const styles = StyleSheet.create({
     searchBarContainer: { paddingHorizontal: 16, paddingBottom: 12 },
     searchBar: {
         flexDirection: 'row', alignItems: 'center',
-        backgroundColor: '#1a1a1a', borderRadius: 14,
-        paddingHorizontal: 14, height: 46,
+        backgroundColor: 'rgba(102, 10, 194, 0.1)', borderRadius: 12, // bg-primary/10
+        paddingHorizontal: 16, height: 48,
     },
     searchInput: { flex: 1, color: 'white', fontSize: 16, marginLeft: 10 },
 
     centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     searchingText: { color: '#666', marginTop: 12, fontSize: 14 },
 
-    trendingContainer: { padding: 20 },
-    trendingTitle: { color: 'white', fontSize: 20, fontWeight: '700', marginBottom: 16 },
-    tagsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+    trendingContainer: { flex: 1 },
+    tagsScrollWrapper: { marginBottom: 24, marginTop: 8 },
+    tagsWrap: { paddingHorizontal: 16, gap: 10 },
     tagChip: {
-        backgroundColor: '#1a1a1a', borderRadius: 20,
-        paddingHorizontal: 16, paddingVertical: 10,
-        borderWidth: 1, borderColor: '#2a2a2a',
+        backgroundColor: 'rgba(102, 10, 194, 0.1)', borderRadius: 20, // bg-primary/10
+        paddingHorizontal: 18, paddingVertical: 10,
     },
+    tagChipActive: { backgroundColor: THEME_COLOR },
     tagChipText: { color: THEME_COLOR, fontSize: 14, fontWeight: '600' },
+    tagChipTextActive: { color: 'white' },
+    trendingTitle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingHorizontal: 16, marginBottom: 16 },
 
     section: { paddingHorizontal: 16, marginBottom: 24 },
     sectionTitle: { color: '#888', fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 },
@@ -216,19 +239,19 @@ const styles = StyleSheet.create({
     userDisplayName: { color: 'white', fontSize: 16, fontWeight: '600' },
     userUsername: { color: '#666', fontSize: 13, marginTop: 2 },
 
-    videoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP },
+    videoGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP, paddingHorizontal: 16 },
     videoTile: {
-        width: TILE_SIZE, height: TILE_SIZE * 1.3,
-        backgroundColor: '#1a1a1a', borderRadius: 8, overflow: 'hidden',
+        width: TILE_SIZE, height: TILE_SIZE * 1.33, // 3:4 aspect ratio
+        backgroundColor: '#111', borderRadius: 16, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
         justifyContent: 'center', alignItems: 'center',
     },
-    videoTileInner: { justifyContent: 'center', alignItems: 'center', padding: 8 },
-    videoTileTitle: { color: '#ccc', fontSize: 11, textAlign: 'center', marginTop: 6 },
+    videoTileInner: { flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center', padding: 8, position: 'relative' },
+    videoTileTitle: { color: '#ccc', fontSize: 14, fontWeight: '600', textAlign: 'center', marginTop: 6, opacity: 0.5 },
     videoTileLikes: {
-        position: 'absolute', bottom: 6, left: 6,
-        flexDirection: 'row', alignItems: 'center', gap: 3,
+        position: 'absolute', bottom: 10, left: 10,
+        flexDirection: 'row', alignItems: 'center', gap: 6,
     },
-    videoTileLikesText: { color: 'white', fontSize: 10 },
+    videoTileLikesText: { color: 'white', fontSize: 12, fontWeight: 'bold' },
 
     noResults: { alignItems: 'center', paddingTop: 60 },
     noResultsTitle: { color: '#555', fontSize: 20, fontWeight: '600', marginTop: 16 },

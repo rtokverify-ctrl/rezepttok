@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, ScrollView, TextInput, ActivityIndicator, Alert, Platform, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
 import { useGlobal } from '../context/GlobalContext';
 import MiniVideo from '../components/MiniVideo';
@@ -230,7 +231,11 @@ const ProfileScreen = ({
 
     return (
         <View style={{ flex: 1, backgroundColor: 'black' }}>
-            <View style={styles.profileHeader}>
+            <LinearGradient
+                colors={['rgba(102, 10, 194, 0.4)', 'rgba(0,0,0,1)', 'rgba(0,0,0,1)']}
+                locations={[0, 0.6, 1]}
+                style={styles.profileHeader}
+            >
                 {/* HEADER BUTTONS */}
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: '100%', paddingRight: 20 }}>
                     <TouchableOpacity onPress={() => router.push('/chat')} style={{ marginRight: 20, position: 'relative' }}>
@@ -250,7 +255,7 @@ const ProfileScreen = ({
                 </View>
 
                 <View style={{ alignItems: 'center', marginTop: -10 }}>
-                    <View style={{ marginBottom: 15 }}>
+                    <View style={{ marginBottom: 15, padding: 4, borderRadius: 65, backgroundColor: 'rgba(102, 10, 194, 0.2)' }}>
                         {myProfileData?.avatar_url ?
                             <Image source={{ uri: getFullUrl(myProfileData.avatar_url) }} style={styles.profileAvatar} /> :
                             <View style={styles.profileAvatarPlaceholder}><Text style={{ color: 'white', fontSize: 32, fontWeight: 'bold' }}>{(myProfileData?.display_name || "U").charAt(0)}</Text></View>
@@ -258,20 +263,25 @@ const ProfileScreen = ({
                     </View>
 
                     <Text style={styles.profileName}>@{myProfileData?.display_name?.replace(/\s/g, '') || 'user'}</Text>
-
-                    <View style={styles.profileStatsRow}>
-                        <View style={styles.profileStatItem}><Text style={styles.profileStatNumber}>{myProfileData?.followers_count || 0}</Text><Text style={styles.profileStatLabel}>Follower</Text></View>
-                        <View style={styles.verticalDivider} />
-                        <View style={styles.profileStatItem}><Text style={styles.profileStatNumber}>{myProfileData?.following_count || 0}</Text><Text style={styles.profileStatLabel}>Folge ich</Text></View>
-                        <View style={styles.verticalDivider} />
-                        <View style={styles.profileStatItem}><Text style={styles.profileStatNumber}>{myVideos.length}</Text><Text style={styles.profileStatLabel}>Videos</Text></View>
-                    </View>
-
                     <Text style={styles.profileBio}>{myProfileData?.bio || "Keine Bio vorhanden"}</Text>
 
+                    <View style={styles.profileStatsRow}>
+                        <View style={styles.profileStatCard}>
+                            <Text style={styles.profileStatNumber}>{myProfileData?.followers_count || 0}</Text>
+                            <Text style={styles.profileStatLabel}>Follower</Text>
+                        </View>
+                        <View style={styles.profileStatCard}>
+                            <Text style={styles.profileStatNumber}>{myProfileData?.following_count || 0}</Text>
+                            <Text style={styles.profileStatLabel}>Folge ich</Text>
+                        </View>
+                        <View style={styles.profileStatCard}>
+                            <Text style={styles.profileStatNumber}>{myVideos.length}</Text>
+                            <Text style={styles.profileStatLabel}>Videos</Text>
+                        </View>
+                    </View>
 
                 </View>
-            </View>
+            </LinearGradient>
             <View style={styles.tabContainer}>
                 <TouchableOpacity onPress={() => setProfileTab('uploads')} style={[styles.tabItem, profileTab === 'uploads' && styles.activeTab]}><Ionicons name="grid-outline" size={24} color={profileTab === 'uploads' ? 'white' : '#666'} /></TouchableOpacity>
                 <TouchableOpacity onPress={() => { setProfileTab('likes'); loadLikedVideos(); }} style={[styles.tabItem, profileTab === 'likes' && styles.activeTab]}><Ionicons name="heart-outline" size={24} color={profileTab === 'likes' ? 'white' : '#666'} /></TouchableOpacity>
@@ -319,7 +329,15 @@ const ProfileScreen = ({
                     key={'videos-grid-' + profileTab}
                     keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
                     data={activeData} numColumns={3}
-                    renderItem={({ item }) => <TouchableOpacity onPress={() => { setSelectedRecipe(item); setModalVisible(true); }} style={styles.gridItem}><MiniVideo uri={item.video_url} style={{ width: '100%', height: '100%' }} /></TouchableOpacity>}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity onPress={() => { setSelectedRecipe(item); setModalVisible(true); }} style={styles.gridItem}>
+                            <MiniVideo uri={item.video_url} style={{ width: '100%', height: '100%' }} />
+                            <View style={{ position: 'absolute', bottom: 6, left: 6, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                <Ionicons name="play-outline" size={14} color="white" />
+                                <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold', textShadowColor: 'black', textShadowRadius: 4 }}>{item.views || item.likes || 0}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
                     ListEmptyComponent={<EmptyGrid tab={profileTab} />}
                 />
             )}
@@ -331,22 +349,23 @@ const ProfileScreen = ({
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: 'black' },
-    profileHeader: { width: '100%', paddingVertical: 20, paddingTop: 50, backgroundColor: 'black' },
-    profileAvatar: { width: 110, height: 110, borderRadius: 55, borderWidth: 3, borderColor: THEME_COLOR },
-    profileAvatarPlaceholder: { width: 110, height: 110, borderRadius: 55, borderWidth: 3, borderColor: '#333', justifyContent: 'center', alignItems: 'center', backgroundColor: '#222' },
-    profileName: { color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 10, letterSpacing: 0.5 },
-    profileStatsRow: { flexDirection: 'row', marginTop: 20, marginBottom: 15, alignItems: 'center' },
-    profileStatItem: { alignItems: 'center', marginHorizontal: 15 },
+    profileHeader: { width: '100%', paddingVertical: 20, paddingTop: 50 },
+    profileAvatar: { width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: THEME_COLOR },
+    profileAvatarPlaceholder: { width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: THEME_COLOR, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1a1a1a' },
+    profileName: { color: 'white', fontSize: 22, fontWeight: '800', marginTop: 10, letterSpacing: 0.5 },
+    profileBio: { color: 'rgba(255,255,255,0.7)', fontSize: 14, textAlign: 'center', paddingHorizontal: 40, lineHeight: 20, marginTop: 8 },
+    
+    profileStatsRow: { flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 24, marginBottom: 10, paddingHorizontal: 20 },
+    profileStatCard: { flex: 1, backgroundColor: 'rgba(102, 10, 194, 0.1)', borderWidth: 1, borderColor: 'rgba(102, 10, 194, 0.2)', borderRadius: 16, paddingVertical: 12, alignItems: 'center' },
     profileStatNumber: { color: 'white', fontSize: 18, fontWeight: 'bold' },
-    profileStatLabel: { color: '#888', fontSize: 13 },
-    verticalDivider: { width: 1, height: 20, backgroundColor: '#333' },
-    profileBio: { color: '#ddd', fontSize: 14, textAlign: 'center', paddingHorizontal: 40, lineHeight: 20 },
+    profileStatLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 4 },
+    
     editProfileBtn: { backgroundColor: '#333', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 8, alignItems: 'center', justifyContent: 'center', minWidth: 140 },
     editProfileText: { color: 'white', fontWeight: '600', fontSize: 15 },
-    tabContainer: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#222' },
+    tabContainer: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
     tabItem: { flex: 1, alignItems: 'center', paddingVertical: 15 },
     activeTab: { borderBottomWidth: 2, borderBottomColor: THEME_COLOR },
-    gridItem: { width: '33.33%', aspectRatio: 0.7, borderWidth: 1, borderColor: 'black' },
+    gridItem: { width: '33.33%', aspectRatio: 9/16, borderWidth: 1, borderColor: 'black', position: 'relative' },
     collectionItem: { width: '45%', aspectRatio: 1, margin: '2.5%', backgroundColor: '#222', borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
     // Settings Modal Styles
     settingsHeader: { padding: 20, paddingTop: 60, borderBottomWidth: 1, borderBottomColor: '#222', alignItems: 'center' },

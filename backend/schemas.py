@@ -23,6 +23,11 @@ class RecipeCreate(BaseModel):
     tags: List[str] 
     tips: Optional[str] = None
 
+from typing import Any
+class FeedResponse(BaseModel):
+    data: List[Any]
+    nextCursor: Optional[str] = None
+
 class CommentCreate(BaseModel):
     text: str
 

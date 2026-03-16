@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type='text/javascript' nonce='oUMoUWmYvRX9l54qf8lK9w==' src='https://contribution.usercontent.google.com/ctrcdrvq8Uh1QtVDMZbGeB49MyombSqygl4UJMonQXHMRUH1vHi6jLEH0GQfDbf6Yxu1Jc1cy9Iw22ckJfIUPgPbSSDvNw60scRB1Ko1Wntl62rDIUoIbFkDlmFQk_ks3M6DV-3R4H6grWBOCOtHsbAo46jSiFIn7T9vcp_fTRJUg6SA_YZ-91kAJvbeFHQSeqpuWUc3yCouosUh5ODXoUcNFrfqJ2pLr24K4cpPZtfg4_tpu1komTGZfmZk4X3dNmk8P_d1m_XS9EHol69yGkV13oQ5uWOFixVL_4yg8tfSKdY_re8bKKXOMdCAXyZ1y82e8CAqoS9MazxYi9LFE3etza6DgAS8-7RXTimXqhlwcQkvdQqeVrQEKJ6Ozg0QAeBU7FuKgAFFQnc7qT-UWAad-6zise0w347jNJ1DBEK-ZyFcSNEw1UDXyUN_HKuxMP-QsBHwgu1jq8Ceb3cgDC23JiEb3bQs7GW2lBlj1qDUafwosvTVyEeDtZbhZ054mY21-iolvuuxRpqfKCuW6vLG30OpLvEuTsUG_lWA99T5J3GffMDsgY9Qa0u4W3FNhQr2P1BhmfdW8WyIse0Rs5R6ZutUUBkT0RmWwh78fbPfkccVADMc9dC9wITR8m1JtZluTZmqrmTzT1iMCC2SI9gD_tXI_8kuiG5WiBVpd7dWNccGt50OwobNFgVhlgSeQ2pBhrhB9dyB4BGUTsc_JV9JJB09M-UddyorhxmNclVX3YQB__uQWxmPFIQu-_Aa3IaVIMapq-tX4HyOtRF0dLFmPnImOkwuFw6KNI8G'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#660ac2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Messages - Recipe App</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex h-screen w-full flex-col overflow-hidden max-w-md mx-auto border-x border-primary/10 pb-24">
+<!-- Header -->
+<header class="flex items-center gap-4 bg-background-light dark:bg-background-dark px-4 pt-8 pb-4">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors text-slate-900 dark:text-slate-100">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-2xl font-bold leading-tight tracking-tight flex-1">Messages</h1>
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-primary/10 transition-colors text-slate-900 dark:text-slate-100">
+<span class="material-symbols-outlined">edit_square</span>
+</button>
+</header>
+<!-- Search Bar -->
+<div class="px-4 py-3">
+<label class="flex flex-col min-w-40 h-11 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-2xl h-full bg-primary/5 dark:bg-primary/10 border border-primary/5 focus-within:border-primary/30 transition-all">
+<div class="text-primary/60 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-0 border-none bg-transparent placeholder:text-slate-500 dark:placeholder:text-slate-400 px-3 text-base font-normal leading-normal" placeholder="Search for people or chats" value=""/>
+</div>
+</label>
+</div>
+<!-- Chat List -->
+<div class="flex-1 overflow-y-auto mt-1"><!-- Chat Item 1 -->
+<div class="flex items-center gap-3 bg-transparent hover:bg-primary/5 px-4 min-h-[72px] py-3 cursor-pointer transition-colors">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 border border-primary/10" data-alt="Professional chef in white uniform smiling" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuCBYoJ3BhFMHRek58Yb4lF7xbJBZP2Z9DbTatP8WEPDG4LOuzYoBxc4_zQyp-EF7-Qq1XnctVpo9_10q_k7oO-9oe_-pyMdcHIia4UQLjmfQV7lmyiRfHovRiQRdaLHjhGwLvWoY2yOBWuh0oNmyi0s1F30cQMMDLCyeg7aL7LSItV_uLMNDEOu-m0DUuXZ2hPxiPhhJFBUhmeU7ZTmfaqVV_fVwiRfLtrS68h_8cn59dBrhVToP9KylItfwjvU_X-8Zj0-J2vWoX8_&#34;);"></div>
+<div class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background-dark"></div>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<p class="text-slate-900 dark:text-slate-100 text-[15px] font-semibold truncate">ChefMario</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs shrink-0">2m</p>
+</div>
+<p class="text-primary font-medium dark:text-primary/90 text-[14px] leading-snug line-clamp-1">That looks amazing!</p>
+</div>
+</div>
+<!-- Chat Item 2 -->
+<div class="flex items-center gap-3 bg-transparent hover:bg-primary/5 px-4 min-h-[72px] py-3 cursor-pointer transition-colors">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 border border-primary/10" data-alt="Young woman with natural skin and friendly expression" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuDdNZ-mVMIhQ7UidlIG9CiD7MOBggv7sqFdm_BPheJEPjP5I3PpI9jRuDnJFn5cNeE0VUDT0YdQY2XHnz3wSepX2E7-Z-M1KpfgGwTBAW9fUK-nEaVUA-Bh_alxzKZJW1ZXmvJ4sH64CpvXjGfaI6D1JQBpaljxkXRw14ceBtigauG8xkOvqtVvohcxiS6kOGZGO0V77jCLZCRNQagorlFVtuTNurTR1Mx1n5wJG3x7jq-hYUFStMWb3IWtpvpwv0QExTjr1nYjY9n9&#34;);"></div>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<p class="text-slate-900 dark:text-slate-100 text-[15px] font-semibold truncate">Wellness Sara</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs shrink-0">1h</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-[14px] leading-snug line-clamp-1">Thanks for the tip! I'll try adding the kale earlier.</p>
+</div>
+</div>
+<!-- Chat Item 3 -->
+<div class="flex items-center gap-3 bg-transparent hover:bg-primary/5 px-4 min-h-[72px] py-3 cursor-pointer transition-colors">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 border border-primary/10" data-alt="Man with short hair and glasses" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuB-OaDe4SRUfz0fUeDwlnK1hE0MGtFZHCdPYsDQn56bdNkRtJCzSsbXRvTYG_S52xyxD-qnnoCb_wg91eOGzg5v5MnCwSZ1aqAj1SI4ivajuCa38pLBi6YowJu0RknS4RBoYxGxSlGYMsVc-wSWFFIZDvAmpL0IuvrOBB6tBUvNzz0lyeISEBIG41npjPmP5cIX8UVrvSzoqiIGnmXcyor3YUOIWDuVc1aOXYXbHUvHdD7StlsKpBqFgjKq75ZMrqDKL6ormEd0rPbe&#34;);"></div>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<p class="text-slate-900 dark:text-slate-100 text-[15px] font-semibold truncate">David King</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs shrink-0">3h</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-[14px] leading-snug line-clamp-1">Did you see the new pasta challenge?</p>
+</div>
+</div>
+<!-- Chat Item 4 -->
+<div class="flex items-center gap-3 bg-transparent hover:bg-primary/5 px-4 min-h-[72px] py-3 cursor-pointer transition-colors">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 border border-primary/10" data-alt="Woman with freckles and wavy hair" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuDFz6mYuuFLq2LuvxJP6BHr2-hudWTfNnYyxXqaYyX0dzs-Z5adyATZbInejHGemigkKoTd_Z38uPxdkdkD76lQK4KO2SMFMNXtBBRKW2KdAnUR2nOwvGbOfFjMKnX4TuyAKJ42Jk2uQJF1PhjESuQIacv2tlP2bd5hsvN8Rimiw8NHKDw5EL8I3o0xJCNXBLNtkVGVk8siwIHXpj6gb0L3iUJFhYPJMbgCz6kkSoRpRMOWwV3Od-Z9evSJBNmIc_4ZQWgFul32yrWt&#34;);"></div>
+<div class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background-dark"></div>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<p class="text-slate-900 dark:text-slate-100 text-[15px] font-semibold truncate">Emma Bites</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs shrink-0">5h</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-[14px] leading-snug line-clamp-1">The sourdough starter is bubbling nicely!</p>
+</div>
+</div>
+<!-- Chat Item 5 -->
+<div class="flex items-center gap-3 bg-transparent hover:bg-primary/5 px-4 min-h-[72px] py-3 cursor-pointer transition-colors">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-12 w-12 border border-primary/10" data-alt="Smiling man with beard and casual shirt" style="background-image: url(&#34;https://lh3.googleusercontent.com/aida-public/AB6AXuBQ9KpK0K06j4xOYCsLGIe6D59HRkT2HbkZTOAnOuN1BnpdmYF2Cd_D8VQv31fNTM3R2AtdldqqcepCbwr20XGjYJIlstN_wvGrMVMnFTcaMIq7zd-wzUNGzitImmgq3roIm7E_i2te4yHnGq3wfOSuGrIiRB3DEjflMp-2aMhyZG53rX7oelOFpm0SqVkT-pROqsEBMrk2JakhUN25PjxW-zYiCuHhOflTlW01v12nao6mZxf0UcxqT5nSJq6zPzow0_oeB0WB0jwO&#34;);"></div>
+</div>
+<div class="flex flex-col justify-center flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<p class="text-slate-900 dark:text-slate-100 text-[15px] font-semibold truncate">Marco Rossi</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs shrink-0">Yesterday</p>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-[14px] leading-snug line-clamp-1">Let's coordinate for the food fest.</p>
+</div>
+</div></div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 mx-auto max-w-md bg-background-light dark:bg-background-dark/95 border-t border-primary/10 px-4 pb-6 pt-3 flex items-center justify-between backdrop-blur-lg z-30">
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-medium">Discover</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1" href="#">
+<div class="bg-primary p-2 rounded-xl text-white shadow-lg shadow-primary/40">
+<span class="material-symbols-outlined block">add_circle</span>
+</div>
+<span class="text-[10px] font-medium text-primary">Create</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-[10px] font-medium">Activity</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+</div>
+</body></html>

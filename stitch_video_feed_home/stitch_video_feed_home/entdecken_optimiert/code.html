@@ -1,0 +1,198 @@
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type='text/javascript' nonce='mSn3abo3bt/zv0r+pR2zvA==' src='https://contribution.usercontent.google.com/LaCjzuG-XnUWWVBDreswXF4ccWWiB_-zaoKCqIf82u4tuGfxg5yMsN6IfdW4yUkRcw1D3MMkDZwavnj_KHjhgZNI9dmTHrVI1nFfLFtndsdlu9CCwy4_LNbvywJhWV8F2bgQr2tJoHJtmzYpMLR_VgDZb3i0gcyWGnxElLDnH6x4IOTa64WyerfGKZ2mArwT-ZYuDaj8ngxQSO1ByZpMhYsIyIJI0FykjXH06YlWsvHtZy0_6CnTr0iLNzFPVPrmTKSva527NtRiMrX20kEiD-qZndRzM9qmPv-0ha6-CBAkTfJl6M7oe1OgQFmxJlsE1zGuueB_ghmcX5sWNl6QVC3r-4otvODu-wh7ldXls6yBbu8Z7_XlpHT3ZpGUuSS4AZkj0PpkEYoJKY9-5_PUR4QnFwo4nvxdJbGi5fGceTVQNpPQ5mGv4YgNZROXQgS_UKbdrOvsJj3kZix0UNGsKdQYDpK86G9Lf3qZs1aE3Ulp7H6zKi1gdoxbuLtIUJYCu8QQbM13YKIvJLfDD1vo6idjU8aLntZz6iYEDD7SdWE0MU5FTrc4QBKD20WlGoPEGlBjJjXpdFOLMn4Qr0Sk3l41wWlgvdo1c1m5SnwYt3YGR4952Danp1_RR6ggofH7zbULzd4MEMaJzZCF_qKFuuHi4MO6uj0xMU42D0qvaLQpOP6rLnFIsjnukEseKjn6q9b9K-ww46VyxUO1mIyittiXpl3BqOW16AbgogIC6bRB6l_1JNRswLVdZc-3MiaoQ4G_eykZzHGndVBIcW02lGakGoUxRHanT2AqClZ7'></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#660ac2",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden pb-24">
+<!-- Header -->
+<div class="flex items-center p-4 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+<div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-200 dark:bg-primary/20">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">menu</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center">Discover</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="flex size-10 items-center justify-center rounded-full bg-slate-200 dark:bg-primary/20">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">notifications</span>
+</button>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-3">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm">
+<div class="flex border-none bg-slate-200 dark:bg-primary/10 items-center justify-center pl-4 rounded-l-xl">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl focus:outline-0 focus:ring-2 focus:ring-primary border-none bg-slate-200 dark:bg-primary/10 placeholder:text-slate-500 dark:placeholder:text-slate-400 px-4 rounded-l-none pl-2 text-base font-medium" placeholder="Search recipes, chefs, or ingredients" value=""/>
+</div>
+</label>
+</div>
+<!-- Categories -->
+<div class="flex gap-3 px-4 py-2 overflow-x-auto no-scrollbar">
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-primary px-5 shadow-lg shadow-primary/20">
+<p class="text-white text-sm font-semibold">For You</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-primary/10 px-5">
+<p class="text-slate-700 dark:text-slate-200 text-sm font-medium">Vegan</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-primary/10 px-5">
+<p class="text-slate-700 dark:text-slate-200 text-sm font-medium">Quick</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-primary/10 px-5">
+<p class="text-slate-700 dark:text-slate-200 text-sm font-medium">Desserts</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-primary/10 px-5">
+<p class="text-slate-700 dark:text-slate-200 text-sm font-medium">Italian</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-primary/10 px-5">
+<p class="text-slate-700 dark:text-slate-200 text-sm font-medium">Gluten-Free</p>
+</div>
+</div>
+<!-- Section Title -->
+<div class="flex items-center justify-between px-4 pb-3 pt-6">
+<h2 class="text-xl font-extrabold tracking-tight">Trending Now</h2>
+<span class="text-primary text-sm font-bold">See all</span>
+</div>
+<!-- Video Grid -->
+<div class="grid grid-cols-2 gap-4 px-4 pb-10">
+<!-- Card 1 -->
+<div class="flex flex-col gap-2">
+<div class="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-slate-200 dark:bg-primary/5">
+<img class="h-full w-full object-cover" data-alt="Close up of a fresh healthy salad bowl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_WXKTTFt6Fsb73HTvCiSnchhhiS5MOk43RMLfiJvWDgkOhup2uuhHW9klTRItwDUejsU3Bz1Lr3rzisUqyCtLsZLobBgL0iy36vJ-_Jlw0bgXTPTHgN3tSGmCulauuszPFmCKvMgSfCrttp2lf12OjDRkaE2iWrkJ4kHEJiK_4szEKf0ulMwxZ0yMC1Bwn749q73hplSJfL8VkLICyUnwbQwTVBqVMJNGN0uw09xmt-fMYn2jtcT0RSm6KxGey6r_ASETantjf6pk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-1">
+<span class="material-symbols-outlined text-white text-sm">visibility</span>
+<span class="text-white text-xs font-semibold uppercase tracking-wider">1.2M</span>
+</div>
+<div class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-white text-lg">play_arrow</span>
+</div>
+</div>
+<div>
+<h3 class="font-bold text-sm leading-tight line-clamp-2 text-base leading-snug">Crispy Mediterranean Bowl with Tahini</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Chef Elena Ross</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col gap-2">
+<div class="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-slate-200 dark:bg-primary/5">
+<img class="h-full w-full object-cover" data-alt="Stack of pancakes with maple syrup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9a-bclKLGMYZrKExLt2x93I6X2hMLC2TZceMVHGViE1_tcz9BBeW_8h4ctAm2mKJGZlMI3nDgPPjgLddBtKV-06xrumhSbHLGp-VSum_hrl3zFnU9bQN0czeB3zS29zskLeYuDw356PkwJsUNLDLQ7wBVScGPHmcm-TmM0RNkjvtWcZbg-Suyh16VofmiwQdmekYbgL4LWjGkP8VhAg1llwm0z0kcwIatInbKU3gdGcMgWjkz7ZWdej6OHYtWgp02C2H-xD3dq0Ug"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-1">
+<span class="material-symbols-outlined text-white text-sm">visibility</span>
+<span class="text-white text-xs font-semibold uppercase tracking-wider">850K</span>
+</div>
+<div class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-white text-lg">play_arrow</span>
+</div>
+</div>
+<div>
+<h3 class="font-bold text-sm leading-tight line-clamp-2 text-base leading-snug">The 5-Minute Fluffiest Pancakes Ever</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Baker Mike</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col gap-2">
+<div class="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-slate-200 dark:bg-primary/5">
+<img class="h-full w-full object-cover" data-alt="Vibrant berry smoothie bowl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA5Edr_ttG0Hjpv-853Zg_yM3HWSwCT8zhZLJXsdVIZEz4uwAYarogB3Gpqzz-4f6ebqfISMSSJizL8B4-ewnZvkbRzzJmJxHBpwWJZ8-I_SDv-ILxk4W4O2x_T-QNy0aeMAV-fdCzIfMOV0RFueibpwro1f5f7Dt4wBgzxb9Xv7u-Pb8W91sDQEHgvdbMlKLvBec0ayeqTrumSbUaHUF08_VAZ6KZyZQmKOioUDqRi0E-8BGu4jcTf451C3eR9zjNKHLOqfw6yugq"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-1">
+<span class="material-symbols-outlined text-white text-sm">visibility</span>
+<span class="text-white text-xs font-semibold uppercase tracking-wider">2.1M</span>
+</div>
+<div class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-white text-lg">play_arrow</span>
+</div>
+</div>
+<div>
+<h3 class="font-bold text-sm leading-tight line-clamp-2 text-base leading-snug">Superfood Smoothie for High Energy</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Wellness Sara</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="flex flex-col gap-2">
+<div class="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-slate-200 dark:bg-primary/5">
+<img class="h-full w-full object-cover" data-alt="Artistic pasta dish with basil" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARIGm1hqYHCL9LGznqE2kiEGht9uDRYpNugG8tW3l31olYVpgpPBnZiHvKVI8xgdDwOaHuTKI4roJyrGTAEARlXaU-8gAZdcR51lubM1ppU9AGF16OOPvJRIWelHs1am-zyj-DjzkiZmzVNYYzsbkE_aqkagHKNTRs4240QxrJocWEAdw4ue2tvBOq6IYiAg_PjqTu350TIVrfuO-uIS0onevg19ykPLkYkwDKyhmHWruchvYqX1ihmu6LR3OfwoHJEqaSZpP5lPfb"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-3 left-3 flex items-center gap-1">
+<span class="material-symbols-outlined text-white text-sm">visibility</span>
+<span class="text-white text-xs font-semibold uppercase tracking-wider">920K</span>
+</div>
+<div class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-black/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-white text-lg">play_arrow</span>
+</div>
+</div>
+<div>
+<h3 class="font-bold text-sm leading-tight line-clamp-2 text-base leading-snug">Authentic 4-Ingredient Carbonara</h3>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Nonna Maria</p>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 left-0 right-0 border-t border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark/95 backdrop-blur-lg px-4 pb-6 pt-2 z-20">
+<div class="flex items-end justify-between"><a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium leading-normal uppercase tracking-widest">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-[1]">explore</span>
+<p class="text-[10px] font-bold leading-normal uppercase tracking-widest">Discover</p>
+</a>
+<div class="flex flex-1 items-center justify-center -mt-8">
+<button class="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-lg shadow-primary/40 ring-4 ring-background-light dark:ring-background-dark">
+<span class="material-symbols-outlined !text-3xl">add</span>
+</button>
+</div>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<p class="text-[10px] font-medium leading-normal uppercase tracking-widest">Activity</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium leading-normal uppercase tracking-widest">Profile</p>
+</a></div>
+</div>
+</div>
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .fill-\[1\] {
+        font-variation-settings: 'FILL' 1;
+    }
+</style>
+</body></html>

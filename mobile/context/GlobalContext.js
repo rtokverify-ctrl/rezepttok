@@ -13,6 +13,7 @@ export const GlobalProvider = ({ children }) => {
     // Global Feed Data
     const [videos, setVideos] = useState([]);
     const [feedLoading, setFeedLoading] = useState(true);
+    const [nextCursor, setNextCursor] = useState(null);
 
     // Profile Data
     const [myProfileData, setMyProfileData] = useState(null);
@@ -69,29 +70,39 @@ export const GlobalProvider = ({ children }) => {
         setSavedVideos([]);
     };
 
-    const loadFeed = async (isRefresh = false) => {
+    const loadFeed = async (isRefresh = false, cursorOverride = null) => {
         if (!userToken) return;
-        if (!isRefresh) setFeedLoading(true);
+        if (!isRefresh && !cursorOverride) setFeedLoading(true);
         try {
-            const r = await fetch(`${BASE_URL}/feed`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const url = cursorOverride ? `${BASE_URL}/feed?cursor=${encodeURIComponent(cursorOverride)}` : `${BASE_URL}/feed`;
+            const r = await fetch(url, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
-            if (Array.isArray(d)) {
-                setVideos(d.map(v => ({
-                    ...v,
-                    video_url: getFullUrl(v.video_url),
-                    likes: v.likes_count || 0,
-                    is_liked: v.i_liked_it,
-                    saved: v.i_saved_it,
-                    i_follow: v.i_follow_owner
-                })));
+            const fetchedVideos = d.data || [];
+            setNextCursor(d.nextCursor || null);
+            
+            const formatted = fetchedVideos.map(v => ({
+                ...v,
+                video_url: getFullUrl(v.video_url),
+                likes: v.likes_count || 0,
+                is_liked: v.i_liked_it,
+                saved: v.i_saved_it,
+                i_follow: v.i_follow_owner
+            }));
+
+            if (cursorOverride) {
+                setVideos(prev => {
+                    const existingIds = new Set(prev.map(p => p.id));
+                    const newUnique = formatted.filter(f => !existingIds.has(f.id));
+                    return [...prev, ...newUnique];
+                });
             } else {
-                setVideos([]);
+                setVideos(formatted);
             }
         } catch (e) {
             console.log("Feed Error", e);
-            setVideos([]);
+            if (!cursorOverride) setVideos([]);
         } finally {
-            setFeedLoading(false);
+            if (!cursorOverride) setFeedLoading(false);
         }
     };
 
@@ -199,7 +210,8 @@ export const GlobalProvider = ({ children }) => {
 
     const value = {
         userToken, isLoading, handleLogin, logout,
-        videos, setVideos, loadFeed, feedLoading,
+        videos, setVideos, loadFeed, feedLoading, nextCursor,
+
         myProfileData, setMyProfileData, myVideos, setMyVideos,
         likedVideos, loadLikedVideos,
         savedVideos, loadSavedVideosAll,
