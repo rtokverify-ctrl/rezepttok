@@ -20,13 +20,18 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 if not os.path.exists("static"): os.makedirs("static")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:8080,http://localhost:3000,http://127.0.0.1:8080").split(",")
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
+if allowed_origins_env == "*":
+    allowed_origins = ["*"]
+else:
+    allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",")]
 
 app.add_middleware(
     CORSMiddleware, 
     allow_origins=allowed_origins, 
     allow_methods=["*"], 
-    allow_headers=["*"]
+    allow_headers=["*"],
+    allow_credentials=False if "*" in allowed_origins else True
 )
 
 @app.get("/")
