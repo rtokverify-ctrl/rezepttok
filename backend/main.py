@@ -10,10 +10,15 @@ import models
 from limiter import limiter
 from routers import auth_router, users_router, recipes_router, video_router, search_router, notifications_router, shopping_router, debug_router, chat_router, health_router, collaboration_router
 
-# Create tables
-Base.metadata.create_all(bind=engine)
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Create tables
+    Base.metadata.create_all(bind=engine)
+    yield
+
+app = FastAPI(lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
