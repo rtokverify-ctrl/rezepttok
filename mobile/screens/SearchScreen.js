@@ -18,6 +18,25 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
     const [searchResults, setSearchResults] = useState({ users: [], videos: [] });
     const [isSearching, setIsSearching] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
+    const [trendingVideos, setTrendingVideos] = useState([]);
+    const [isLoadingTrending, setIsLoadingTrending] = useState(true);
+
+    React.useEffect(() => {
+        const fetchTrending = async () => {
+            try {
+                const r = await fetch(`${BASE_URL}/recipes/trending`, {
+                    headers: { 'Authorization': `Bearer ${userToken}` }
+                });
+                const d = await r.json();
+                setTrendingVideos(Array.isArray(d.data) ? d.data : []);
+            } catch (e) {
+                console.log(e);
+            } finally {
+                setIsLoadingTrending(false);
+            }
+        };
+        if (userToken) fetchTrending();
+    }, [userToken]);
 
     const handleSearch = async (query) => {
         const q = query || searchText;
@@ -41,8 +60,12 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
     };
 
     const handleTagPress = (tag) => {
-        setSearchText(tag);
-        handleSearch(tag);
+        if (navigation?.navigate) {
+            // Using Expo router via the passed navigation prop
+            navigation.navigate(`tag/${tag}`);
+        } else {
+            console.warn("Navigation prop missing");
+        }
     };
 
     const renderUserItem = ({ item }) => (
@@ -68,18 +91,25 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
         </TouchableOpacity>
     );
 
-    const renderVideoTile = ({ item }) => (
-        <TouchableOpacity style={styles.videoTile} activeOpacity={0.8}>
-            <View style={styles.videoTileInner}>
-                <Ionicons name="play-circle" size={32} color="rgba(255,255,255,0.8)" style={{ position: 'absolute', top: 10, right: 10 }} />
-                <Text style={styles.videoTileTitle} numberOfLines={2}>{item.title}</Text>
-            </View>
-            <View style={styles.videoTileLikes}>
-                <Ionicons name="play" size={14} color="white" />
-                <Text style={styles.videoTileLikesText}>{item.views || item.likes_count || 0}</Text>
-            </View>
-        </TouchableOpacity>
-    );
+    const renderVideoTile = ({ item }) => {
+        const formatViews = (num) => {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num || 0;
+        };
+        return (
+            <TouchableOpacity style={styles.videoTile} activeOpacity={0.8}>
+                <View style={styles.videoTileInner}>
+                    <Ionicons name="play-circle" size={32} color="rgba(255,255,255,0.8)" style={{ position: 'absolute', top: 10, right: 10 }} />
+                    <Text style={styles.videoTileTitle} numberOfLines={2}>{item.title}</Text>
+                </View>
+                <View style={styles.videoTileLikes}>
+                    <Ionicons name="play" size={14} color="white" />
+                    <Text style={styles.videoTileLikesText}>{formatViews(item.views || item.likes_count || 0)}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -142,13 +172,19 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
                     </View>
                     
                     <Text style={styles.trendingTitle}>Trending in Deutschland</Text>
-                    <View style={styles.videoGrid}>
-                        {/* Placeholder trending videos for visual until real data */}
-                        {renderVideoTile({ item: { title: "Cremige Trüffel Pasta in 15 Min", views: "1.2M", likes_count: 500 }})}
-                        {renderVideoTile({ item: { title: "Der perfekte Pizzateig", views: "850K", likes_count: 300 }})}
-                        {renderVideoTile({ item: { title: "Gesunde Bowl", views: "420K", likes_count: 120 }})}
-                        {renderVideoTile({ item: { title: "Bestes Tiramisu", views: "2.1M", likes_count: 800 }})}
-                    </View>
+                    {isLoadingTrending ? (
+                        <ActivityIndicator size="small" color={THEME_COLOR} style={{ marginTop: 20 }} />
+                    ) : (
+                        <View style={styles.videoGrid}>
+                            {trendingVideos.length > 0 ? (
+                                trendingVideos.map((video, i) => (
+                                    <View key={video.id || i}>{renderVideoTile({ item: video })}</View>
+                                ))
+                            ) : (
+                                <Text style={{ color: '#666', paddingHorizontal: 16 }}>Keine Trending-Rezepte gefunden.</Text>
+                            )}
+                        </View>
+                    )}
                 </View>
             ) : (
                 <FlatList

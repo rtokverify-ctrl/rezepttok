@@ -11,18 +11,38 @@ from auth import get_current_user
 
 router = APIRouter()
 
+from algorithms.feed_logic import get_feed_with_edge_rank
+
 @router.get("/feed")
 def get_feed(cursor: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    query = db.query(Recipe)
-    if cursor:
-        query = query.filter(Recipe.created_at < cursor)
+    cursor_score = None
+    cursor_id = None
+    if cursor and "_" in cursor:
+        try:
+            parts = cursor.split("_")
+            cursor_score = float(parts[0])
+            cursor_id = int(parts[1])
+        except ValueError:
+            pass
+            
+    # Get recipes using the Edge Rank algorithm
+    ranked_recipes = get_feed_with_edge_rank(
+        db=db, 
+        current_user_id=current_user.id, 
+        cursor_score=cursor_score, 
+        cursor_id=cursor_id, 
+        limit=10
+    )
     
-    recipes = query.order_by(Recipe.created_at.desc()).limit(10).all()
     results = []
-    for r in recipes:
+    for r, score in ranked_recipes:
         owner = db.query(User).filter(User.id == r.owner_id).first()
         chef_display = owner.display_name if owner else "Unknown"
         owner_avatar = owner.avatar_url if owner else None
+        
+        # We can still count likes and comments for the response, 
+        # or we could optimize by returning them from the query, 
+        # but for simplicity we keep the existing response format
         count = db.query(Like).filter(Like.recipe_id == r.id).count()
         comment_count = db.query(Comment).filter(Comment.recipe_id == r.id).count()
         my_like = db.query(Like).filter(Like.recipe_id == r.id, Like.user_id == current_user.id).first()
@@ -37,9 +57,11 @@ def get_feed(cursor: Optional[str] = None, db: Session = Depends(get_db), curren
             "likes_count": count, "i_liked_it": my_like is not None, 
             "comments_count": comment_count, "i_saved_it": my_save is not None, "is_mine": (r.owner_id == current_user.id),
             "i_follow_owner": i_follow,
-            "created_at": r.created_at
+            "created_at": r.created_at,
+            "views": r.views,
+            "edge_rank_score": score
         })
-    nextCursor = results[-1]["created_at"] if results else None
+    nextCursor = f"{ranked_recipes[-1][1]}_{ranked_recipes[-1][0].id}" if ranked_recipes else None
     return {"data": results, "nextCursor": nextCursor}
 
 @router.get("/my-saved-videos/all")
@@ -178,3 +200,60 @@ def delete_recipe(recipe_id: int, db: Session = Depends(get_db), user: User = De
     db.delete(recipe)
     db.commit()
     return {"msg": "Weg"}
+
+@router.get("/recipes/trending")
+def get_trending_recipes(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    # Standard query logic without full Edge Rank, descending by views (or likes if views not available).
+    # Since we added views to the model, we order by views.
+    recipes = db.query(Recipe).order_by(Recipe.views.desc().nullslast(), Recipe.created_at.desc()).limit(15).all()
+    
+    results = []
+    for r in recipes:
+        owner = db.query(User).filter(User.id == r.owner_id).first()
+        chef_display = owner.display_name if owner else "Unknown"
+        owner_avatar = owner.avatar_url if owner else None
+        count = db.query(Like).filter(Like.recipe_id == r.id).count()
+        comment_count = db.query(Comment).filter(Comment.recipe_id == r.id).count()
+        my_like = db.query(Like).filter(Like.recipe_id == r.id, Like.user_id == current_user.id).first()
+        my_save = db.query(SavedRecipe).filter(SavedRecipe.recipe_id == r.id, SavedRecipe.user_id == current_user.id).first()
+        i_follow = db.query(Follow).filter(Follow.follower_id == current_user.id, Follow.following_id == r.owner_id).first() is not None if r.owner_id != current_user.id else False
+        
+        results.append({
+            "id": r.id, "title": r.title, "video_url": r.video_url, "chef": chef_display, "owner_id": r.owner_id, 
+            "owner_avatar_url": owner_avatar,
+            "ingredients": r.ingredients, "steps": r.steps, "tags": r.tags, "tips": r.tips,
+            "likes_count": count, "i_liked_it": my_like is not None, 
+            "comments_count": comment_count, "i_saved_it": my_save is not None, "is_mine": (r.owner_id == current_user.id),
+            "i_follow_owner": i_follow,
+            "created_at": r.created_at,
+            "views": r.views
+        })
+    return {"data": results}
+
+@router.get("/recipes/tags/{tag}")
+def get_recipes_by_tag(tag: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from sqlalchemy import cast, String
+    recipes = db.query(Recipe).filter(cast(Recipe.tags, String).ilike(f"%{tag}%")).order_by(Recipe.created_at.desc()).limit(20).all()
+    
+    results = []
+    for r in recipes:
+        owner = db.query(User).filter(User.id == r.owner_id).first()
+        chef_display = owner.display_name if owner else "Unknown"
+        owner_avatar = owner.avatar_url if owner else None
+        count = db.query(Like).filter(Like.recipe_id == r.id).count()
+        comment_count = db.query(Comment).filter(Comment.recipe_id == r.id).count()
+        my_like = db.query(Like).filter(Like.recipe_id == r.id, Like.user_id == current_user.id).first()
+        my_save = db.query(SavedRecipe).filter(SavedRecipe.recipe_id == r.id, SavedRecipe.user_id == current_user.id).first()
+        i_follow = db.query(Follow).filter(Follow.follower_id == current_user.id, Follow.following_id == r.owner_id).first() is not None if r.owner_id != current_user.id else False
+        
+        results.append({
+            "id": r.id, "title": r.title, "video_url": r.video_url, "chef": chef_display, "owner_id": r.owner_id, 
+            "owner_avatar_url": owner_avatar,
+            "ingredients": r.ingredients, "steps": r.steps, "tags": r.tags, "tips": r.tips,
+            "likes_count": count, "i_liked_it": my_like is not None, 
+            "comments_count": comment_count, "i_saved_it": my_save is not None, "is_mine": (r.owner_id == current_user.id),
+            "i_follow_owner": i_follow,
+            "created_at": r.created_at,
+            "views": r.views
+        })
+    return {"data": results}

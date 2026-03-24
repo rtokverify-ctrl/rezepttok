@@ -1,0 +1,67 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
+dist/
+build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS Data
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build and Temp files
+.tmp/
+tmp/
+temp/
+coverage/
+
+# Media / Assets (unless needed for code context)
+*.mp4
+*.mov
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.bmp
+*.ico

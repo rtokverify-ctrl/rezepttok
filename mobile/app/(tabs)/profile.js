@@ -6,7 +6,7 @@ import RecipeModal from '../../components/RecipeModal';
 export default function ProfileTab() {
     const {
         userToken, myProfileData, myVideos, likedVideos, savedVideos,
-        collections, collectionVideos, loadLikedVideos, loadSavedVideosAll,
+        collections, sharedCollections, collectionVideos, loadLikedVideos, loadSavedVideosAll,
         fetchCollections, loadCollectionVideos, activeCollectionId, setActiveCollectionId,
         loadMyProfile, logout, deleteRecipeGlobal
     } = useGlobal();
@@ -32,6 +32,7 @@ export default function ProfileTab() {
                 likedVideos={likedVideos}
                 savedVideos={savedVideos}
                 collections={collections}
+                sharedCollections={sharedCollections}
                 collectionVideos={collectionVideos}
                 loadLikedVideos={loadLikedVideos}
                 loadSavedVideosAll={loadSavedVideosAll}

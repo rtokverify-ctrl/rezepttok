@@ -75,9 +75,10 @@ const FeedScreen = ({
     const isFocused = useIsFocused();
 
     const onViewableItemsChanged = useRef(({ viewableItems }) => {
-        if (viewableItems.length > 0) Object.values(viewableItems).forEach(item => {
-            if (item.isViewable) setActiveVideoIndex(item.index);
-        });
+        const visibleItem = viewableItems.find(item => item.isViewable);
+        if (visibleItem != null && visibleItem.index != null) {
+            setActiveVideoIndex(visibleItem.index);
+        }
     }).current;
 
     const onRefresh = useCallback(async () => {

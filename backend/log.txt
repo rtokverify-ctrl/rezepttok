@@ -1,0 +1,69 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: E:\Programmieren\Projekte\RezeptTok\backend
+plugins: anyio-4.12.1
+collected 6 items
+
+tests\test_users.py ....FF                                               [100%]
+
+================================== FAILURES ===================================
+_____________________________ test_follow_toggle ______________________________
+
+client = <starlette.testclient.TestClient object at 0x0000012D7F252520>
+auth_token = '', second_auth_token = ''
+
+    def test_follow_toggle(client, auth_token, second_auth_token):
+        # Get user1's ID
+        user1 = client.get("/my-profile", headers=auth_header(auth_token)).json()
+>       user1_id = user1["id"]
+                   ^^^^^^^^^^^
+E       KeyError: 'id'
+
+tests\test_users.py:44: KeyError
+----------------------------- Captured log setup ------------------------------
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /register
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /register
+___________________________ test_cannot_follow_self ___________________________
+
+client = <starlette.testclient.TestClient object at 0x0000012D7F2F3AD0>
+auth_token = ''
+
+    def test_cannot_follow_self(client, auth_token):
+        my = client.get("/my-profile", headers=auth_header(auth_token)).json()
+>       r = client.post(f"/users/{my['id']}/toggle-follow", headers=auth_header(auth_token))
+                                  ^^^^^^^^
+E       KeyError: 'id'
+
+tests\test_users.py:63: KeyError
+----------------------------- Captured log setup ------------------------------
+WARNING  slowapi:extension.py:510 ratelimit 5 per 1 minute (testclient) exceeded at endpoint: /register
+============================== warnings summary ===============================
+schemas.py:40
+  E:\Programmieren\Projekte\RezeptTok\backend\tests\..\schemas.py:40: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class MessageOut(BaseModel):
+
+routers\notifications_router.py:11
+  E:\Programmieren\Projekte\RezeptTok\backend\tests\..\routers\notifications_router.py:11: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class NotificationOut(BaseModel):
+
+routers\shopping_router.py:16
+  E:\Programmieren\Projekte\RezeptTok\backend\tests\..\routers\shopping_router.py:16: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ShoppingListOut(BaseModel):
+
+routers\shopping_router.py:34
+  E:\Programmieren\Projekte\RezeptTok\backend\tests\..\routers\shopping_router.py:34: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class ShoppingItemOut(BaseModel):
+
+tests/test_users.py::test_get_my_profile
+tests/test_users.py::test_get_user_profile
+tests/test_users.py::test_get_user_profile
+tests/test_users.py::test_get_nonexistent_profile
+tests/test_users.py::test_update_profile
+  E:\Programmieren\Projekte\RezeptTok\backend\tests\..\auth.py:28: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_users.py::test_follow_toggle - KeyError: 'id'
+FAILED tests/test_users.py::test_cannot_follow_self - KeyError: 'id'
+================== 2 failed, 4 passed, 9 warnings in 21.87s ===================

@@ -36,6 +36,25 @@ def share_list(list_id: int, request: ShareRequest, db: Session = Depends(get_db
     db.commit()
     return {"message": f"List shared with {target_user.username}"}
 
+@router.get("/shopping-lists/shared-with-me")
+def get_shared_shopping_lists(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Lädt alle Einkaufslisten, die mit dem aktuellen User geteilt wurden."""
+    shared = db.query(SharedShoppingList).filter(SharedShoppingList.shared_with_user_id == current_user.id).all()
+    results = []
+    for s in shared:
+        l = db.query(ShoppingList).filter(ShoppingList.id == s.list_id).first()
+        if l:
+            owner = db.query(User).filter(User.id == l.user_id).first()
+            owner_name = owner.display_name if owner and owner.display_name else (owner.username if owner else "Unknown")
+            results.append({
+                "id": l.id,
+                "name": l.name,
+                "owner_id": l.user_id,
+                "owner_name": owner_name,
+                "created_at": l.created_at
+            })
+    return results
+
 @router.post("/collections/{collection_id}/share")
 def share_collection(collection_id: int, request: ShareRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Teilt eine gespeicherte Video-Sammlung mit einem anderen User."""
@@ -61,3 +80,21 @@ def share_collection(collection_id: int, request: ShareRequest, db: Session = De
     db.add(share)
     db.commit()
     return {"message": f"Collection shared with {target_user.username}"}
+
+@router.get("/collections/shared-with-me")
+def get_shared_collections(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Lädt alle Collections, die mit dem aktuellen User geteilt wurden."""
+    shared = db.query(SharedCollection).filter(SharedCollection.shared_with_user_id == current_user.id).all()
+    results = []
+    for s in shared:
+        c = db.query(Collection).filter(Collection.id == s.collection_id).first()
+        if c:
+            owner = db.query(User).filter(User.id == c.user_id).first()
+            owner_name = owner.display_name if owner and owner.display_name else (owner.username if owner else "Unknown")
+            results.append({
+                "id": c.id,
+                "name": c.name,
+                "owner_id": c.user_id,
+                "owner_name": owner_name
+            })
+    return results

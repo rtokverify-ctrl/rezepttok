@@ -60,6 +60,7 @@ class Recipe(Base):
     steps: Mapped[Optional[list]] = mapped_column(JSON)
     tags: Mapped[Optional[list]] = mapped_column(JSON)
     tips: Mapped[Optional[str]] = mapped_column(default=None)
+    views: Mapped[int] = mapped_column(default=0)
     created_at: Mapped[Optional[str]] = mapped_column(default=None)
 
 class Like(Base):

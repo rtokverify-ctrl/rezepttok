@@ -77,7 +77,7 @@ const ProfileScreen = ({
     const router = useRouter();
     const { unreadChatCount } = useGlobal();
     const [profileTab, setProfileTab] = useState('uploads');
-    const [savedViewType, setSavedViewType] = useState('all'); // 'all' or 'folders'
+    const [savedViewType, setSavedViewType] = useState('all'); // 'all', 'folders', or 'shared'
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [settingsView, setSettingsView] = useState('menu');
 
@@ -191,9 +191,14 @@ const ProfileScreen = ({
     if (profileTab === 'saved' && activeCollectionId !== null) {
         return (
             <View style={{ flex: 1, backgroundColor: 'black' }}>
-                <View style={[styles.profileHeader, { marginTop: 40, flexDirection: 'row', justifyContent: 'flex-start', paddingLeft: 20 }]}>
-                    <TouchableOpacity onPress={() => setActiveCollectionId(null)}><Ionicons name="arrow-back" size={28} color="white" /></TouchableOpacity>
-                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 15 }}>Ordner Inhalt</Text>
+                <View style={[styles.profileHeader, { marginTop: 40, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 }]}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => setActiveCollectionId(null)}><Ionicons name="arrow-back" size={28} color="white" /></TouchableOpacity>
+                        <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 15 }}>Ordner Inhalt</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => handleShareCollection(activeCollectionId)} style={{ padding: 4 }}>
+                        <Ionicons name="share-social-outline" size={24} color={THEME_COLOR} />
+                    </TouchableOpacity>
                 </View>
                 <FlatList
                     keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
@@ -205,6 +210,44 @@ const ProfileScreen = ({
             </View>
         );
     }
+
+    const handleShareCollection = (collectionId) => {
+        if (Platform.OS === 'web') {
+            const username = window.prompt("Gib den exakten Benutzernamen der Person ein, mit der du diese Sammlung teilen möchtest:");
+            if (username) {
+                executeShareCollection(collectionId, username);
+            }
+        } else {
+            Alert.prompt(
+                "Ordner teilen",
+                "Gib den exakten Benutzernamen der Person ein:",
+                [
+                    { text: "Abbrechen", style: "cancel" },
+                    { text: "Teilen", onPress: (username) => executeShareCollection(collectionId, username) }
+                ],
+                "plain-text"
+            );
+        }
+    };
+
+    const executeShareCollection = async (collectionId, username) => {
+        if (!username || !username.trim()) return;
+        try {
+            const r = await fetch(`${BASE_URL}/collections/${collectionId}/share`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` },
+                body: JSON.stringify({ shared_with_username: username.trim() })
+            });
+            const d = await r.json();
+            if (!r.ok) throw new Error(d.detail || 'Fehler beim Teilen');
+            if (Platform.OS === 'web') window.alert('Ordner erfolgreich geteilt!');
+            else Alert.alert('Erfolg', 'Ordner erfolgreich geteilt!');
+        } catch (e) {
+            if (Platform.OS === 'web') window.alert("Fehler: " + e.message);
+            else Alert.alert('Fehler', e.message);
+        }
+    };
+
 
     let activeData = [];
     if (profileTab === 'uploads') activeData = myVideos;
@@ -292,11 +335,14 @@ const ProfileScreen = ({
                 <>
                     {/* SUB-TAB SWITCH FÜR SAVED */}
                     <View style={{ flexDirection: 'row', justifyContent: 'center', paddingVertical: 10 }}>
-                        <TouchableOpacity onPress={() => { setSavedViewType('all'); loadSavedVideosAll(); }} style={{ paddingHorizontal: 20, paddingVertical: 5, backgroundColor: savedViewType === 'all' ? '#333' : 'transparent', borderRadius: 15 }}>
+                        <TouchableOpacity onPress={() => { setSavedViewType('all'); loadSavedVideosAll(); }} style={{ paddingHorizontal: 15, paddingVertical: 5, backgroundColor: savedViewType === 'all' ? '#333' : 'transparent', borderRadius: 15 }}>
                             <Text style={{ color: savedViewType === 'all' ? 'white' : '#888', fontWeight: 'bold' }}>Alle</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setSavedViewType('folders'); fetchCollections(); }} style={{ paddingHorizontal: 20, paddingVertical: 5, backgroundColor: savedViewType === 'folders' ? '#333' : 'transparent', borderRadius: 15, marginLeft: 10 }}>
+                        <TouchableOpacity onPress={() => { setSavedViewType('folders'); fetchCollections(); }} style={{ paddingHorizontal: 15, paddingVertical: 5, backgroundColor: savedViewType === 'folders' ? '#333' : 'transparent', borderRadius: 15, marginLeft: 10 }}>
                             <Text style={{ color: savedViewType === 'folders' ? 'white' : '#888', fontWeight: 'bold' }}>Ordner</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { setSavedViewType('shared'); fetchCollections(); }} style={{ paddingHorizontal: 15, paddingVertical: 5, backgroundColor: savedViewType === 'shared' ? '#333' : 'transparent', borderRadius: 15, marginLeft: 10 }}>
+                            <Text style={{ color: savedViewType === 'shared' ? 'white' : '#888', fontWeight: 'bold' }}>Geteilt</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -308,7 +354,7 @@ const ProfileScreen = ({
                             renderItem={({ item }) => <TouchableOpacity onPress={() => { setSelectedRecipe(item); setModalVisible(true); }} style={styles.gridItem}><MiniVideo uri={item.video_url} style={{ width: '100%', height: '100%' }} /></TouchableOpacity>}
                             ListEmptyComponent={<EmptyGrid tab="saved" />}
                         />
-                    ) : (
+                    ) : savedViewType === 'folders' ? (
                         <FlatList
                             key={'saved-folders'}
                             keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
@@ -316,11 +362,31 @@ const ProfileScreen = ({
                             numColumns={2}
                             renderItem={({ item }) => (
                                 <TouchableOpacity onPress={() => loadCollectionVideos(item.id)} style={styles.collectionItem}>
+                                    <View style={{ position: 'absolute', top: 10, right: 10 }}>
+                                        <TouchableOpacity onPress={(e) => { e.stopPropagation(); handleShareCollection(item.id); }}>
+                                            <Ionicons name="share-social-outline" size={20} color="rgba(255,255,255,0.7)" />
+                                        </TouchableOpacity>
+                                    </View>
                                     <Ionicons name="folder" size={50} color={THEME_COLOR} />
                                     <Text style={{ color: 'white', marginTop: 5, fontWeight: 'bold' }}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
                             ListEmptyComponent={<View style={{ padding: 50, alignItems: 'center' }}><Text style={{ color: '#666' }}>Keine Ordner.</Text></View>}
+                        />
+                    ) : (
+                        <FlatList
+                            key={'saved-shared'}
+                            keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
+                            data={sharedCollections || []}
+                            numColumns={2}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity onPress={() => loadCollectionVideos(item.id)} style={styles.collectionItem}>
+                                    <Ionicons name="folder-open" size={50} color="#00C2FF" />
+                                    <Text style={{ color: 'white', marginTop: 5, fontWeight: 'bold', textAlign: 'center' }}>{item.name}</Text>
+                                    <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 10, marginTop: 2 }}>von {item.owner_name}</Text>
+                                </TouchableOpacity>
+                            )}
+                            ListEmptyComponent={<View style={{ padding: 50, alignItems: 'center' }}><Text style={{ color: '#666' }}>Nichts geteilt.</Text></View>}
                         />
                     )}
                 </>

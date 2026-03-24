@@ -19,6 +19,10 @@ import services.mail_manager
 services.mail_manager.mail_manager.send_verification_code = AsyncMock(return_value={"ok": True})
 
 from main import app
+from limiter import limiter
+
+# Disable rate limiter for tests to prevent 429 Too Many Requests errors
+limiter.enabled = False
 
 # ── In-Memory SQLite for tests ──────────────────────────────────────
 TEST_DATABASE_URL = "sqlite:///./test_db.db"

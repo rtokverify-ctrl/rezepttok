@@ -36,12 +36,21 @@ const CookingScreen = ({ userToken }) => {
 
     const loadLists = async () => {
         try {
+            // Fetch own lists
             const r = await fetch(`${BASE_URL}/shopping-lists`, { headers: { 'Authorization': 'Bearer ' + userToken } });
-            const d = await r.json();
-            setLists(d);
-            if (d.length > 0 && !activeListId) setActiveListId(d[0].id);
-            else if (d.length === 0) setShoppingItems([]);
-        } catch (e) { }
+            const ownLists = await r.json();
+            
+            // Fetch shared lists
+            const rShared = await fetch(`${BASE_URL}/shopping-lists/shared-with-me`, { headers: { 'Authorization': 'Bearer ' + userToken } });
+            const sharedListsData = await rShared.json();
+            const sharedLists = Array.isArray(sharedListsData) ? sharedListsData.map(l => ({ ...l, is_shared: true })) : [];
+            
+            const allLists = [...ownLists, ...sharedLists];
+            setLists(allLists);
+            
+            if (allLists.length > 0 && !activeListId) setActiveListId(allLists[0].id);
+            else if (allLists.length === 0) setShoppingItems([]);
+        } catch (e) { console.log(e); }
     };
 
     const loadItems = async (listId) => {
@@ -175,7 +184,7 @@ const CookingScreen = ({ userToken }) => {
                                     <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: activeListId === item.id ? THEME_COLOR : '#333', paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, marginRight: 10 }}>
                                         <TouchableOpacity onPress={() => setActiveListId(item.id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             {item.is_shared && <Ionicons name="people" size={14} color="white" style={{ marginRight: 5 }} />}
-                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.name}</Text>
+                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.name} {item.is_shared ? `(${item.owner_name})` : ''}</Text>
                                         </TouchableOpacity>
                                         
                                         {!item.is_shared && activeListId === item.id && (

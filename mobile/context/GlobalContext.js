@@ -23,6 +23,7 @@ export const GlobalProvider = ({ children }) => {
 
     // Collections
     const [collections, setCollections] = useState([]);
+    const [sharedCollections, setSharedCollections] = useState([]);
     const [activeCollectionId, setActiveCollectionId] = useState(null);
     const [collectionVideos, setCollectionVideos] = useState([]);
 
@@ -131,8 +132,15 @@ export const GlobalProvider = ({ children }) => {
             const d = await r.json();
             if (Array.isArray(d)) setCollections(d);
             else setCollections([]);
+            
+            // Also fetch shared collections
+            const sReq = await fetch(`${BASE_URL}/collections/shared-with-me`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const sData = await sReq.json();
+            if (Array.isArray(sData)) setSharedCollections(sData);
+            else setSharedCollections([]);
         } catch (e) {
             setCollections([]);
+            setSharedCollections([]);
         }
     };
 
@@ -216,6 +224,7 @@ export const GlobalProvider = ({ children }) => {
         likedVideos, loadLikedVideos,
         savedVideos, loadSavedVideosAll,
         collections, setCollections, fetchCollections: loadCollections,
+        sharedCollections,
         activeCollectionId, setActiveCollectionId,
         collectionVideos, setCollectionVideos, loadCollectionVideos,
         toggleLike, toggleFollow, deleteRecipeGlobal, loadMyProfile,

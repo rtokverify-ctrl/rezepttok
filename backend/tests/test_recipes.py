@@ -143,3 +143,15 @@ def test_collection_create_and_save(client, auth_token):
     # Remove from collection
     r = client.post(f"/recipes/{recipe_id}/toggle-collection/{col_id}", headers=auth_header(auth_token))
     assert r.json()["active"] is False
+
+
+# ── TRENDING ─────────────────────────────────────────────────────────
+
+def test_trending_recipes(client, auth_token):
+    _create_recipe(client, auth_token)
+    r = client.get("/recipes/trending", headers=auth_header(auth_token))
+    assert r.status_code == 200
+    data = r.json()["data"]
+    assert len(data) >= 1
+    assert data[0]["title"] == "Test Pasta"
+    assert "views" in data[0]

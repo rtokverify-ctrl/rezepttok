@@ -1,16 +1,15 @@
 # Current Tasks & Plan
 
-## Active Plan: Video Playback & Interactive Seekbar
-- [ ] Ensure `FeedScreen`'s `onViewableItemsChanged` strictly sets `isActive` only when a video is fully in view (itemVisiblePercentThreshold: 100).
-- [ ] In `VideoPost.js`, strictly bind the `player.play()` / `player.pause()` to the `isActive` and `userPaused` states.
-- [ ] Add `useEvent` listener for video progress to update the seekbar smoothly.
-- [ ] Implement an interactive seekbar using `PanResponder` in `VideoPost.js` to allow dragging.
-- [ ] Add `Animated` values to expand the seekbar track and thumb when the user is dragging.
+## Active Plan: Push & Production Deployment (Clean Up)
+- [ ] Backend: Fix remaining linting errors (e.g., unused or incorrect imports in `algorithms/feed_logic.py`).
+- [ ] Backend: Clean up unused code and test artifacts.
+- [ ] Git: Commit changes and push to repository.
+- [ ] Deployment: Trigger Render deployment and verify live status.
 
 ## Backlog / To-Do
-- [ ] Follow up on Collaboration/Sharing features
-- [ ] Implement Rate Limiting / Security enhancements
+- [ ] Notifications: Implement In-App and Push-Notifications.
+- [ ] Profile Settings: Expand user profile (avatars, bio, theme toggle).
+- [ ] Frontend Testing: Add Unit/E2E tests and improve offline caching.
 
 ## Review / Verification
-- [ ] Ensure seekbar dragging effectively scrubs the video.
-- [ ] Test video pause/play behavior during fast scroll.
+- [ ] Ensure the backend runs without any unresolved static analysis / linting errors before deployment.

@@ -108,6 +108,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
     }, [player, seekTo, userPaused, animateSeekbar]);
 
     // React Native PanResponder
+    const dragStartX = useRef(0);
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -116,22 +117,21 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                 isDragging.current = true;
                 animateSeekbar(true);
                 try { player.pause(); } catch (ex) { }
-                seekTo(e.nativeEvent.locationX);
+                dragStartX.current = e.nativeEvent.locationX;
+                seekTo(dragStartX.current);
             },
             onPanResponderMove: (e, gestureState) => {
-                // Approximate locationX based on initial touch + dx
-                const initialLeft = e.nativeEvent.locationX - gestureState.dx;
-                seekTo(initialLeft + gestureState.dx);
+                seekTo(dragStartX.current + gestureState.dx);
             },
             onPanResponderRelease: () => {
                 isDragging.current = false;
                 animateSeekbar(false);
-                if (!userPaused) try { player.play(); } catch (ex) { }
+                if (!userPaused && isActive) try { player.play(); } catch (ex) { }
             },
             onPanResponderTerminate: () => {
                 isDragging.current = false;
                 animateSeekbar(false);
-                if (!userPaused) try { player.play(); } catch (ex) { }
+                if (!userPaused && isActive) try { player.play(); } catch (ex) { }
             }
         })
     ).current;

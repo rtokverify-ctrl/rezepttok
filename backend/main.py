@@ -22,7 +22,8 @@ app = FastAPI(lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-if not os.path.exists("static"): os.makedirs("static")
+if not os.path.exists("static"):
+    os.makedirs("static")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
@@ -40,10 +41,12 @@ app.add_middleware(
 )
 
 @app.get("/")
-def read_root(): return {"status": "Online"}
+def read_root():
+    return {"status": "Online"}
 
 @app.head("/")
-def head_root(): return {"status": "Online"}
+def head_root():
+    return {"status": "Online"}
 
 app.include_router(auth_router.router)
 app.include_router(users_router.router)
