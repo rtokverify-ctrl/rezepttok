@@ -6,9 +6,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useGlobal } from '../context/GlobalContext';
-import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { BASE_URL,  getFullUrl } from '../constants/Config';
 
 const ChatScreen = () => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const { userToken } = useGlobal();
     const router = useRouter();
     const [conversations, setConversations] = useState([]);
@@ -110,7 +113,7 @@ const ChatScreen = () => {
     if (loading) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color={THEME_COLOR} />
+                <ActivityIndicator size="large" color={themeColor} />
             </View>
         );
     }
@@ -137,7 +140,7 @@ const ChatScreen = () => {
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderConversation}
                     refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={THEME_COLOR} />
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={themeColor} />
                     }
                     contentContainerStyle={styles.listContent}
                 />
@@ -146,7 +149,7 @@ const ChatScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#000',
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: -2,
         right: -2,
-        backgroundColor: THEME_COLOR,
+        backgroundColor: themeColor,
         borderRadius: 10,
         minWidth: 20,
         height: 20,

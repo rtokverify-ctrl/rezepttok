@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Image, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const { width, height } = Dimensions.get('window');
 
 const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [addingToShop, setAddingToShop] = useState(false);
 
     const addToShoppingList = async () => {
@@ -164,7 +168,7 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     container: { flex: 1, backgroundColor: '#f8f9fa' },
     imageContainer: { width: '100%', height: 350, position: 'relative' },
     image: { width: '100%', height: '100%' },
@@ -183,11 +187,11 @@ const styles = StyleSheet.create({
     tipText: { color: '#856404', fontSize: 13 },
     sectionHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15, marginTop: 10 },
     sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#1a1a1a' },
-    addShopBtn: { flexDirection: 'row', backgroundColor: THEME_COLOR, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, alignItems: 'center' },
+    addShopBtn: { flexDirection: 'row', backgroundColor: themeColor, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, alignItems: 'center' },
     addShopText: { color: 'white', fontWeight: 'bold', fontSize: 12, marginLeft: 5 },
     card: { backgroundColor: 'white', borderRadius: 16, padding: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 2, marginBottom: 25 },
     ingredientRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
-    bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: THEME_COLOR, marginRight: 12 },
+    bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: themeColor, marginRight: 12 },
     ingredientText: { fontSize: 16, color: '#333' },
     stepsContainer: { marginTop: 10 },
     stepRow: { flexDirection: 'row', marginBottom: 20 },

@@ -4,7 +4,8 @@ import {
     FlatList, Image, ActivityIndicator, Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { BASE_URL,  getFullUrl } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const { width } = Dimensions.get('window');
 const GRID_GAP = 12;
@@ -14,6 +15,9 @@ const TILE_SIZE = (width - (32 + GRID_GAP)) / GRID_COLS; // 32 is padding (16*2)
 const TRENDING_TAGS = ['Für dich', 'Pasta', 'Vegan', 'Dessert', 'Schnell', 'Asiatisch', 'Salat', 'Deutsch', 'Backen'];
 
 const SearchScreen = ({ userToken, navigation, onChefPress }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [searchText, setSearchText] = useState('');
     const [searchResults, setSearchResults] = useState({ users: [], videos: [] });
     const [isSearching, setIsSearching] = useState(false);
@@ -142,7 +146,7 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
             {/* Content */}
             {isSearching ? (
                 <View style={styles.centered}>
-                    <ActivityIndicator size="large" color={THEME_COLOR} />
+                    <ActivityIndicator size="large" color={themeColor} />
                     <Text style={styles.searchingText}>Suche...</Text>
                 </View>
             ) : !hasSearched ? (
@@ -173,7 +177,7 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
                     
                     <Text style={styles.trendingTitle}>Trending in Deutschland</Text>
                     {isLoadingTrending ? (
-                        <ActivityIndicator size="small" color={THEME_COLOR} style={{ marginTop: 20 }} />
+                        <ActivityIndicator size="small" color={themeColor} style={{ marginTop: 20 }} />
                     ) : (
                         <View style={styles.videoGrid}>
                             {trendingVideos.length > 0 ? (
@@ -230,7 +234,7 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     container: { flex: 1, backgroundColor: '#000' },
     header: { paddingTop: 55, paddingHorizontal: 20, paddingBottom: 10 },
     headerTitle: { color: 'white', fontSize: 28, fontWeight: '800' },
@@ -253,8 +257,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(102, 10, 194, 0.1)', borderRadius: 20, // bg-primary/10
         paddingHorizontal: 18, paddingVertical: 10,
     },
-    tagChipActive: { backgroundColor: THEME_COLOR },
-    tagChipText: { color: THEME_COLOR, fontSize: 14, fontWeight: '600' },
+    tagChipActive: { backgroundColor: themeColor },
+    tagChipText: { color: themeColor, fontSize: 14, fontWeight: '600' },
     tagChipTextActive: { color: 'white' },
     trendingTitle: { color: 'white', fontSize: 20, fontWeight: 'bold', paddingHorizontal: 16, marginBottom: 16 },
 
@@ -270,7 +274,7 @@ const styles = StyleSheet.create({
         width: 48, height: 48, borderRadius: 24,
         backgroundColor: '#222', justifyContent: 'center', alignItems: 'center',
     },
-    userAvatarLetter: { color: THEME_COLOR, fontSize: 20, fontWeight: '700' },
+    userAvatarLetter: { color: themeColor, fontSize: 20, fontWeight: '700' },
     userInfo: { flex: 1, marginLeft: 14 },
     userDisplayName: { color: 'white', fontSize: 16, fontWeight: '600' },
     userUsername: { color: '#666', fontSize: 13, marginTop: 2 },

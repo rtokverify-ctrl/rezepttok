@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, StyleSheet, SectionList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { BASE_URL,  getFullUrl } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 // ── Relative Time Helper ────────────────────────────────────────────
 const timeAgo = (isoString) => {
@@ -46,8 +47,8 @@ const getSection = (isoString) => {
 
 const NOTIF_ICONS = {
     like: { name: 'heart', color: '#ff4d4d' },
-    follow: { name: 'person-add', color: THEME_COLOR },
-    comment: { name: 'chatbubble', color: THEME_COLOR },
+    follow: { name: 'person-add', color: themeColor },
+    comment: { name: 'chatbubble', color: themeColor },
 };
 
 const NOTIF_TEXT = {
@@ -57,6 +58,9 @@ const NOTIF_TEXT = {
 };
 
 const NotificationScreen = ({ userToken }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [notifications, setNotifications] = useState([]);
     const [loadingNotifications, setLoadingNotifications] = useState(true);
 
@@ -125,7 +129,7 @@ const NotificationScreen = ({ userToken }) => {
             </View>
             {loadingNotifications ? (
                 <View style={styles.centered}>
-                    <ActivityIndicator size="large" color={THEME_COLOR} />
+                    <ActivityIndicator size="large" color={themeColor} />
                 </View>
             ) : sections.length === 0 ? (
                 <View style={styles.emptyContainer}>
@@ -153,7 +157,7 @@ const NotificationScreen = ({ userToken }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     container: { flex: 1, backgroundColor: '#000' },
     centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     header: { paddingTop: 55, paddingHorizontal: 20, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: '#1a1a1a' },

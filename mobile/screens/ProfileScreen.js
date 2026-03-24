@@ -3,16 +3,20 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Modal, Scrol
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { BASE_URL,  getFullUrl } from '../constants/Config';
 import { useGlobal } from '../context/GlobalContext';
 import MiniVideo from '../components/MiniVideo';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // ── Skeleton Pulse ──────────────────────────────────────────────────
 const SkeletonPulse = ({ style }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const opacity = useRef(new Animated.Value(0.3)).current;
     useEffect(() => {
         const anim = Animated.loop(Animated.sequence([
@@ -74,6 +78,9 @@ const ProfileScreen = ({
     loadMyProfile,
     onLogout
 }) => {
+    const { themeColor, setThemeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const router = useRouter();
     const { unreadChatCount } = useGlobal();
     const [profileTab, setProfileTab] = useState('uploads');
@@ -158,6 +165,48 @@ const ProfileScreen = ({
         }
     };
 
+    const handleThemeChange = async (color) => {
+        const { setThemeColor } = useGlobal(); // Already extracted above
+        setThemeColor(color);
+        try { await AsyncStorage.setItem('@theme_color', color); } catch (e) {}
+    };
+
+    const handleDeleteAccount = () => {
+        if (Platform.OS === 'web') {
+            if (window.confirm("Bist du dir GANZ sicher, dass du deinen Account komplett inkl. aller Rezepte löschen möchtest? Dies kann NICHT rückgängig gemacht werden!")) {
+                executeAccountDeletion();
+            }
+        } else {
+            Alert.alert(
+                "Account endgültig löschen",
+                "Möchtest du deinen Account wirklich mit allen Daten löschen? Dies kann nicht rückgängig gemacht werden.",
+                [
+                    { text: "Abbrechen", style: "cancel" },
+                    { text: "Unwiderruflich Löschen", style: "destructive", onPress: () => executeAccountDeletion() }
+                ]
+            );
+        }
+    };
+
+    const executeAccountDeletion = async () => {
+        try {
+            const r = await fetch(`${BASE_URL}/my-profile`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${userToken}` }
+            });
+            if (r.ok) {
+                if (Platform.OS === 'web') window.alert("Dein Account wurde mitsamt aller Daten DSGVO-konform gelöscht.");
+                else Alert.alert("Erfolg", "Account wurde vollständig gelöscht.");
+                setSettingsVisible(false);
+                onLogout();
+            } else {
+                throw new Error("Fehler beim Löschen.");
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     // --- RENDERERS ---
 
     const renderSettingsModal = () => (
@@ -172,14 +221,41 @@ const ProfileScreen = ({
                     {settingsView === 'menu' && (<>
                         <Text style={styles.sectionTitle}>Allgemein</Text>
                         <TouchableOpacity onPress={() => setSettingsView('edit')} style={styles.settingsItem}><View style={{ flexDirection: 'row', alignItems: 'center' }}><Ionicons name="person-outline" size={22} color="white" style={{ marginRight: 15 }} /><Text style={styles.settingsItemText}>Profil bearbeiten</Text></View><Ionicons name="chevron-forward" size={20} color="#666" /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => setSettingsView('theme')} style={styles.settingsItem}><View style={{ flexDirection: 'row', alignItems: 'center' }}><Ionicons name="color-palette-outline" size={22} color="white" style={{ marginRight: 15 }} /><Text style={styles.settingsItemText}>App-Theme wählen</Text></View><Ionicons name="chevron-forward" size={20} color="#666" /></TouchableOpacity>
                         <TouchableOpacity style={styles.settingsItem}><View style={{ flexDirection: 'row', alignItems: 'center' }}><Ionicons name="notifications-outline" size={22} color="white" style={{ marginRight: 15 }} /><Text style={styles.settingsItemText}>Benachrichtigungen</Text></View><Ionicons name="chevron-forward" size={20} color="#666" /></TouchableOpacity>
-                        <Text style={[styles.sectionTitle, { marginTop: 30 }]}>Rechtliches</Text>
+
+                        <Text style={[styles.sectionTitle, { marginTop: 30 }]}>Rechtliches & Account</Text>
                         <TouchableOpacity style={styles.settingsItem}><View style={{ flexDirection: 'row', alignItems: 'center' }}><Ionicons name="shield-checkmark-outline" size={22} color="white" style={{ marginRight: 15 }} /><Text style={styles.settingsItemText}>Datenschutz</Text></View><Ionicons name="chevron-forward" size={20} color="#666" /></TouchableOpacity>
+                        <TouchableOpacity onPress={handleDeleteAccount} style={[styles.settingsItem, { borderBottomWidth: 0 }]}><View style={{ flexDirection: 'row', alignItems: 'center' }}><Ionicons name="trash-outline" size={22} color="#ff4d4d" style={{ marginRight: 15 }} /><Text style={[styles.settingsItemText, { color: '#ff4d4d' }]}>Account DSGVO-konform löschen</Text></View><Ionicons name="alert-circle-outline" size={20} color="#ff4d4d" /></TouchableOpacity>
+                        
                         <View style={{ height: 1, backgroundColor: '#333', marginVertical: 30 }} />
                         <TouchableOpacity onPress={() => { onLogout(); setSettingsVisible(false); }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Ionicons name="log-out-outline" size={24} color="#ff4d4d" /><Text style={{ color: '#ff4d4d', fontSize: 18, fontWeight: 'bold', marginLeft: 10 }}>Abmelden</Text></TouchableOpacity>
                     </>)}
+                    
+                    {settingsView === 'theme' && (<>
+                        <Text style={styles.sectionTitle}>Wähle deine App-Farbe</Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 20 }}>
+                            {[
+                                { name: 'Violett (Standard)', color: '#660ac2' },
+                                { name: 'Neon-Blau', color: '#00C2FF' },
+                                { name: 'Smaragd-Grün', color: '#00D68F' },
+                                { name: 'Sonnen-Orange', color: '#FF7A00' },
+                                { name: 'TikTok-Pink', color: '#fe2c55' }
+                            ].map((t) => (
+                                <TouchableOpacity 
+                                    key={t.color} 
+                                    onPress={() => handleThemeChange(t.color)} 
+                                    style={{ width: '45%', backgroundColor: '#222', padding: 20, borderRadius: 16, alignItems: 'center', marginBottom: 15, borderWidth: 2, borderColor: themeColor === t.color ? t.color : 'transparent' }}
+                                >
+                                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: t.color, marginBottom: 10 }} />
+                                    <Text style={{ color: 'white', textAlign: 'center', fontSize: 13, fontWeight: '600' }}>{t.name}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </>)}
+
                     {settingsView === 'edit' && (<>
-                        <TouchableOpacity onPress={pickSetupImage} style={{ alignSelf: 'center', marginVertical: 20 }}>{setupImageUri ? <Image source={{ uri: setupImageUri }} style={styles.setupAvatar} /> : <View style={styles.setupAvatarPlaceholder}><Ionicons name="camera" size={30} color="#666" /></View>}<Text style={{ color: THEME_COLOR, textAlign: 'center', marginTop: 10 }}>Foto ändern</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={pickSetupImage} style={{ alignSelf: 'center', marginVertical: 20 }}>{setupImageUri ? <Image source={{ uri: setupImageUri }} style={styles.setupAvatar} /> : <View style={styles.setupAvatarPlaceholder}><Ionicons name="camera" size={30} color="#666" /></View>}<Text style={{ color: themeColor, textAlign: 'center', marginTop: 10 }}>Foto ändern</Text></TouchableOpacity>
                         <Text style={{ color: '#888', marginBottom: 5 }}>Anzeigename</Text><TextInput style={styles.modernInput} value={setupDisplayName} onChangeText={setSetupDisplayName} placeholderTextColor="#666" /><Text style={{ color: '#888', marginBottom: 5 }}>Bio</Text><TextInput style={styles.modernInput} value={setupBio} onChangeText={setSetupBio} placeholderTextColor="#666" /><TouchableOpacity style={styles.primaryButton} onPress={handleUpdateProfile} disabled={isUploading}>{isUploading ? <ActivityIndicator color="white" /> : <Text style={styles.primaryButtonText}>Speichern</Text>}</TouchableOpacity>
                     </>)}
                 </ScrollView>
@@ -197,7 +273,7 @@ const ProfileScreen = ({
                         <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 15 }}>Ordner Inhalt</Text>
                     </View>
                     <TouchableOpacity onPress={() => handleShareCollection(activeCollectionId)} style={{ padding: 4 }}>
-                        <Ionicons name="share-social-outline" size={24} color={THEME_COLOR} />
+                        <Ionicons name="share-social-outline" size={24} color={themeColor} />
                     </TouchableOpacity>
                 </View>
                 <FlatList
@@ -263,6 +339,9 @@ const ProfileScreen = ({
     };
 
     const EmptyGrid = ({ tab }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
         const msg = emptyMessages[tab] || emptyMessages.uploads;
         return (
             <View style={{ padding: 50, alignItems: 'center' }}>
@@ -367,7 +446,7 @@ const ProfileScreen = ({
                                             <Ionicons name="share-social-outline" size={20} color="rgba(255,255,255,0.7)" />
                                         </TouchableOpacity>
                                     </View>
-                                    <Ionicons name="folder" size={50} color={THEME_COLOR} />
+                                    <Ionicons name="folder" size={50} color={themeColor} />
                                     <Text style={{ color: 'white', marginTop: 5, fontWeight: 'bold' }}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
@@ -413,11 +492,11 @@ const ProfileScreen = ({
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     container: { flex: 1, backgroundColor: 'black' },
     profileHeader: { width: '100%', paddingVertical: 20, paddingTop: 50 },
-    profileAvatar: { width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: THEME_COLOR },
-    profileAvatarPlaceholder: { width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: THEME_COLOR, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1a1a1a' },
+    profileAvatar: { width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: themeColor },
+    profileAvatarPlaceholder: { width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: themeColor, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1a1a1a' },
     profileName: { color: 'white', fontSize: 22, fontWeight: '800', marginTop: 10, letterSpacing: 0.5 },
     profileBio: { color: 'rgba(255,255,255,0.7)', fontSize: 14, textAlign: 'center', paddingHorizontal: 40, lineHeight: 20, marginTop: 8 },
     
@@ -430,7 +509,7 @@ const styles = StyleSheet.create({
     editProfileText: { color: 'white', fontWeight: '600', fontSize: 15 },
     tabContainer: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
     tabItem: { flex: 1, alignItems: 'center', paddingVertical: 15 },
-    activeTab: { borderBottomWidth: 2, borderBottomColor: THEME_COLOR },
+    activeTab: { borderBottomWidth: 2, borderBottomColor: themeColor },
     gridItem: { width: '33.33%', aspectRatio: 9/16, borderWidth: 1, borderColor: 'black', position: 'relative' },
     collectionItem: { width: '45%', aspectRatio: 1, margin: '2.5%', backgroundColor: '#222', borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
     // Settings Modal Styles
@@ -439,10 +518,10 @@ const styles = StyleSheet.create({
     sectionTitle: { color: '#888', fontSize: 14, textTransform: 'uppercase', marginBottom: 10, marginTop: 10 },
     settingsItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#222' },
     settingsItemText: { color: 'white', fontSize: 16 },
-    setupAvatar: { width: 120, height: 120, borderRadius: 60, borderWidth: 3, borderColor: THEME_COLOR },
+    setupAvatar: { width: 120, height: 120, borderRadius: 60, borderWidth: 3, borderColor: themeColor },
     setupAvatarPlaceholder: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#1a1a1a', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#333' },
     modernInput: { backgroundColor: '#1a1a1a', borderRadius: 12, color: 'white', padding: 15, marginBottom: 15, fontSize: 16 },
-    primaryButton: { backgroundColor: THEME_COLOR, paddingVertical: 15, borderRadius: 12, alignItems: 'center', marginTop: 10 },
+    primaryButton: { backgroundColor: themeColor, paddingVertical: 15, borderRadius: 12, alignItems: 'center', marginTop: 10 },
     primaryButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
 });
 

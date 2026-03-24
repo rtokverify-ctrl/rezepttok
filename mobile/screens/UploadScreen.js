@@ -3,8 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Alert,
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL } from '../constants/Config';
 import MiniVideo from '../components/MiniVideo';
+import { useGlobal } from '../context/GlobalContext';
 
 // Conditional imports: different compression for each platform
 let NativeVideoCompressor;
@@ -19,6 +20,9 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 // In-page toast message component (no browser popups!)
 const InPageMessage = ({ message, type, onDismiss }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     if (!message) return null;
     const bgColor = type === 'error' ? '#ff4444' : type === 'success' ? '#22c55e' : '#FFB800';
     return (
@@ -31,6 +35,9 @@ const InPageMessage = ({ message, type, onDismiss }) => {
 };
 
 const UploadScreen = ({ userToken, onUploadComplete }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [uploadTitle, setUploadTitle] = useState('');
     const [uploadVideoUri, setUploadVideoUri] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -234,7 +241,7 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
                             {compressionStatus || (isProcessing ? "Verarbeite Rezept..." : `Lade hoch: ${uploadProgress}%`)}
                         </Text>
                         <View style={{ height: 6, backgroundColor: '#333', borderRadius: 3, overflow: 'hidden' }}>
-                            <View style={{ height: '100%', width: compressionStatus ? '100%' : `${uploadProgress}%`, backgroundColor: compressionStatus ? '#FFB800' : THEME_COLOR }} />
+                            <View style={{ height: '100%', width: compressionStatus ? '100%' : `${uploadProgress}%`, backgroundColor: compressionStatus ? '#FFB800' : themeColor }} />
                         </View>
                     </View>
                 )}
@@ -251,12 +258,12 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     headerTitle: { color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
     uploadContainer: { padding: 20 },
     uploadPreview: { width: '100%', height: 200, backgroundColor: '#1a1a1a', borderRadius: 15, justifyContent: 'center', alignItems: 'center', marginBottom: 20, overflow: 'hidden' },
     modernInput: { backgroundColor: '#1a1a1a', borderRadius: 12, color: 'white', padding: 15, marginBottom: 15, fontSize: 16 },
-    primaryButton: { backgroundColor: THEME_COLOR, paddingVertical: 15, borderRadius: 12, alignItems: 'center', marginTop: 10 },
+    primaryButton: { backgroundColor: themeColor, paddingVertical: 15, borderRadius: 12, alignItems: 'center', marginTop: 10 },
     primaryButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
 });
 

@@ -3,12 +3,16 @@ import { View, FlatList, TouchableOpacity, RefreshControl, Animated, StyleSheet,
 import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import VideoPost from '../components/VideoPost';
-import { THEME_COLOR } from '../constants/Config';
+import {  } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const { width, height } = Dimensions.get('window');
 
 // ── Skeleton Loader ─────────────────────────────────────────────────
 const SkeletonPulse = ({ style }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const opacity = useRef(new Animated.Value(0.3)).current;
 
     useEffect(() => {
@@ -68,6 +72,9 @@ const FeedScreen = ({
     setModalVisible, onOpenComments, onChefPress, toggleFollowInFeed,
     setCurrentScreen, loadFeed, feedLoading, nextCursor
 }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [feedHeight, setFeedHeight] = useState(0);
     const [activeVideoIndex, setActiveVideoIndex] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
@@ -134,8 +141,8 @@ const FeedScreen = ({
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={onRefresh}
-                                tintColor={THEME_COLOR}
-                                colors={[THEME_COLOR]}
+                                tintColor={themeColor}
+                                colors={[themeColor]}
                                 progressBackgroundColor="#111"
                             />
                         }
@@ -157,7 +164,7 @@ const FeedScreen = ({
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     topNavContainer: {
         position: 'absolute', top: 55, left: 0, right: 0, zIndex: 50,
         flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 24,
@@ -183,7 +190,7 @@ const styles = StyleSheet.create({
     },
     refreshButton: {
         flexDirection: 'row', alignItems: 'center', gap: 8,
-        marginTop: 24, backgroundColor: THEME_COLOR, paddingHorizontal: 20,
+        marginTop: 24, backgroundColor: themeColor, paddingHorizontal: 20,
         paddingVertical: 12, borderRadius: 24,
     },
     refreshButtonText: {

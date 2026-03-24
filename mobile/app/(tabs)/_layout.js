@@ -1,10 +1,13 @@
 import { Tabs } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { THEME_COLOR, BG_DARK, BG_LIGHT, NAVBAR_HEIGHT } from '../../constants/Config';
+import {  BG_DARK, BG_LIGHT, NAVBAR_HEIGHT } from '../../constants/Config';
 import { View, Platform, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { useGlobal } from '../../context/GlobalContext';
 
 export default function TabLayout() {
+    const { themeColor } = useGlobal();
+
     return (
         <Tabs
             screenOptions={{
@@ -26,7 +29,7 @@ export default function TabLayout() {
                     ) : null
                 ),
                 tabBarShowLabel: true,
-                tabBarActiveTintColor: THEME_COLOR,
+                tabBarActiveTintColor: themeColor,
                 tabBarInactiveTintColor: '#94a3b8', // slate-400
                 tabBarLabelStyle: {
                     fontSize: 10,
@@ -60,7 +63,7 @@ export default function TabLayout() {
                     tabBarIcon: ({ focused }) => (
                         <View style={{
                             marginTop: -28, // Floating effect
-                            shadowColor: THEME_COLOR,
+                            shadowColor: themeColor,
                             shadowOffset: { width: 0, height: 10 },
                             shadowOpacity: 0.4,
                             shadowRadius: 10,
@@ -70,7 +73,7 @@ export default function TabLayout() {
                                 width: 56, 
                                 height: 56, 
                                 borderRadius: 28, 
-                                backgroundColor: THEME_COLOR, 
+                                backgroundColor: themeColor, 
                                 justifyContent: 'center', 
                                 alignItems: 'center',
                                 borderWidth: 4,

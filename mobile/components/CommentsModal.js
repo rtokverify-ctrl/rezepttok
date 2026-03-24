@@ -1,9 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput, Image, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { BASE_URL,  getFullUrl } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNewComment, sendComment }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
 
     // Helper to format date
     const formatCommentDate = (dateString) => {
@@ -34,7 +38,7 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
                         </TouchableOpacity>
                     </View>
                     {loading ? (
-                        <ActivityIndicator color={THEME_COLOR} style={{ marginTop: 20 }} />
+                        <ActivityIndicator color={themeColor} style={{ marginTop: 20 }} />
                     ) : (
                         <FlatList
                             keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
@@ -78,7 +82,7 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: '#111', borderTopLeftRadius: 20, borderTopRightRadius: 20 },
     modalHandle: { width: 40, height: 4, backgroundColor: '#444', borderRadius: 2, alignSelf: 'center', marginTop: 10 },
@@ -92,7 +96,7 @@ const styles = StyleSheet.create({
     commentText: { color: '#ddd', marginTop: 4, fontSize: 15 },
     commentInputContainer: { flexDirection: 'row', padding: 12, borderTopWidth: 1, borderTopColor: '#222', alignItems: 'center', paddingBottom: Platform.OS === 'ios' ? 25 : 12, backgroundColor: '#0a0a0a' },
     commentInput: { flex: 1, backgroundColor: '#222', color: 'white', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, marginRight: 10, fontSize: 15 },
-    sendButton: { backgroundColor: THEME_COLOR, width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+    sendButton: { backgroundColor: themeColor, width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
 });
 
 export default CommentsModal;

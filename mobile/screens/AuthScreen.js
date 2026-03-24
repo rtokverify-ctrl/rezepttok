@@ -4,9 +4,13 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BlurView } from 'expo-blur';
-import { BASE_URL, THEME_COLOR, BG_DARK } from '../constants/Config';
+import { BASE_URL,  BG_DARK } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const AuthScreen = ({ onLoginSuccess, navigation }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [authMode, setAuthMode] = useState('login');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -199,7 +203,7 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                                 {showDatePicker && (
                                     <View style={styles.datePickerContainer}>
                                         <DateTimePicker value={birthDate} mode="date" display="spinner" themeVariant="dark" textColor="white" maximumDate={new Date()} onChange={(e, d) => { if (Platform.OS === 'android') setShowDatePicker(false); if (d) setBirthDate(d); }} style={{ height: 120 }} />
-                                        {Platform.OS === 'ios' && <TouchableOpacity onPress={() => setShowDatePicker(false)} style={styles.closePickerBtn}><Text style={{ color: THEME_COLOR }}>Fertig</Text></TouchableOpacity>}
+                                        {Platform.OS === 'ios' && <TouchableOpacity onPress={() => setShowDatePicker(false)} style={styles.closePickerBtn}><Text style={{ color: themeColor }}>Fertig</Text></TouchableOpacity>}
                                     </View>
                                 )}
                             </>
@@ -283,7 +287,7 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                             maxLength={6}
                         />
                         <TouchableOpacity onPress={handleResend} style={{ alignSelf: 'center', marginBottom: 20 }}>
-                            <Text style={{ color: THEME_COLOR }}>Code erneut senden</Text>
+                            <Text style={{ color: themeColor }}>Code erneut senden</Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -295,7 +299,7 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
                 <TouchableOpacity style={{ marginTop: 20, padding: 10 }} onPress={() => { setAuthMode(authMode === 'login' ? 'register' : 'login'); setErrorMsg(''); }}>
                     <Text style={{ color: '#aaa', textAlign: 'center', fontSize: 14 }}>
                         {authMode === 'login' ? 'Noch kein Konto? ' : 'Du bist schon dabei? '}
-                        <Text style={{ color: THEME_COLOR, fontWeight: 'bold' }}>{authMode === 'login' ? 'Jetzt registrieren' : 'Hier einloggen'}</Text>
+                        <Text style={{ color: themeColor, fontWeight: 'bold' }}>{authMode === 'login' ? 'Jetzt registrieren' : 'Hier einloggen'}</Text>
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -306,7 +310,7 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     outerContainer: { flex: 1, backgroundColor: 'black' },
     keyboardView: { flex: 1 },
     scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 20 },
@@ -326,10 +330,10 @@ const styles = StyleSheet.create({
     logoContainer: { alignItems: 'center', marginBottom: 24 },
     logoBox: {
         width: 80, height: 80,
-        backgroundColor: THEME_COLOR,
+        backgroundColor: themeColor,
         borderRadius: 24,
         alignItems: 'center', justifyContent: 'center',
-        shadowColor: THEME_COLOR, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.3, shadowRadius: 15, elevation: 10
+        shadowColor: themeColor, shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.3, shadowRadius: 15, elevation: 10
     },
     authTitle: { fontSize: 28, fontWeight: 'bold', color: 'white', textAlign: 'center', marginBottom: 8 },
     authSubText: { color: '#71717a', fontSize: 14, textAlign: 'center' }, // text-zinc-500
@@ -353,12 +357,12 @@ const styles = StyleSheet.create({
     datePickerContainer: { backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 16, padding: 10, marginBottom: 16 },
     closePickerBtn: { alignSelf: 'flex-end', padding: 10 },
     primaryButton: { 
-        backgroundColor: THEME_COLOR, 
+        backgroundColor: themeColor, 
         paddingVertical: 18, 
         borderRadius: 16, 
         alignItems: 'center', 
         marginTop: 10,
-        shadowColor: THEME_COLOR, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.2, shadowRadius: 12, elevation: 5
+        shadowColor: themeColor, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.2, shadowRadius: 12, elevation: 5
     },
     primaryButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
 });

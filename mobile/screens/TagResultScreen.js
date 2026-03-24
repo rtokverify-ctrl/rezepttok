@@ -4,7 +4,8 @@ import {
     FlatList, ActivityIndicator, Dimensions
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const { width } = Dimensions.get('window');
 const GRID_GAP = 12;
@@ -12,6 +13,9 @@ const GRID_COLS = 2;
 const TILE_SIZE = (width - (32 + GRID_GAP)) / GRID_COLS;
 
 const TagResultScreen = ({ userToken, tag, onBack }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [recipes, setRecipes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -63,7 +67,7 @@ const TagResultScreen = ({ userToken, tag, onBack }) => {
             {/* Content */}
             {isLoading ? (
                 <View style={styles.centered}>
-                    <ActivityIndicator size="large" color={THEME_COLOR} />
+                    <ActivityIndicator size="large" color={themeColor} />
                 </View>
             ) : recipes.length === 0 ? (
                 <View style={styles.centered}>
@@ -85,7 +89,7 @@ const TagResultScreen = ({ userToken, tag, onBack }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     container: { flex: 1, backgroundColor: '#000' },
     header: { 
         paddingTop: 55, paddingHorizontal: 16, paddingBottom: 15,

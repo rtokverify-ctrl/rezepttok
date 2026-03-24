@@ -3,9 +3,13 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image, ActivityInd
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system/legacy';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const SetupScreen = ({ userToken, initialDisplayName, onSetupComplete }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [setupDisplayName, setSetupDisplayName] = useState(initialDisplayName || '');
     const [setupBio, setSetupBio] = useState('');
     const [setupImageUri, setSetupImageUri] = useState(null);
@@ -61,13 +65,13 @@ const SetupScreen = ({ userToken, initialDisplayName, onSetupComplete }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     setupContainer: { flex: 1, backgroundColor: 'black', justifyContent: 'center', padding: 20 },
     authTitle: { fontSize: 28, fontWeight: 'bold', color: 'white', marginBottom: 5, textAlign: 'center' },
-    setupAvatar: { width: 120, height: 120, borderRadius: 60, borderWidth: 3, borderColor: THEME_COLOR },
+    setupAvatar: { width: 120, height: 120, borderRadius: 60, borderWidth: 3, borderColor: themeColor },
     setupAvatarPlaceholder: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#1a1a1a', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#333' },
     modernInput: { backgroundColor: '#1a1a1a', borderRadius: 12, color: 'white', padding: 15, marginBottom: 15, fontSize: 16 },
-    primaryButton: { backgroundColor: THEME_COLOR, paddingVertical: 15, borderRadius: 12, alignItems: 'center', marginTop: 10 },
+    primaryButton: { backgroundColor: themeColor, paddingVertical: 15, borderRadius: 12, alignItems: 'center', marginTop: 10 },
     primaryButtonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
 });
 

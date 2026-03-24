@@ -6,9 +6,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useGlobal } from '../context/GlobalContext';
-import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { BASE_URL,  getFullUrl } from '../constants/Config';
 
 const ChatConversationScreen = () => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const { userToken, myProfileData } = useGlobal();
     const router = useRouter();
     const params = useLocalSearchParams();
@@ -144,7 +147,7 @@ const ChatConversationScreen = () => {
                             <Ionicons
                                 name={item.read ? 'checkmark-done' : 'checkmark'}
                                 size={14}
-                                color={item.read ? THEME_COLOR : '#888'}
+                                color={item.read ? themeColor : '#888'}
                                 style={{ marginLeft: 4 }}
                             />
                         )}
@@ -157,7 +160,7 @@ const ChatConversationScreen = () => {
     if (loading) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color={THEME_COLOR} />
+                <ActivityIndicator size="large" color={themeColor} />
             </View>
         );
     }
@@ -224,7 +227,7 @@ const ChatConversationScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#000',
@@ -290,7 +293,7 @@ const styles = StyleSheet.create({
         borderRadius: 18,
     },
     myBubble: {
-        backgroundColor: THEME_COLOR,
+        backgroundColor: themeColor,
         borderBottomRightRadius: 4,
     },
     otherBubble: {
@@ -360,7 +363,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: THEME_COLOR,
+        backgroundColor: themeColor,
         justifyContent: 'center',
         alignItems: 'center',
     },

@@ -4,11 +4,15 @@ import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEvent } from 'expo';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { THEME_COLOR, BASE_URL, getFullUrl } from '../constants/Config';
+import {  BASE_URL, getFullUrl } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const { width } = Dimensions.get('window');
 
 const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, containerHeight }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [userPaused, setUserPaused] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const seekBarRef = useRef(null);
@@ -169,7 +173,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
             {showHeart && (
                 <View style={styles.overlay} pointerEvents="none">
                     <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
-                        <Ionicons name="heart" size={100} color={THEME_COLOR} />
+                        <Ionicons name="heart" size={100} color={themeColor} />
                     </Animated.View>
                 </View>
             )}
@@ -207,11 +211,11 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
             <View style={styles.rightSidebar}>
                 <TouchableOpacity onPress={() => onChefPress(item.owner_id)} style={[styles.actionButton, { marginBottom: 25 }]}>
                     {item.owner?.avatar_url ? <Image source={{ uri: getFullUrl(item.owner.avatar_url) }} style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: 'white' }} /> : <View style={{ width: 50, height: 50, borderRadius: 25, borderWidth: 2, borderColor: 'white', backgroundColor: '#333', justifyContent: 'center', alignItems: 'center' }}><Text style={{ color: 'white', fontWeight: 'bold' }}>{item.chef?.charAt(0)}</Text></View>}
-                    {!item.owner?.i_follow && <TouchableOpacity onPress={() => onFollowPress(item.owner_id)} style={{ position: 'absolute', bottom: -10, backgroundColor: THEME_COLOR, borderRadius: 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}><Ionicons name="add" size={14} color="white" /></TouchableOpacity>}
+                    {!item.owner?.i_follow && <TouchableOpacity onPress={() => onFollowPress(item.owner_id)} style={{ position: 'absolute', bottom: -10, backgroundColor: themeColor, borderRadius: 10, width: 20, height: 20, justifyContent: 'center', alignItems: 'center' }}><Ionicons name="add" size={14} color="white" /></TouchableOpacity>}
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => toggleLike(item.id)} style={styles.actionButton}>
-                    <Ionicons name="heart" size={38} color={item.is_liked ? THEME_COLOR : 'white'} />
+                    <Ionicons name="heart" size={38} color={item.is_liked ? themeColor : 'white'} />
                     <Text style={styles.actionText}>{item.likes}</Text>
                 </TouchableOpacity>
 
@@ -247,7 +251,7 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     videoGradient: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 350 }, // increased height to cover more
     rightSidebar: { position: 'absolute', right: 10, bottom: 90, alignItems: 'center' }, // moved up above TabBar
     actionButton: { marginBottom: 20, alignItems: 'center' },
@@ -255,10 +259,10 @@ const styles = StyleSheet.create({
         width: 56, 
         height: 56, 
         borderRadius: 28, 
-        backgroundColor: THEME_COLOR, 
+        backgroundColor: themeColor, 
         justifyContent: 'center', 
         alignItems: 'center',
-        shadowColor: THEME_COLOR, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 5,
+        shadowColor: themeColor, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 5,
         marginTop: 10 
     },
     actionText: { color: 'white', fontWeight: '600', fontSize: 13, textShadowColor: 'black', textShadowRadius: 8, marginTop: 4 },

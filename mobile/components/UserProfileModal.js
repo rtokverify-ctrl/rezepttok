@@ -2,13 +2,16 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Image, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { BASE_URL, THEME_COLOR, getFullUrl } from '../constants/Config';
+import { BASE_URL,  getFullUrl } from '../constants/Config';
 import { useGlobal } from '../context/GlobalContext';
 import MiniVideo from './MiniVideo';
 
 const { width } = Dimensions.get('window');
 
 const UserProfileModal = ({ visible, onClose, userProfileData, userProfileVideos, toggleFollowOnProfile, setSelectedRecipe, setModalVisible }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const router = useRouter();
     const { userToken } = useGlobal();
 
@@ -103,11 +106,11 @@ const UserProfileModal = ({ visible, onClose, userProfileData, userProfileVideos
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20 },
     modalHandle: { width: 40, height: 4, backgroundColor: '#ccc', borderRadius: 2, alignSelf: 'center', marginTop: 10 },
-    followBtn: { paddingHorizontal: 30, paddingVertical: 10, borderRadius: 8, backgroundColor: THEME_COLOR },
+    followBtn: { paddingHorizontal: 30, paddingVertical: 10, borderRadius: 8, backgroundColor: themeColor },
     followBtnActive: { backgroundColor: '#eee' },
     followBtnText: { color: 'white', fontWeight: 'bold', fontSize: 15 },
     followBtnTextActive: { color: '#333' },

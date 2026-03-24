@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { THEME_COLOR } from '../constants/Config';
+import {  } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const SaveModal = ({ visible, onClose, collections, currentRecipeCollections = [], toggleCollectionForRecipe, createCollection, isCreatingCollection, setIsCreatingCollection, newCollectionName, setNewCollectionName, onGlobalSave }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     return (
         <Modal visible={visible} animationType="slide" transparent>
             <View style={styles.modalOverlay}>
@@ -25,7 +29,7 @@ const SaveModal = ({ visible, onClose, collections, currentRecipeCollections = [
                             const isSelected = currentRecipeCollections.includes(col.id);
                             return (
                                 <TouchableOpacity key={col.id ? col.id.toString() : Math.random().toString()} onPress={() => toggleCollectionForRecipe(col.id)} style={styles.collectionCard}>
-                                    <View style={[styles.collectionIcon, isSelected && { backgroundColor: THEME_COLOR }]}>
+                                    <View style={[styles.collectionIcon, isSelected && { backgroundColor: themeColor }]}>
                                         <Ionicons name={isSelected ? "checkmark" : "folder"} size={30} color={isSelected ? "white" : "white"} />
                                     </View>
                                     <Text style={styles.collectionText} numberOfLines={1}>{col.name}</Text>
@@ -36,7 +40,7 @@ const SaveModal = ({ visible, onClose, collections, currentRecipeCollections = [
                     {isCreatingCollection && (
                         <View style={{ padding: 20, borderTopWidth: 1, borderColor: '#222' }}>
                             <TextInput style={{ backgroundColor: '#222', color: 'white', padding: 12, borderRadius: 12, fontSize: 16 }} placeholder="Ordner Name" placeholderTextColor="#888" value={newCollectionName} onChangeText={setNewCollectionName} autoFocus />
-                            <TouchableOpacity onPress={createCollection} style={{ marginTop: 12, backgroundColor: THEME_COLOR, padding: 12, borderRadius: 12, alignItems: 'center' }}>
+                            <TouchableOpacity onPress={createCollection} style={{ marginTop: 12, backgroundColor: themeColor, padding: 12, borderRadius: 12, alignItems: 'center' }}>
                                 <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>Erstellen</Text>
                             </TouchableOpacity>
                         </View>
@@ -48,7 +52,7 @@ const SaveModal = ({ visible, onClose, collections, currentRecipeCollections = [
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: '#111', borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden' },
     modalHandle: { width: 40, height: 4, backgroundColor: '#444', borderRadius: 2, alignSelf: 'center', marginTop: 10 },

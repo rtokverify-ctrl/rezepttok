@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Modal, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BASE_URL, THEME_COLOR } from '../constants/Config';
+import { BASE_URL } from '../constants/Config';
+import { useGlobal } from '../context/GlobalContext';
 
 const CookingScreen = ({ userToken }) => {
+    const { themeColor } = useGlobal();
+    const styles = getStyles(themeColor);
+
     const [cookingTab, setCookingTab] = useState('shopping'); // shopping, timer, converter
     const [lists, setLists] = useState([]);
     const [activeListId, setActiveListId] = useState(null);
@@ -181,7 +185,7 @@ const CookingScreen = ({ userToken }) => {
                                 data={lists}
                                 keyExtractor={item => item.id.toString()}
                                 renderItem={({ item }) => (
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: activeListId === item.id ? THEME_COLOR : '#333', paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, marginRight: 10 }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: activeListId === item.id ? themeColor : '#333', paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, marginRight: 10 }}>
                                         <TouchableOpacity onPress={() => setActiveListId(item.id)} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             {item.is_shared && <Ionicons name="people" size={14} color="white" style={{ marginRight: 5 }} />}
                                             <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.name} {item.is_shared ? `(${item.owner_name})` : ''}</Text>
@@ -207,7 +211,7 @@ const CookingScreen = ({ userToken }) => {
                                 <View style={{ flexDirection: 'row', marginBottom: 20 }}>
                                     <TextInput style={[styles.modernInput, { width: 80, marginBottom: 0, marginRight: 10, textAlign: 'center' }]} placeholder="Menge" placeholderTextColor="#666" value={newQuantityText} onChangeText={setNewQuantityText} />
                                     <TextInput style={[styles.modernInput, { flex: 1, marginBottom: 0, marginRight: 10 }]} placeholder="Neues Item..." placeholderTextColor="#666" value={newItemText} onChangeText={setNewItemText} />
-                                    <TouchableOpacity onPress={addShoppingItem} style={{ backgroundColor: THEME_COLOR, justifyContent: 'center', paddingHorizontal: 20, borderRadius: 12 }}><Ionicons name="add" size={24} color="white" /></TouchableOpacity>
+                                    <TouchableOpacity onPress={addShoppingItem} style={{ backgroundColor: themeColor, justifyContent: 'center', paddingHorizontal: 20, borderRadius: 12 }}><Ionicons name="add" size={24} color="white" /></TouchableOpacity>
                                 </View>
                                 <FlatList
                                     data={shoppingItems}
@@ -215,7 +219,7 @@ const CookingScreen = ({ userToken }) => {
                                     renderItem={({ item }) => (
                                         <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#1a1a1a', padding: 15, borderRadius: 12, marginBottom: 10 }}>
                                             <TouchableOpacity onPress={() => toggleShoppingItem(item.id)} style={{ marginRight: 15 }}>
-                                                <Ionicons name={item.completed ? "checkbox" : "square-outline"} size={24} color={item.completed ? THEME_COLOR : "#666"} />
+                                                <Ionicons name={item.completed ? "checkbox" : "square-outline"} size={24} color={item.completed ? themeColor : "#666"} />
                                             </TouchableOpacity>
                                             
                                             <View style={{ flex: 1, flexDirection: 'row', opacity: item.completed ? 0.5 : 1 }}>
@@ -284,7 +288,7 @@ const CookingScreen = ({ userToken }) => {
                             }}
                         />
                         <View style={{ marginTop: 20 }}><Ionicons name="arrow-down" size={30} color="#666" /></View>
-                        <Text style={{ fontSize: 40, fontWeight: 'bold', color: THEME_COLOR, marginTop: 20 }}>{convertResult || '---'}</Text>
+                        <Text style={{ fontSize: 40, fontWeight: 'bold', color: themeColor, marginTop: 20 }}>{convertResult || '---'}</Text>
                     </View>
                 )}
             </View>
@@ -293,7 +297,7 @@ const CookingScreen = ({ userToken }) => {
             <Modal visible={shareModalVisible} transparent={true} animationType="fade">
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.8)', justifyContent: 'center', alignItems: 'center', padding: 20 }}>
                     <View style={{ backgroundColor: '#1a1a1a', padding: 25, borderRadius: 20, width: '100%', alignItems: 'center' }}>
-                        <Ionicons name="people-circle" size={50} color={THEME_COLOR} style={{ marginBottom: 15 }} />
+                        <Ionicons name="people-circle" size={50} color={themeColor} style={{ marginBottom: 15 }} />
                         <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>Liste teilen</Text>
                         <Text style={{ color: '#aaa', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>Gib den exakten Usernamen ein, um diese Liste freizugeben.</Text>
 
@@ -310,7 +314,7 @@ const CookingScreen = ({ userToken }) => {
                             <TouchableOpacity onPress={() => setShareModalVisible(false)} style={{ flex: 1, padding: 15, backgroundColor: '#333', borderRadius: 12, marginRight: 10, alignItems: 'center' }}>
                                 <Text style={{ color: 'white', fontWeight: 'bold' }}>Abbrechen</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={shareList} style={{ flex: 1, padding: 15, backgroundColor: THEME_COLOR, borderRadius: 12, marginLeft: 10, alignItems: 'center' }}>
+                            <TouchableOpacity onPress={shareList} style={{ flex: 1, padding: 15, backgroundColor: themeColor, borderRadius: 12, marginLeft: 10, alignItems: 'center' }}>
                                 <Text style={{ color: 'white', fontWeight: 'bold' }}>Teilen</Text>
                             </TouchableOpacity>
                         </View>
@@ -321,7 +325,7 @@ const CookingScreen = ({ userToken }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (themeColor) => StyleSheet.create({
     headerTitle: { color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
     modernInput: { backgroundColor: '#1a1a1a', borderRadius: 12, color: 'white', padding: 15, marginBottom: 15, fontSize: 16 },
     timerBtnSmall: { backgroundColor: '#333', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 20, marginHorizontal: 5 },
