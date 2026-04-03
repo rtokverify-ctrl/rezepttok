@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL, getFullUrl } from '../constants/Config';
+import { BASE_URL, getFullUrl, THEME_COLOR } from '../constants/Config';
 
 const GlobalContext = createContext();
 
@@ -9,6 +9,7 @@ export const useGlobal = () => useContext(GlobalContext);
 export const GlobalProvider = ({ children }) => {
     const [userToken, setUserToken] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [themeColor, setThemeColor] = useState(THEME_COLOR);
 
     // Global Feed Data
     const [videos, setVideos] = useState([]);
@@ -31,8 +32,18 @@ export const GlobalProvider = ({ children }) => {
     const [unreadChatCount, setUnreadChatCount] = useState(0);
 
     useEffect(() => {
+        AsyncStorage.getItem('themeColor').then(c => {
+            if (c) setThemeColor(c);
+        }).catch(e => console.log(e));
         checkLogin();
     }, []);
+
+    const updateThemeColor = async (color) => {
+        setThemeColor(color);
+        try {
+            await AsyncStorage.setItem('themeColor', color);
+        } catch(e) { }
+    };
 
     useEffect(() => {
         if (userToken) {
@@ -232,6 +243,7 @@ export const GlobalProvider = ({ children }) => {
     }
 
     const value = {
+        themeColor, updateThemeColor,
         userToken, isLoading, handleLogin, logout,
         videos, setVideos, loadFeed, feedLoading, nextCursor,
 
