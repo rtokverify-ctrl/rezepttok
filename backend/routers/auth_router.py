@@ -106,7 +106,9 @@ def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db
         raise HTTPException(status_code=400, detail="Falscher Username oder Passwort")
     
     if not user.is_verified:
-        raise HTTPException(status_code=403, detail="Account nicht verifiziert. Bitte bestätige deine Email.")
+        # Legacy accounts that were not verified are auto-verified upon successful login
+        user.is_verified = True
+        db.commit()
         
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
