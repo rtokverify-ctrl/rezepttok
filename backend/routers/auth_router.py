@@ -16,7 +16,7 @@ router = APIRouter()
 from fastapi import BackgroundTasks
 
 @router.post("/register")
-@limiter.limit("5/minute")
+@limiter.limit("20/minute")
 def register(request: Request, user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     if user.age < 16: raise HTTPException(status_code=400, detail="Du musst mindestens 16 Jahre alt sein!")
     email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
@@ -99,7 +99,7 @@ def resend_code(data: UserVerify, background_tasks: BackgroundTasks, db: Session
     return {"msg": "Code erneut gesendet"}
 
 @router.post("/login", response_model=Token)
-@limiter.limit("5/minute")
+@limiter.limit("20/minute")
 def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(or_(User.username == form_data.username, User.email == form_data.username)).first()
     if not user or not verify_password(form_data.password, user.hashed_password):

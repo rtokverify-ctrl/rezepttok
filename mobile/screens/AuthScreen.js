@@ -103,9 +103,14 @@ const AuthScreen = ({ onLoginSuccess, navigation }) => {
             }
 
             if (authMode === 'register') {
-                // Register success -> now verification code sent
-                setAuthMode('verify');
-                setErrorMsg("Code gesendet! Bitte Check deine Mails. 📧");
+                // Auto-login since email verification is disabled in the backend
+                if (d.access_token) {
+                    await AsyncStorage.setItem('userToken', d.access_token);
+                    onLoginSuccess(d.access_token, false);
+                } else {
+                    setAuthMode('verify');
+                    setErrorMsg("Code gesendet! Bitte Check deine Mails. 📧");
+                }
             } else if (authMode === 'verify') {
                 // Verify success -> d should be token
                 await AsyncStorage.setItem('userToken', d.access_token);
