@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     View, Text, TouchableOpacity, StyleSheet, TextInput,
-    FlatList, Image, ActivityIndicator, Dimensions
+    FlatList, Image, ActivityIndicator, Dimensions, ScrollView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BASE_URL,  getFullUrl } from '../constants/Config';
@@ -151,7 +151,7 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
                 </View>
             ) : !hasSearched ? (
                 /* Trending Tags & Grid */
-                <View style={styles.trendingContainer}>
+                <ScrollView style={styles.trendingContainer} showsVerticalScrollIndicator={false}>
                     {/* Categories */}
                     <View style={styles.tagsScrollWrapper}>
                         <FlatList
@@ -189,7 +189,7 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
                             )}
                         </View>
                     )}
-                </View>
+                </ScrollView>
             ) : (
                 <FlatList
                     data={[]}

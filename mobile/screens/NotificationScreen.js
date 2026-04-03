@@ -45,11 +45,11 @@ const getSection = (isoString) => {
     }
 };
 
-const NOTIF_ICONS = {
+const getNotifIcons = (themeColor) => ({
     like: { name: 'heart', color: '#ff4d4d' },
     follow: { name: 'person-add', color: themeColor },
     comment: { name: 'chatbubble', color: themeColor },
-};
+});
 
 const NOTIF_TEXT = {
     like: 'gefällt dein Rezept',
@@ -94,7 +94,8 @@ const NotificationScreen = ({ userToken }) => {
     });
 
     const renderItem = ({ item }) => {
-        const icon = NOTIF_ICONS[item.type] || NOTIF_ICONS.like;
+        const notifIcons = getNotifIcons(themeColor);
+        const icon = notifIcons[item.type] || notifIcons.like;
         const text = NOTIF_TEXT[item.type] || '';
 
         return (
