@@ -78,8 +78,9 @@ const FeedScreen = ({
     const [feedHeight, setFeedHeight] = useState(0);
     const [activeVideoIndex, setActiveVideoIndex] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
-    const [isScrolling, setIsScrolling] = useState(false);
     const isFocused = useIsFocused();
+    
+    const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
 
     const onViewableItemsChanged = useRef(({ viewableItems }) => {
         const visibleItem = viewableItems.find(item => item.isViewable);
@@ -127,7 +128,7 @@ const FeedScreen = ({
                         data={videos} pagingEnabled showsVerticalScrollIndicator={false}
                         snapToInterval={feedHeight} decelerationRate="fast"
                         onViewableItemsChanged={onViewableItemsChanged}
-                        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+                        viewabilityConfig={viewabilityConfig}
                         windowSize={3}
                         maxToRenderPerBatch={2}
                         updateCellsBatchingPeriod={50}
@@ -135,8 +136,6 @@ const FeedScreen = ({
                         removeClippedSubviews={true}
                         onEndReached={handleLoadMore}
                         onEndReachedThreshold={0.5}
-                        onScrollBeginDrag={() => setIsScrolling(true)}
-                        onMomentumScrollEnd={() => setIsScrolling(false)}
                         refreshControl={
                             <RefreshControl
                                 refreshing={refreshing}
@@ -148,7 +147,7 @@ const FeedScreen = ({
                         }
                         renderItem={({ item, index }) => (
                             <VideoPost
-                                item={item} isActive={index === activeVideoIndex && !isScrolling && isFocused}
+                                item={item} isActive={index === activeVideoIndex && isFocused}
                                 toggleLike={toggleLike} onSavePress={handleGlobalSave}
                                 openModal={(itm) => { setSelectedRecipe(itm); setModalVisible(true); }} openComments={onOpenComments}
                                 onChefPress={onChefPress} onFollowPress={toggleFollowInFeed}
