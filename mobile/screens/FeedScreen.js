@@ -80,12 +80,11 @@ const FeedScreen = ({
     const [refreshing, setRefreshing] = useState(false);
     const isFocused = useIsFocused();
     
-    const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
+    const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
     const onViewableItemsChanged = useRef(({ viewableItems }) => {
-        const visibleItem = viewableItems.find(item => item.isViewable);
-        if (visibleItem != null && visibleItem.index != null) {
-            setActiveVideoIndex(visibleItem.index);
+        if (viewableItems && viewableItems.length > 0) {
+            setActiveVideoIndex(viewableItems[0].index);
         }
     }).current;
 
