@@ -1,0 +1,622 @@
+.\algorithms\contextual_pairing.py:2:80: E501 line too long (109 > 79 characters)
+.\algorithms\contextual_pairing.py:6:80: E501 line too long (87 > 79 characters)
+.\algorithms\contextual_pairing.py:7:80: E501 line too long (80 > 79 characters)
+.\algorithms\contextual_pairing.py:8:80: E501 line too long (86 > 79 characters)
+.\algorithms\feed_logic.py:8:1: E302 expected 2 blank lines, found 1
+.\algorithms\feed_logic.py:8:80: E501 line too long (151 > 79 characters)
+.\algorithms\feed_logic.py:10:80: E501 line too long (101 > 79 characters)
+.\algorithms\feed_logic.py:11:80: E501 line too long (115 > 79 characters)
+.\algorithms\feed_logic.py:12:80: E501 line too long (105 > 79 characters)
+.\algorithms\feed_logic.py:13:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:19:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:20:80: E501 line too long (83 > 79 characters)
+.\algorithms\feed_logic.py:21:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:25:80: E501 line too long (84 > 79 characters)
+.\algorithms\feed_logic.py:33:80: E501 line too long (92 > 79 characters)
+.\algorithms\feed_logic.py:34:80: E501 line too long (91 > 79 characters)
+.\algorithms\feed_logic.py:37:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:39:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:43:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:46:80: E501 line too long (91 > 79 characters)
+.\algorithms\feed_logic.py:48:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:51:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:53:1: W293 blank line contains whitespace
+.\algorithms\feed_logic.py:61:1: W293 blank line contains whitespace
+.\algorithms\recommendation.py:13:1: E302 expected 2 blank lines, found 1
+.\auth.py:2:1: F401 'typing.Optional' imported but unused
+.\auth.py:18:1: E302 expected 2 blank lines, found 1
+.\auth.py:23:1: E302 expected 2 blank lines, found 1
+.\auth.py:24:80: E501 line too long (90 > 79 characters)
+.\auth.py:26:1: E302 expected 2 blank lines, found 1
+.\auth.py:32:1: E302 expected 2 blank lines, found 1
+.\auth.py:32:80: E501 line too long (95 > 79 characters)
+.\auth.py:33:80: E501 line too long (108 > 79 characters)
+.\auth.py:37:28: E701 multiple statements on one line (colon)
+.\auth.py:38:20: E701 multiple statements on one line (colon)
+.\auth.py:40:20: E701 multiple statements on one line (colon)
+.\database.py:18:1: E302 expected 2 blank lines, found 1
+.\database.py:21:1: E302 expected 2 blank lines, found 1
+.\database.py:26:19: W292 no newline at end of file
+.\main.py:9:1: F401 'models' imported but unused
+.\main.py:9:14: W291 trailing whitespace
+.\main.py:11:80: E501 line too long (193 > 79 characters)
+.\main.py:15:1: E302 expected 2 blank lines, found 1
+.\main.py:33:80: E501 line too long (83 > 79 characters)
+.\main.py:36:20: W291 trailing whitespace
+.\main.py:37:35: W291 trailing whitespace
+.\main.py:38:25: W291 trailing whitespace
+.\main.py:43:1: E302 expected 2 blank lines, found 1
+.\main.py:47:1: E302 expected 2 blank lines, found 1
+.\main.py:51:1: E305 expected 2 blank lines after class or function definition, found 1
+.\models.py:5:1: F401 'datetime' imported but unused
+.\models.py:7:1: E302 expected 2 blank lines, found 1
+.\models.py:17:1: W293 blank line contains whitespace
+.\models.py:22:1: E302 expected 2 blank lines, found 1
+.\models.py:27:40: E261 at least two spaces before inline comment
+.\models.py:28:80: E501 line too long (90 > 79 characters)
+.\models.py:32:1: E302 expected 2 blank lines, found 1
+.\models.py:39:1: E302 expected 2 blank lines, found 1
+.\models.py:42:80: E501 line too long (93 > 79 characters)
+.\models.py:47:1: E302 expected 2 blank lines, found 1
+.\models.py:49:80: E501 line too long (111 > 79 characters)
+.\models.py:50:80: E501 line too long (94 > 79 characters)
+.\models.py:52:1: E302 expected 2 blank lines, found 1
+.\models.py:66:1: E302 expected 2 blank lines, found 1
+.\models.py:68:80: E501 line too long (82 > 79 characters)
+.\models.py:69:80: E501 line too long (86 > 79 characters)
+.\models.py:71:1: E302 expected 2 blank lines, found 1
+.\models.py:79:1: E302 expected 2 blank lines, found 1
+.\models.py:85:1: E302 expected 2 blank lines, found 1
+.\models.py:90:80: E501 line too long (120 > 79 characters)
+.\models.py:92:1: E302 expected 2 blank lines, found 1
+.\models.py:94:80: E501 line too long (114 > 79 characters)
+.\models.py:95:80: E501 line too long (94 > 79 characters)
+.\models.py:97:1: E302 expected 2 blank lines, found 1
+.\models.py:99:80: E501 line too long (86 > 79 characters)
+.\models.py:100:80: E501 line too long (87 > 79 characters)
+.\models.py:102:1: E302 expected 2 blank lines, found 1
+.\models.py:110:1: E302 expected 2 blank lines, found 1
+.\models.py:113:80: E501 line too long (80 > 79 characters)
+.\pytest_check.py:2:80: E501 line too long (80 > 79 characters)
+.\routers\auth_router.py:16:1: E402 module level import not at top of file
+.\routers\auth_router.py:18:1: E302 expected 2 blank lines, found 1
+.\routers\auth_router.py:20:80: E501 line too long (115 > 79 characters)
+.\routers\auth_router.py:21:21: E701 multiple statements on one line (colon)
+.\routers\auth_router.py:21:80: E501 line too long (107 > 79 characters)
+.\routers\auth_router.py:23:45: E701 multiple statements on one line (colon)
+.\routers\auth_router.py:23:80: E501 line too long (121 > 79 characters)
+.\routers\auth_router.py:26:53: W291 trailing whitespace
+.\routers\auth_router.py:31:53: W291 trailing whitespace
+.\routers\auth_router.py:35:1: W293 blank line contains whitespace
+.\routers\auth_router.py:37:32: W291 trailing whitespace
+.\routers\auth_router.py:38:26: W291 trailing whitespace
+.\routers\auth_router.py:39:22: W291 trailing whitespace
+.\routers\auth_router.py:40:35: W291 trailing whitespace
+.\routers\auth_router.py:54:1: W293 blank line contains whitespace
+.\routers\auth_router.py:57:80: E501 line too long (121 > 79 characters)
+.\routers\auth_router.py:59:1: E302 expected 2 blank lines, found 1
+.\routers\auth_router.py:64:1: W293 blank line contains whitespace
+.\routers\auth_router.py:72:1: W293 blank line contains whitespace
+.\routers\auth_router.py:76:1: W293 blank line contains whitespace
+.\routers\auth_router.py:80:1: E302 expected 2 blank lines, found 1
+.\routers\auth_router.py:81:80: E501 line too long (100 > 79 characters)
+.\routers\auth_router.py:86:1: W293 blank line contains whitespace
+.\routers\auth_router.py:89:1: W293 blank line contains whitespace
+.\routers\auth_router.py:94:1: W293 blank line contains whitespace
+.\routers\auth_router.py:96:80: E501 line too long (97 > 79 characters)
+.\routers\auth_router.py:97:1: W293 blank line contains whitespace
+.\routers\auth_router.py:98:80: E501 line too long (84 > 79 characters)
+.\routers\auth_router.py:101:1: E302 expected 2 blank lines, found 1
+.\routers\auth_router.py:103:80: E501 line too long (109 > 79 characters)
+.\routers\auth_router.py:104:80: E501 line too long (116 > 79 characters)
+.\routers\auth_router.py:105:80: E501 line too long (81 > 79 characters)
+.\routers\auth_router.py:106:80: E501 line too long (86 > 79 characters)
+.\routers\auth_router.py:107:1: W293 blank line contains whitespace
+.\routers\auth_router.py:109:80: E501 line too long (110 > 79 characters)
+.\routers\auth_router.py:110:1: W293 blank line contains whitespace
+.\routers\chat_router.py:1:80: E501 line too long (92 > 79 characters)
+.\routers\chat_router.py:10:80: E501 line too long (83 > 79 characters)
+.\routers\chat_router.py:20:80: E501 line too long (87 > 79 characters)
+.\routers\chat_router.py:31:80: E501 line too long (101 > 79 characters)
+.\routers\chat_router.py:34:80: E501 line too long (104 > 79 characters)
+.\routers\chat_router.py:58:30: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+.\routers\chat_router.py:79:80: E501 line too long (117 > 79 characters)
+.\routers\chat_router.py:92:80: E501 line too long (97 > 79 characters)
+.\routers\chat_router.py:93:80: E501 line too long (97 > 79 characters)
+.\routers\chat_router.py:102:80: E501 line too long (99 > 79 characters)
+.\routers\chat_router.py:110:80: E501 line too long (81 > 79 characters)
+.\routers\chat_router.py:111:80: E501 line too long (142 > 79 characters)
+.\routers\chat_router.py:127:80: E501 line too long (136 > 79 characters)
+.\routers\chat_router.py:147:80: E501 line too long (87 > 79 characters)
+.\routers\chat_router.py:169:80: E501 line too long (110 > 79 characters)
+.\routers\chat_router.py:175:22: E712 comparison to False should be 'if cond is False:' or 'if not cond:'
+.\routers\collaboration_router.py:1:1: F401 'fastapi.status' imported but unused
+.\routers\collaboration_router.py:4:80: E501 line too long (87 > 79 characters)
+.\routers\collaboration_router.py:10:1: E302 expected 2 blank lines, found 1
+.\routers\collaboration_router.py:13:1: E302 expected 2 blank lines, found 1
+.\routers\collaboration_router.py:14:80: E501 line too long (131 > 79 characters)
+.\routers\collaboration_router.py:17:5: E741 ambiguous variable name 'l'
+.\routers\collaboration_router.py:17:80: E501 line too long (114 > 79 characters)
+.\routers\collaboration_router.py:19:80: E501 line too long (85 > 79 characters)
+.\routers\collaboration_router.py:22:80: E501 line too long (82 > 79 characters)
+.\routers\collaboration_router.py:26:80: E501 line too long (81 > 79 characters)
+.\routers\collaboration_router.py:29:80: E501 line too long (155 > 79 characters)
+.\routers\collaboration_router.py:34:80: E501 line too long (83 > 79 characters)
+.\routers\collaboration_router.py:39:1: E302 expected 2 blank lines, found 1
+.\routers\collaboration_router.py:40:80: E501 line too long (109 > 79 characters)
+.\routers\collaboration_router.py:42:80: E501 line too long (113 > 79 characters)
+.\routers\collaboration_router.py:45:9: E741 ambiguous variable name 'l'
+.\routers\collaboration_router.py:48:80: E501 line too long (121 > 79 characters)
+.\routers\collaboration_router.py:58:1: E302 expected 2 blank lines, found 1
+.\routers\collaboration_router.py:59:80: E501 line too long (143 > 79 characters)
+.\routers\collaboration_router.py:62:80: E501 line too long (114 > 79 characters)
+.\routers\collaboration_router.py:64:80: E501 line too long (91 > 79 characters)
+.\routers\collaboration_router.py:67:80: E501 line too long (82 > 79 characters)
+.\routers\collaboration_router.py:71:80: E501 line too long (81 > 79 characters)
+.\routers\collaboration_router.py:74:80: E501 line too long (161 > 79 characters)
+.\routers\collaboration_router.py:79:80: E501 line too long (93 > 79 characters)
+.\routers\collaboration_router.py:84:1: E302 expected 2 blank lines, found 1
+.\routers\collaboration_router.py:85:80: E501 line too long (106 > 79 characters)
+.\routers\collaboration_router.py:87:80: E501 line too long (109 > 79 characters)
+.\routers\collaboration_router.py:90:80: E501 line too long (81 > 79 characters)
+.\routers\collaboration_router.py:93:80: E501 line too long (121 > 79 characters)
+.\routers\debug_router.py:6:1: E302 expected 2 blank lines, found 1
+.\routers\debug_router.py:9:80: E501 line too long (82 > 79 characters)
+.\routers\notifications_router.py:11:1: E302 expected 2 blank lines, found 1
+.\routers\notifications_router.py:13:14: E261 at least two spaces before inline comment
+.\routers\notifications_router.py:24:1: E302 expected 2 blank lines, found 1
+.\routers\notifications_router.py:25:80: E501 line too long (101 > 79 characters)
+.\routers\notifications_router.py:26:80: E501 line too long (127 > 79 characters)
+.\routers\notifications_router.py:27:1: W293 blank line contains whitespace
+.\routers\notifications_router.py:35:80: E501 line too long (104 > 79 characters)
+.\routers\notifications_router.py:36:44: W291 trailing whitespace
+.\routers\notifications_router.py:37:1: W293 blank line contains whitespace
+.\routers\notifications_router.py:50:1: E302 expected 2 blank lines, found 1
+.\routers\notifications_router.py:51:80: E501 line too long (110 > 79 characters)
+.\routers\notifications_router.py:52:80: E501 line too long (118 > 79 characters)
+.\routers\recipes_router.py:1:1: F401 'fastapi.status' imported but unused
+.\routers\recipes_router.py:8:80: E501 line too long (93 > 79 characters)
+.\routers\recipes_router.py:14:1: E402 module level import not at top of file
+.\routers\recipes_router.py:16:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:17:80: E501 line too long (122 > 79 characters)
+.\routers\recipes_router.py:27:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:30:15: W291 trailing whitespace
+.\routers\recipes_router.py:31:41: W291 trailing whitespace
+.\routers\recipes_router.py:32:35: W291 trailing whitespace
+.\routers\recipes_router.py:33:29: W291 trailing whitespace
+.\routers\recipes_router.py:36:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:42:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:43:66: W291 trailing whitespace
+.\routers\recipes_router.py:44:65: W291 trailing whitespace
+.\routers\recipes_router.py:47:80: E501 line too long (83 > 79 characters)
+.\routers\recipes_router.py:48:80: E501 line too long (104 > 79 characters)
+.\routers\recipes_router.py:50:80: E501 line too long (125 > 79 characters)
+.\routers\recipes_router.py:52:80: E501 line too long (180 > 79 characters)
+.\routers\recipes_router.py:54:80: E501 line too long (113 > 79 characters)
+.\routers\recipes_router.py:54:114: W291 trailing whitespace
+.\routers\recipes_router.py:56:80: E501 line too long (91 > 79 characters)
+.\routers\recipes_router.py:57:69: W291 trailing whitespace
+.\routers\recipes_router.py:58:80: E501 line too long (123 > 79 characters)
+.\routers\recipes_router.py:64:80: E501 line too long (98 > 79 characters)
+.\routers\recipes_router.py:67:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:68:80: E501 line too long (104 > 79 characters)
+.\routers\recipes_router.py:70:80: E501 line too long (107 > 79 characters)
+.\routers\recipes_router.py:78:29: E201 whitespace after '{'
+.\routers\recipes_router.py:78:80: E501 line too long (289 > 79 characters)
+.\routers\recipes_router.py:81:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:82:80: E501 line too long (110 > 79 characters)
+.\routers\recipes_router.py:84:80: E501 line too long (117 > 79 characters)
+.\routers\recipes_router.py:85:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:94:80: E501 line too long (85 > 79 characters)
+.\routers\recipes_router.py:98:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:99:80: E501 line too long (107 > 79 characters)
+.\routers\recipes_router.py:100:80: E501 line too long (114 > 79 characters)
+.\routers\recipes_router.py:102:80: E501 line too long (84 > 79 characters)
+.\routers\recipes_router.py:105:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:106:80: E501 line too long (134 > 79 characters)
+.\routers\recipes_router.py:107:80: E501 line too long (163 > 79 characters)
+.\routers\recipes_router.py:108:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:113:80: E501 line too long (94 > 79 characters)
+.\routers\recipes_router.py:115:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:119:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:120:80: E501 line too long (99 > 79 characters)
+.\routers\recipes_router.py:121:80: E501 line too long (83 > 79 characters)
+.\routers\recipes_router.py:124:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:125:80: E501 line too long (124 > 79 characters)
+.\routers\recipes_router.py:132:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:133:80: E501 line too long (125 > 79 characters)
+.\routers\recipes_router.py:134:80: E501 line too long (130 > 79 characters)
+.\routers\recipes_router.py:142:29: E201 whitespace after '{'
+.\routers\recipes_router.py:142:80: E501 line too long (289 > 79 characters)
+.\routers\recipes_router.py:145:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:146:80: E501 line too long (103 > 79 characters)
+.\routers\recipes_router.py:147:67: E701 multiple statements on one line (colon)
+.\routers\recipes_router.py:147:80: E501 line too long (110 > 79 characters)
+.\routers\recipes_router.py:148:80: E501 line too long (98 > 79 characters)
+.\routers\recipes_router.py:149:16: E701 multiple statements on one line (colon)
+.\routers\recipes_router.py:150:10: W291 trailing whitespace
+.\routers\recipes_router.py:154:80: E501 line too long (152 > 79 characters)
+.\routers\recipes_router.py:158:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:160:80: E501 line too long (105 > 79 characters)
+.\routers\recipes_router.py:165:80: E501 line too long (165 > 79 characters)
+.\routers\recipes_router.py:170:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:171:80: E501 line too long (130 > 79 characters)
+.\routers\recipes_router.py:172:80: E501 line too long (121 > 79 characters)
+.\routers\recipes_router.py:176:80: E501 line too long (151 > 79 characters)
+.\routers\recipes_router.py:179:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:182:56: W291 trailing whitespace
+.\routers\recipes_router.py:183:79: W291 trailing whitespace
+.\routers\recipes_router.py:188:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:189:80: E501 line too long (111 > 79 characters)
+.\routers\recipes_router.py:190:80: E501 line too long (235 > 79 characters)
+.\routers\recipes_router.py:195:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:196:80: E501 line too long (105 > 79 characters)
+.\routers\recipes_router.py:198:48: E701 multiple statements on one line (colon)
+.\routers\recipes_router.py:198:80: E501 line too long (83 > 79 characters)
+.\routers\recipes_router.py:199:52: E701 multiple statements on one line (colon)
+.\routers\recipes_router.py:199:80: E501 line too long (92 > 79 characters)
+.\routers\recipes_router.py:204:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:205:80: E501 line too long (104 > 79 characters)
+.\routers\recipes_router.py:206:80: E501 line too long (105 > 79 characters)
+.\routers\recipes_router.py:208:80: E501 line too long (114 > 79 characters)
+.\routers\recipes_router.py:209:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:216:80: E501 line too long (83 > 79 characters)
+.\routers\recipes_router.py:217:80: E501 line too long (104 > 79 characters)
+.\routers\recipes_router.py:218:80: E501 line too long (125 > 79 characters)
+.\routers\recipes_router.py:219:80: E501 line too long (180 > 79 characters)
+.\routers\recipes_router.py:220:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:222:80: E501 line too long (113 > 79 characters)
+.\routers\recipes_router.py:222:114: W291 trailing whitespace
+.\routers\recipes_router.py:224:80: E501 line too long (91 > 79 characters)
+.\routers\recipes_router.py:225:69: W291 trailing whitespace
+.\routers\recipes_router.py:226:80: E501 line too long (123 > 79 characters)
+.\routers\recipes_router.py:233:1: E302 expected 2 blank lines, found 1
+.\routers\recipes_router.py:234:80: E501 line too long (112 > 79 characters)
+.\routers\recipes_router.py:236:80: E501 line too long (133 > 79 characters)
+.\routers\recipes_router.py:237:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:244:80: E501 line too long (83 > 79 characters)
+.\routers\recipes_router.py:245:80: E501 line too long (104 > 79 characters)
+.\routers\recipes_router.py:246:80: E501 line too long (125 > 79 characters)
+.\routers\recipes_router.py:247:80: E501 line too long (180 > 79 characters)
+.\routers\recipes_router.py:248:1: W293 blank line contains whitespace
+.\routers\recipes_router.py:250:80: E501 line too long (113 > 79 characters)
+.\routers\recipes_router.py:250:114: W291 trailing whitespace
+.\routers\recipes_router.py:252:80: E501 line too long (91 > 79 characters)
+.\routers\recipes_router.py:253:69: W291 trailing whitespace
+.\routers\recipes_router.py:254:80: E501 line too long (123 > 79 characters)
+.\routers\search_router.py:1:1: F401 'fastapi.HTTPException' imported but unused
+.\routers\search_router.py:11:1: E302 expected 2 blank lines, found 1
+.\routers\search_router.py:12:80: E501 line too long (98 > 79 characters)
+.\routers\search_router.py:13:13: E701 multiple statements on one line (colon)
+.\routers\search_router.py:14:1: W293 blank line contains whitespace
+.\routers\search_router.py:16:80: E501 line too long (110 > 79 characters)
+.\routers\search_router.py:25:1: W293 blank line contains whitespace
+.\routers\search_router.py:27:80: E501 line too long (90 > 79 characters)
+.\routers\search_router.py:27:91: W291 trailing whitespace
+.\routers\search_router.py:28:80: E501 line too long (87 > 79 characters)
+.\routers\search_router.py:29:80: E501 line too long (87 > 79 characters)
+.\routers\search_router.py:30:1: W293 blank line contains whitespace
+.\routers\search_router.py:33:1: W293 blank line contains whitespace
+.\routers\search_router.py:34:59: W291 trailing whitespace
+.\routers\search_router.py:35:80: E501 line too long (98 > 79 characters)
+.\routers\search_router.py:37:1: W293 blank line contains whitespace
+.\routers\search_router.py:43:38: E261 at least two spaces before inline comment
+.\routers\search_router.py:43:80: E501 line too long (98 > 79 characters)
+.\routers\search_router.py:43:99: W291 trailing whitespace
+.\routers\search_router.py:44:80: E501 line too long (115 > 79 characters)
+.\routers\search_router.py:45:80: E501 line too long (97 > 79 characters)
+.\routers\search_router.py:48:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:1:1: F401 'fastapi.status' imported but unused
+.\routers\shopping_router.py:13:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:16:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:26:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:30:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:34:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:46:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:47:80: E501 line too long (102 > 79 characters)
+.\routers\shopping_router.py:48:80: E501 line too long (85 > 79 characters)
+.\routers\shopping_router.py:50:80: E501 line too long (94 > 79 characters)
+.\routers\shopping_router.py:51:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:53:80: E501 line too long (121 > 79 characters)
+.\routers\shopping_router.py:55:80: E501 line too long (92 > 79 characters)
+.\routers\shopping_router.py:59:9: E741 ambiguous variable name 'l'
+.\routers\shopping_router.py:63:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:64:9: E741 ambiguous variable name 'l'
+.\routers\shopping_router.py:68:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:71:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:72:80: E501 line too long (135 > 79 characters)
+.\routers\shopping_router.py:74:33: W291 trailing whitespace
+.\routers\shopping_router.py:75:29: W291 trailing whitespace
+.\routers\shopping_router.py:83:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:84:80: E501 line too long (118 > 79 characters)
+.\routers\shopping_router.py:85:5: E741 ambiguous variable name 'l'
+.\routers\shopping_router.py:85:80: E501 line too long (114 > 79 characters)
+.\routers\shopping_router.py:97:5: E741 ambiguous variable name 'l'
+.\routers\shopping_router.py:100:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:103:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:105:80: E501 line too long (146 > 79 characters)
+.\routers\shopping_router.py:108:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:109:80: E501 line too long (85 > 79 characters)
+.\routers\shopping_router.py:111:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:111:80: E501 line too long (84 > 79 characters)
+.\routers\shopping_router.py:112:80: E501 line too long (116 > 79 characters)
+.\routers\shopping_router.py:114:80: E501 line too long (88 > 79 characters)
+.\routers\shopping_router.py:117:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:118:80: E501 line too long (141 > 79 characters)
+.\routers\shopping_router.py:120:80: E501 line too long (88 > 79 characters)
+.\routers\shopping_router.py:126:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:126:80: E501 line too long (80 > 79 characters)
+.\routers\shopping_router.py:127:80: E501 line too long (147 > 79 characters)
+.\routers\shopping_router.py:128:80: E501 line too long (84 > 79 characters)
+.\routers\shopping_router.py:132:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:137:1: W293 blank line contains whitespace
+.\routers\shopping_router.py:142:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:143:80: E501 line too long (118 > 79 characters)
+.\routers\shopping_router.py:144:80: E501 line too long (84 > 79 characters)
+.\routers\shopping_router.py:152:1: E302 expected 2 blank lines, found 1
+.\routers\shopping_router.py:153:80: E501 line too long (118 > 79 characters)
+.\routers\shopping_router.py:154:80: E501 line too long (84 > 79 characters)
+.\routers\users_router.py:4:1: F401 'os' imported but unused
+.\routers\users_router.py:9:1: F401 'schemas.UserCreate' imported but unused
+.\routers\users_router.py:14:1: E302 expected 2 blank lines, found 1
+.\routers\users_router.py:16:35: W291 trailing whitespace
+.\routers\users_router.py:17:26: W291 trailing whitespace
+.\routers\users_router.py:18:35: W291 trailing whitespace
+.\routers\users_router.py:19:52: W291 trailing whitespace
+.\routers\users_router.py:34:80: E501 line too long (80 > 79 characters)
+.\routers\users_router.py:36:1: E302 expected 2 blank lines, found 1
+.\routers\users_router.py:37:80: E501 line too long (97 > 79 characters)
+.\routers\users_router.py:38:80: E501 line too long (106 > 79 characters)
+.\routers\users_router.py:39:80: E501 line too long (93 > 79 characters)
+.\routers\users_router.py:40:80: E501 line too long (92 > 79 characters)
+.\routers\users_router.py:44:80: E501 line too long (113 > 79 characters)
+.\routers\users_router.py:50:1: W293 blank line contains whitespace
+.\routers\users_router.py:54:1: W293 blank line contains whitespace
+.\routers\users_router.py:57:80: E501 line too long (83 > 79 characters)
+.\routers\users_router.py:59:80: E501 line too long (126 > 79 characters)
+.\routers\users_router.py:59:127: W291 trailing whitespace
+.\routers\users_router.py:60:80: E501 line too long (91 > 79 characters)
+.\routers\users_router.py:61:55: W291 trailing whitespace
+.\routers\users_router.py:62:80: E501 line too long (81 > 79 characters)
+.\routers\users_router.py:64:80: E501 line too long (257 > 79 characters)
+.\routers\users_router.py:66:1: E302 expected 2 blank lines, found 1
+.\routers\users_router.py:67:80: E501 line too long (111 > 79 characters)
+.\routers\users_router.py:69:80: E501 line too long (88 > 79 characters)
+.\routers\users_router.py:73:80: E501 line too long (117 > 79 characters)
+.\routers\users_router.py:81:80: E501 line too long (131 > 79 characters)
+.\routers\users_router.py:86:1: E302 expected 2 blank lines, found 1
+.\routers\users_router.py:87:80: E501 line too long (114 > 79 characters)
+.\routers\users_router.py:91:80: E501 line too long (85 > 79 characters)
+.\routers\users_router.py:92:80: E501 line too long (84 > 79 characters)
+.\routers\users_router.py:93:80: E501 line too long (129 > 79 characters)
+.\routers\users_router.py:94:80: E501 line too long (98 > 79 characters)
+.\routers\users_router.py:105:80: E501 line too long (88 > 79 characters)
+.\routers\users_router.py:107:80: E501 line too long (83 > 79 characters)
+.\routers\users_router.py:113:1: E302 expected 2 blank lines, found 1
+.\routers\users_router.py:114:80: E501 line too long (98 > 79 characters)
+.\routers\users_router.py:115:80: E501 line too long (93 > 79 characters)
+.\routers\users_router.py:116:80: E501 line too long (92 > 79 characters)
+.\routers\users_router.py:118:80: E501 line too long (108 > 79 characters)
+.\routers\users_router.py:123:1: E302 expected 2 blank lines, found 1
+.\routers\users_router.py:124:80: E501 line too long (103 > 79 characters)
+.\routers\users_router.py:132:29: E201 whitespace after '{'
+.\routers\users_router.py:132:80: E501 line too long (209 > 79 characters)
+.\routers\users_router.py:135:1: E302 expected 2 blank lines, found 1
+.\routers\users_router.py:136:80: E501 line too long (103 > 79 characters)
+.\routers\users_router.py:137:80: E501 line too long (86 > 79 characters)
+.\routers\users_router.py:139:80: E501 line too long (105 > 79 characters)
+.\routers\users_router.py:141:80: E501 line too long (103 > 79 characters)
+.\routers\users_router.py:144:1: W293 blank line contains whitespace
+.\routers\users_router.py:146:42: E701 multiple statements on one line (colon)
+.\routers\users_router.py:150:29: E201 whitespace after '{'
+.\routers\users_router.py:150:80: E501 line too long (209 > 79 characters)
+.\routers\video_router.py:2:1: F401 'shutil' imported but unused
+.\routers\video_router.py:4:1: F401 'os' imported but unused
+.\routers\video_router.py:11:1: E402 module level import not at top of file
+.\routers\video_router.py:13:1: E302 expected 2 blank lines, found 1
+.\routers\video_router.py:14:80: E501 line too long (86 > 79 characters)
+.\routers\video_router.py:17:1: W293 blank line contains whitespace
+.\routers\video_router.py:20:1: W293 blank line contains whitespace
+.\schemas.py:4:1: E302 expected 2 blank lines, found 1
+.\schemas.py:10:1: E302 expected 2 blank lines, found 1
+.\schemas.py:14:1: E302 expected 2 blank lines, found 1
+.\schemas.py:18:1: E302 expected 2 blank lines, found 1
+.\schemas.py:23:20: W291 trailing whitespace
+.\schemas.py:26:1: E305 expected 2 blank lines after class or function definition, found 1
+.\schemas.py:26:1: E402 module level import not at top of file
+.\schemas.py:27:1: E302 expected 2 blank lines, found 0
+.\schemas.py:31:1: E302 expected 2 blank lines, found 1
+.\schemas.py:34:1: E302 expected 2 blank lines, found 1
+.\schemas.py:37:1: E302 expected 2 blank lines, found 1
+.\schemas.py:40:1: E302 expected 2 blank lines, found 1
+.\schemas.py:50:1: E302 expected 2 blank lines, found 1
+.\schemas.py:55:1: E302 expected 2 blank lines, found 1
+.\schemas.py:61:1: W391 blank line at end of file
+.\services\mail_manager.py:7:1: E302 expected 2 blank lines, found 1
+.\services\mail_manager.py:16:80: E501 line too long (88 > 79 characters)
+.\services\mail_manager.py:19:80: E501 line too long (126 > 79 characters)
+.\services\mail_manager.py:51:80: E501 line too long (94 > 79 characters)
+.\services\mail_manager.py:61:1: E305 expected 2 blank lines after class or function definition, found 1
+.\services\storage_manager.py:8:1: E302 expected 2 blank lines, found 1
+.\services\storage_manager.py:10:55: E261 at least two spaces before inline comment
+.\services\storage_manager.py:12:1: W293 blank line contains whitespace
+.\services\storage_manager.py:17:1: W293 blank line contains whitespace
+.\services\storage_manager.py:22:1: W293 blank line contains whitespace
+.\services\storage_manager.py:24:80: E501 line too long (90 > 79 characters)
+.\services\storage_manager.py:28:80: E501 line too long (88 > 79 characters)
+.\services\storage_manager.py:30:1: W293 blank line contains whitespace
+.\services\storage_manager.py:37:64: E261 at least two spaces before inline comment
+.\services\storage_manager.py:37:80: E501 line too long (102 > 79 characters)
+.\services\storage_manager.py:39:80: E501 line too long (103 > 79 characters)
+.\services\storage_manager.py:46:5: E303 too many blank lines (3)
+.\services\storage_manager.py:51:1: W293 blank line contains whitespace
+.\services\storage_manager.py:53:80: E501 line too long (97 > 79 characters)
+.\services\storage_manager.py:54:80: E501 line too long (82 > 79 characters)
+.\services\storage_manager.py:60:80: E501 line too long (83 > 79 characters)
+.\services\storage_manager.py:63:1: W293 blank line contains whitespace
+.\services\storage_manager.py:65:80: E501 line too long (90 > 79 characters)
+.\services\storage_manager.py:66:80: E501 line too long (129 > 79 characters)
+.\services\storage_manager.py:70:80: E501 line too long (109 > 79 characters)
+.\services\storage_manager.py:71:1: W293 blank line contains whitespace
+.\services\storage_manager.py:73:45: E701 multiple statements on one line (colon)
+.\services\storage_manager.py:73:80: E501 line too long (84 > 79 characters)
+.\services\storage_manager.py:74:1: W293 blank line contains whitespace
+.\services\storage_manager.py:86:80: E501 line too long (82 > 79 characters)
+.\services\storage_manager.py:87:1: W293 blank line contains whitespace
+.\services\storage_manager.py:93:80: E501 line too long (99 > 79 characters)
+.\services\storage_manager.py:96:1: W293 blank line contains whitespace
+.\services\storage_manager.py:99:80: E501 line too long (109 > 79 characters)
+.\services\storage_manager.py:100:45: E701 multiple statements on one line (colon)
+.\services\storage_manager.py:100:80: E501 line too long (84 > 79 characters)
+.\services\storage_manager.py:101:1: W293 blank line contains whitespace
+.\services\storage_manager.py:111:1: E305 expected 2 blank lines after class or function definition, found 1
+.\tests\conftest.py:8:1: E402 module level import not at top of file
+.\tests\conftest.py:9:1: E402 module level import not at top of file
+.\tests\conftest.py:10:1: E402 module level import not at top of file
+.\tests\conftest.py:11:1: F401 'unittest.mock.patch' imported but unused
+.\tests\conftest.py:11:1: E402 module level import not at top of file
+.\tests\conftest.py:13:1: E402 module level import not at top of file
+.\tests\conftest.py:18:1: E402 module level import not at top of file
+.\tests\conftest.py:19:80: E501 line too long (96 > 79 characters)
+.\tests\conftest.py:21:1: E402 module level import not at top of file
+.\tests\conftest.py:22:1: E402 module level import not at top of file
+.\tests\conftest.py:29:80: E501 line too long (84 > 79 characters)
+.\tests\conftest.py:30:80: E501 line too long (82 > 79 characters)
+.\tests\conftest.py:75:80: E501 line too long (114 > 79 characters)
+.\tests\conftest.py:88:80: E501 line too long (84 > 79 characters)
+.\tests\conftest.py:94:80: E501 line too long (86 > 79 characters)
+.\tests\test_auth.py:2:1: F401 'tests.conftest.auth_header' imported but unused
+.\tests\test_auth.py:64:80: E501 line too long (89 > 79 characters)
+.\tests\test_auth.py:71:80: E501 line too long (86 > 79 characters)
+.\tests\test_auth.py:77:80: E501 line too long (92 > 79 characters)
+.\tests\test_chat.py:14:80: E501 line too long (90 > 79 characters)
+.\tests\test_chat.py:22:80: E501 line too long (91 > 79 characters)
+.\tests\test_chat.py:23:80: E501 line too long (91 > 79 characters)
+.\tests\test_chat.py:30:80: E501 line too long (86 > 79 characters)
+.\tests\test_chat.py:41:80: E501 line too long (93 > 79 characters)
+.\tests\test_chat.py:52:80: E501 line too long (92 > 79 characters)
+.\tests\test_chat.py:59:80: E501 line too long (93 > 79 characters)
+.\tests\test_chat.py:62:80: E501 line too long (110 > 79 characters)
+.\tests\test_chat.py:63:80: E501 line too long (111 > 79 characters)
+.\tests\test_chat.py:65:80: E501 line too long (99 > 79 characters)
+.\tests\test_chat.py:72:80: E501 line too long (80 > 79 characters)
+.\tests\test_chat.py:74:80: E501 line too long (93 > 79 characters)
+.\tests\test_chat.py:78:80: E501 line too long (86 > 79 characters)
+.\tests\test_chat.py:79:80: E501 line too long (90 > 79 characters)
+.\tests\test_chat.py:83:80: E501 line too long (83 > 79 characters)
+.\tests\test_chat.py:85:80: E501 line too long (93 > 79 characters)
+.\tests\test_chat.py:88:80: E501 line too long (88 > 79 characters)
+.\tests\test_chat.py:99:80: E501 line too long (93 > 79 characters)
+.\tests\test_chat.py:103:80: E501 line too long (107 > 79 characters)
+.\tests\test_chat.py:106:80: E501 line too long (87 > 79 characters)
+.\tests\test_chat.py:110:80: E501 line too long (93 > 79 characters)
+.\tests\test_chat.py:114:80: E501 line too long (87 > 79 characters)
+.\tests\test_collaboration.py:3:1: E302 expected 2 blank lines, found 1
+.\tests\test_collaboration.py:5:80: E501 line too long (117 > 79 characters)
+.\tests\test_collaboration.py:9:80: E501 line too long (120 > 79 characters)
+.\tests\test_collaboration.py:11:45: E741 ambiguous variable name 'l'
+.\tests\test_collaboration.py:11:80: E501 line too long (126 > 79 characters)
+.\tests\test_collaboration.py:13:1: E302 expected 2 blank lines, found 1
+.\tests\test_collaboration.py:15:80: E501 line too long (115 > 79 characters)
+.\tests\test_collaboration.py:17:80: E501 line too long (107 > 79 characters)
+.\tests\test_collaboration.py:20:80: E501 line too long (116 > 79 characters)
+.\tests\test_collaboration.py:23:80: E501 line too long (95 > 79 characters)
+.\tests\test_collaboration.py:24:77: E741 ambiguous variable name 'l'
+.\tests\test_collaboration.py:24:80: E501 line too long (94 > 79 characters)
+.\tests\test_collaboration.py:28:80: E501 line too long (105 > 79 characters)
+.\tests\test_collaboration.py:33:80: E501 line too long (102 > 79 characters)
+.\tests\test_data_integrity.py:2:1: F401 'tests.conftest.create_verified_user' imported but unused
+.\tests\test_data_integrity.py:31:80: E501 line too long (85 > 79 characters)
+.\tests\test_data_integrity.py:47:80: E501 line too long (91 > 79 characters)
+.\tests\test_data_integrity.py:48:80: E501 line too long (101 > 79 characters)
+.\tests\test_data_integrity.py:52:80: E501 line too long (91 > 79 characters)
+.\tests\test_data_integrity.py:53:80: E501 line too long (101 > 79 characters)
+.\tests\test_data_integrity.py:61:80: E501 line too long (105 > 79 characters)
+.\tests\test_data_integrity.py:62:80: E501 line too long (112 > 79 characters)
+.\tests\test_data_integrity.py:71:80: E501 line too long (93 > 79 characters)
+.\tests\test_data_integrity.py:80:80: E501 line too long (87 > 79 characters)
+.\tests\test_data_integrity.py:84:80: E501 line too long (89 > 79 characters)
+.\tests\test_data_integrity.py:87:80: E501 line too long (87 > 79 characters)
+.\tests\test_data_integrity.py:94:80: E501 line too long (80 > 79 characters)
+.\tests\test_data_integrity.py:97:80: E501 line too long (80 > 79 characters)
+.\tests\test_data_integrity.py:107:80: E501 line too long (92 > 79 characters)
+.\tests\test_integration.py:31:80: E501 line too long (81 > 79 characters)
+.\tests\test_integration.py:76:80: E501 line too long (80 > 79 characters)
+.\tests\test_integration.py:77:80: E501 line too long (80 > 79 characters)
+.\tests\test_integration.py:81:80: E501 line too long (86 > 79 characters)
+.\tests\test_integration.py:85:80: E501 line too long (106 > 79 characters)
+.\tests\test_integration.py:86:80: E501 line too long (113 > 79 characters)
+.\tests\test_integration.py:100:80: E501 line too long (114 > 79 characters)
+.\tests\test_integration.py:103:80: E501 line too long (96 > 79 characters)
+.\tests\test_integration.py:109:80: E501 line too long (80 > 79 characters)
+.\tests\test_integration.py:115:80: E501 line too long (87 > 79 characters)
+.\tests\test_integration.py:118:80: E501 line too long (100 > 79 characters)
+.\tests\test_integration.py:121:80: E501 line too long (98 > 79 characters)
+.\tests\test_integration.py:124:80: E501 line too long (81 > 79 characters)
+.\tests\test_integration.py:128:80: E501 line too long (96 > 79 characters)
+.\tests\test_notifications.py:1:80: E501 line too long (81 > 79 characters)
+.\tests\test_notifications.py:2:1: F401 'tests.conftest.create_verified_user' imported but unused
+.\tests\test_notifications.py:30:80: E501 line too long (85 > 79 characters)
+.\tests\test_notifications.py:33:80: E501 line too long (81 > 79 characters)
+.\tests\test_notifications.py:42:80: E501 line too long (91 > 79 characters)
+.\tests\test_notifications.py:45:80: E501 line too long (81 > 79 characters)
+.\tests\test_notifications.py:57:80: E501 line too long (81 > 79 characters)
+.\tests\test_notifications.py:68:80: E501 line too long (81 > 79 characters)
+.\tests\test_notifications.py:81:80: E501 line too long (81 > 79 characters)
+.\tests\test_recipes.py:2:1: F401 'tests.conftest.create_verified_user' imported but unused
+.\tests\test_recipes.py:16:80: E501 line too long (88 > 79 characters)
+.\tests\test_recipes.py:41:1: W293 blank line contains whitespace
+.\tests\test_recipes.py:64:80: E501 line too long (86 > 79 characters)
+.\tests\test_recipes.py:114:80: E501 line too long (96 > 79 characters)
+.\tests\test_recipes.py:121:80: E501 line too long (96 > 79 characters)
+.\tests\test_recipes.py:131:80: E501 line too long (98 > 79 characters)
+.\tests\test_recipes.py:136:80: E501 line too long (104 > 79 characters)
+.\tests\test_recipes.py:140:80: E501 line too long (94 > 79 characters)
+.\tests\test_recipes.py:144:80: E501 line too long (104 > 79 characters)
+.\tests\test_security.py:31:80: E501 line too long (90 > 79 characters)
+.\tests\test_security.py:41:80: E501 line too long (86 > 79 characters)
+.\tests\test_security.py:46:80: E501 line too long (93 > 79 characters)
+.\tests\test_security.py:47:80: E501 line too long (93 > 79 characters)
+.\tests\test_security.py:50:80: E501 line too long (83 > 79 characters)
+.\tests\test_security.py:51:80: E501 line too long (84 > 79 characters)
+.\tests\test_security.py:63:80: E501 line too long (84 > 79 characters)
+.\tests\test_security.py:96:80: E501 line too long (81 > 79 characters)
+.\tests\test_shopping.py:4:1: E302 expected 2 blank lines, found 1
+.\tests\test_shopping.py:9:1: E302 expected 2 blank lines, found 1
+.\tests\test_shopping.py:10:80: E501 line too long (103 > 79 characters)
+.\tests\test_shopping.py:15:80: E501 line too long (84 > 79 characters)
+.\tests\test_shopping.py:21:1: E302 expected 2 blank lines, found 1
+.\tests\test_shopping.py:23:80: E501 line too long (110 > 79 characters)
+.\tests\test_shopping.py:27:80: E501 line too long (135 > 79 characters)
+.\tests\test_shopping.py:35:1: E302 expected 2 blank lines, found 1
+.\tests\test_shopping.py:37:80: E501 line too long (116 > 79 characters)
+.\tests\test_shopping.py:38:80: E501 line too long (153 > 79 characters)
+.\tests\test_shopping.py:41:80: E501 line too long (123 > 79 characters)
+.\tests\test_shopping.py:44:38: E261 at least two spaces before inline comment
+.\tests\test_shopping.py:47:80: E501 line too long (127 > 79 characters)
+.\tests\test_shopping.py:52:1: E302 expected 2 blank lines, found 1
+.\tests\test_shopping.py:53:5: E741 ambiguous variable name 'l'
+.\tests\test_shopping.py:53:80: E501 line too long (101 > 79 characters)
+.\tests\test_shopping.py:54:80: E501 line too long (123 > 79 characters)
+.\tests\test_shopping.py:56:80: E501 line too long (98 > 79 characters)
+.\tests\test_shopping.py:59:80: E501 line too long (98 > 79 characters)
+.\tests\test_shopping.py:62:1: E302 expected 2 blank lines, found 1
+.\tests\test_shopping.py:63:5: E741 ambiguous variable name 'l'
+.\tests\test_shopping.py:63:80: E501 line too long (103 > 79 characters)
+.\tests\test_shopping.py:64:80: E501 line too long (121 > 79 characters)
+.\tests\test_shopping.py:66:80: E501 line too long (93 > 79 characters)
+.\tests\test_shopping.py:69:80: E501 line too long (98 > 79 characters)
+.\tests\test_shopping.py:72:1: E302 expected 2 blank lines, found 1
+.\tests\test_shopping.py:73:5: E741 ambiguous variable name 'l'
+.\tests\test_shopping.py:73:80: E501 line too long (103 > 79 characters)
+.\tests\test_shopping.py:74:80: E501 line too long (107 > 79 characters)
+.\tests\test_shopping.py:75:80: E501 line too long (109 > 79 characters)
+.\tests\test_shopping.py:76:80: E501 line too long (107 > 79 characters)
+.\tests\test_shopping.py:78:80: E501 line too long (98 > 79 characters)
+.\tests\test_users.py:2:1: F401 'tests.conftest.create_verified_user' imported but unused
+.\tests\test_users.py:19:80: E501 line too long (87 > 79 characters)
+.\tests\test_users.py:32:9: E128 continuation line under-indented for visual indent
+.\tests\test_users.py:47:80: E501 line too long (95 > 79 characters)
+.\tests\test_users.py:52:80: E501 line too long (101 > 79 characters)
+.\tests\test_users.py:57:80: E501 line too long (95 > 79 characters)
+.\tests\test_users.py:63:80: E501 line too long (88 > 79 characters)

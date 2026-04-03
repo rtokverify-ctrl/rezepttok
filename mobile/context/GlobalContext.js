@@ -73,7 +73,20 @@ export const GlobalProvider = ({ children }) => {
 
     const loadFeed = async (isRefresh = false, cursorOverride = null) => {
         if (!userToken) return;
-        if (!isRefresh && !cursorOverride) setFeedLoading(true);
+        
+        if (!isRefresh && !cursorOverride) {
+            try {
+                const cached = await AsyncStorage.getItem('cachedFeed');
+                if (cached) {
+                    setVideos(JSON.parse(cached));
+                } else {
+                    setFeedLoading(true);
+                }
+            } catch (e) {
+                setFeedLoading(true);
+            }
+        }
+        
         try {
             const url = cursorOverride ? `${BASE_URL}/feed?cursor=${encodeURIComponent(cursorOverride)}` : `${BASE_URL}/feed`;
             const r = await fetch(url, { headers: { 'Authorization': `Bearer ${userToken}` } });
@@ -98,10 +111,12 @@ export const GlobalProvider = ({ children }) => {
                 });
             } else {
                 setVideos(formatted);
+                if (formatted.length > 0) {
+                    AsyncStorage.setItem('cachedFeed', JSON.stringify(formatted)).catch(() => {});
+                }
             }
         } catch (e) {
             console.log("Feed Error", e);
-            if (!cursorOverride) setVideos([]);
         } finally {
             if (!cursorOverride) setFeedLoading(false);
         }

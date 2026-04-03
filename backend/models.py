@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
 from database import Base
-import datetime
+
 
 class User(Base):
     __tablename__ = "users"

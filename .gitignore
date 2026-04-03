@@ -5,6 +5,7 @@ __pycache__/
 backend/venv/
 backend/.env
 *.db
+*.log
 backend/static/videos/
 backend/static/images/
 

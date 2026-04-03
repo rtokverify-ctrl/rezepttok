@@ -1,12 +1,24 @@
-import { Tabs } from 'expo-router';
+import { Tabs, Redirect } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import {  BG_DARK, BG_LIGHT, NAVBAR_HEIGHT } from '../../constants/Config';
-import { View, Platform, StyleSheet } from 'react-native';
+import { View, Platform, StyleSheet, ActivityIndicator } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useGlobal } from '../../context/GlobalContext';
 
 export default function TabLayout() {
-    const { themeColor } = useGlobal();
+    const { themeColor, userToken, isLoading } = useGlobal();
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={themeColor} />
+            </View>
+        );
+    }
+
+    if (!userToken) {
+        return <Redirect href="/auth" />;
+    }
 
     return (
         <Tabs
