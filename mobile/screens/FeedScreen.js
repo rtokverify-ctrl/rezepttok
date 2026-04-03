@@ -127,7 +127,7 @@ const FeedScreen = ({
                         data={videos} pagingEnabled showsVerticalScrollIndicator={false}
                         snapToInterval={feedHeight} decelerationRate="fast"
                         onViewableItemsChanged={onViewableItemsChanged}
-                        viewabilityConfig={{ itemVisiblePercentThreshold: 100 }}
+                        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
                         windowSize={3}
                         maxToRenderPerBatch={2}
                         updateCellsBatchingPeriod={50}
