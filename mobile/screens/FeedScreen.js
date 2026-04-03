@@ -80,13 +80,14 @@ const FeedScreen = ({
     const [refreshing, setRefreshing] = useState(false);
     const isFocused = useIsFocused();
     
-    const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
-
-    const onViewableItemsChanged = useRef(({ viewableItems }) => {
-        if (viewableItems && viewableItems.length > 0) {
-            setActiveVideoIndex(viewableItems[0].index);
+    const handleScroll = useCallback((e) => {
+        if (feedHeight <= 0) return;
+        const offsetY = e.nativeEvent.contentOffset.y;
+        const index = Math.round(offsetY / feedHeight);
+        if (index !== activeVideoIndex && index >= 0 && index < videos.length) {
+            setActiveVideoIndex(index);
         }
-    }).current;
+    }, [feedHeight, activeVideoIndex, videos.length]);
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
@@ -126,8 +127,8 @@ const FeedScreen = ({
                         keyExtractor={(item, index) => item?.id ? item.id.toString() : index.toString()}
                         data={videos} pagingEnabled showsVerticalScrollIndicator={false}
                         snapToInterval={feedHeight} decelerationRate="fast"
-                        onViewableItemsChanged={onViewableItemsChanged}
-                        viewabilityConfig={viewabilityConfig}
+                        onScroll={handleScroll}
+                        scrollEventThrottle={16}
                         windowSize={3}
                         maxToRenderPerBatch={2}
                         updateCellsBatchingPeriod={50}
