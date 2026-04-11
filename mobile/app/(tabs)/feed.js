@@ -108,12 +108,22 @@ export default function FeedTab() {
         } catch (e) { } finally { setCommentLoading(false); }
     };
 
-    const sendComment = async () => {
+    const sendComment = async (parentId = null) => {
         if (!newComment.trim() || !commentVideoId) return;
         try {
-            const r = await fetch(`${BASE_URL}/recipes/${commentVideoId}/comments`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` }, body: JSON.stringify({ text: newComment }) });
+            const body = { text: newComment };
+            if (parentId) body.parent_id = parentId;
+            const r = await fetch(`${BASE_URL}/recipes/${commentVideoId}/comments`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` }, body: JSON.stringify(body) });
             const d = await r.json();
-            setCurrentComments([d, ...currentComments]);
+            if (parentId) {
+                // Add reply to the parent's replies array
+                setCurrentComments(prev => prev.map(c => 
+                    c.id === parentId ? { ...c, replies: [...(c.replies || []), d] } : c
+                ));
+            } else {
+                // Add as top-level comment
+                setCurrentComments(prev => [d, ...prev]);
+            }
             setNewComment('');
             // Instantly update the comment counter in the feed
             setVideos(prev => prev.map(v => v.id === commentVideoId ? { ...v, comments_count: (v.comments_count || 0) + 1 } : v));

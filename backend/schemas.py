@@ -23,6 +23,13 @@ class RecipeCreate(BaseModel):
     tags: List[str] 
     tips: Optional[str] = None
 
+class RecipeUpdate(BaseModel):
+    title: Optional[str] = None
+    ingredients: Optional[List[dict]] = None
+    steps: Optional[List[dict]] = None
+    tags: Optional[List[str]] = None
+    tips: Optional[str] = None
+
 from typing import Any
 class FeedResponse(BaseModel):
     data: List[Any]
@@ -30,6 +37,7 @@ class FeedResponse(BaseModel):
 
 class CommentCreate(BaseModel):
     text: str
+    parent_id: Optional[int] = None
 
 class CollectionCreate(BaseModel):
     name: str

@@ -145,6 +145,8 @@ async def send_message(conv_id: int, msg: MessageCreate, db: Session = Depends(g
 
     # Push to recipient via WebSocket if connected
     recipient_id = conv.user2_id if conv.user1_id == current_user.id else conv.user1_id
+    
+    # WebSocket Push (Real-time)
     if recipient_id in active_connections:
         try:
             await active_connections[recipient_id].send_json({
@@ -160,6 +162,19 @@ async def send_message(conv_id: int, msg: MessageCreate, db: Session = Depends(g
             })
         except Exception:
             pass  # Connection may have dropped
+
+    # Push Notification (Background)
+    try:
+        from services.push_service import send_push_notification
+        await send_push_notification(
+            db, 
+            recipient_id, 
+            f"Neue Nachricht von {current_user.display_name or current_user.username}", 
+            message.text,
+            {"type": "chat", "conversation_id": conv.id}
+        )
+    except Exception as e:
+        print(f"Chat push error: {e}")
 
     return message
 

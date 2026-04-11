@@ -16,6 +16,14 @@ from contextlib import asynccontextmanager
 async def lifespan(app: FastAPI):
     # Create tables
     Base.metadata.create_all(bind=engine)
+    # Auto-migrate: add parent_id to comments if missing
+    from sqlalchemy import text, inspect
+    with engine.connect() as conn:
+        inspector = inspect(engine)
+        columns = [c['name'] for c in inspector.get_columns('comments')]
+        if 'parent_id' not in columns:
+            conn.execute(text("ALTER TABLE comments ADD COLUMN parent_id INTEGER REFERENCES comments(id)"))
+            conn.commit()
     yield
 
 app = FastAPI(lifespan=lifespan)

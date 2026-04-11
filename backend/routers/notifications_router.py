@@ -55,3 +55,8 @@ def read_notification(id: int, db: Session = Depends(get_db), current_user: User
     notif.read = True
     db.commit()
     return {"status": "ok"}
+
+@router.get("/notifications/unread-count")
+def get_unread_count(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    count = db.query(Notification).filter(Notification.recipient_id == current_user.id, Notification.read == False).count()
+    return {"unread_count": count}

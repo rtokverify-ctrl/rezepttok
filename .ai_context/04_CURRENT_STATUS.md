@@ -1,15 +1,15 @@
 # 🕒 04_CURRENT_STATUS
 
 ## 🟢 Active Context (Woran wir gerade arbeiten)
-- **🔍 Entdecken-Screen verbessern:** Backend-Endpoint für Trending-Rezepte (`GET /recipes/trending`) erstellen und im `SearchScreen.js` dynamisch einbinden anstatt Hardcoded-Platzhalter zu nutzen.
-- **🚀 Push & Production Deployment (Clean Up):** Verbliebene Linting-Fehler beheben (z.B. in `algorithms/feed_logic.py`), Code aufräumen, in Git einchecken und ein neues Deployment auf Render anstoßen.
-
-## 📝 To-Do (Offen / Morgen)
 - **🔔 Benachrichtigungssystem:** In-App-Notifications (z.B. "X hat eine Liste geteilt") und Push-Notifications (via Expo Push) für Interaktionen (Likes, Kommentare, Follows).
 - **👤 Profil-Ausbau & Settings:** Profilbilder hochladen/ändern, Bio anpassen, Account-Löschung (DSGVO), App-Theme Settings.
+
+## 📝 To-Do (Offen / Morgen)
 - **🧪 Frontend State & Performance Testing:** Unit/E2E-Tests für React-Komponenten, Offline-Modus absichern (Caching von Videos/Bildern).
 
 ## ✅ Done (Erledigt / Implementiert)
+- **🚀 Push & Production Deployment (Clean Up):** Linting-Fehler im Backend behoben.
+- **🔍 Entdecken-Screen:** Dynamischer Trending-Endpoint im Backend eingebaut und im Frontend verknüpft.
 - **🎬 Video Playback & Interactive Seekbar:** Optimiertes Abspielen (strict visibility) und interaktive Scrubbing-Suchleiste (PanResponder).
 - **🤝 Collaboration / Teilen:** Sharing-Endpoints & UI für Einkaufslisten und Collections.
 - **🔒 Sicherheit & Robustheit:** Rate Limiting (slowapi), Input Validation verschärft, CORS eingeschränkt.

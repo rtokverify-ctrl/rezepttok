@@ -74,6 +74,7 @@ class Comment(Base):
     text: Mapped[str] = mapped_column()
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"))
+    parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("comments.id"), default=None)
     created_at: Mapped[str] = mapped_column()
 
 class Collection(Base):
@@ -115,3 +116,10 @@ class Message(Base):
     text: Mapped[str] = mapped_column()
     created_at: Mapped[str] = mapped_column()
     read: Mapped[bool] = mapped_column(default=False)
+
+class PushToken(Base):
+    __tablename__ = "push_tokens"
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    token: Mapped[str] = mapped_column(unique=True, index=True)
+    created_at: Mapped[str] = mapped_column()

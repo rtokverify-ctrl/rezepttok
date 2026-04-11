@@ -30,3 +30,6 @@ Thumbs.db
 
 # Temp processing directory
 .tmp/
+
+# Scratch and experiments
+backend/scratch/

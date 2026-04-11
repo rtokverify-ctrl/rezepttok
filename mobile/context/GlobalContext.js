@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL, getFullUrl, THEME_COLOR } from '../constants/Config';
+import { usePushNotifications } from '../hooks/usePushNotifications';
 
 const GlobalContext = createContext();
 
@@ -31,6 +32,11 @@ export const GlobalProvider = ({ children }) => {
     // Chat
     const [unreadChatCount, setUnreadChatCount] = useState(0);
 
+    // Notifications
+    const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+
+    const { expoPushToken, notification } = usePushNotifications();
+
     useEffect(() => {
         AsyncStorage.getItem('themeColor').then(c => {
             if (c) setThemeColor(c);
@@ -51,8 +57,41 @@ export const GlobalProvider = ({ children }) => {
             loadMyProfile();
             loadCollections();
             loadUnreadChatCount();
+            loadUnreadNotifCount();
         }
     }, [userToken]);
+
+    useEffect(() => {
+        if (userToken && expoPushToken) {
+            uploadPushToken(expoPushToken);
+        }
+    }, [userToken, expoPushToken]);
+
+    useEffect(() => {
+        // Automatically reload notif count if a foreground push arrives
+        if (notification && userToken) {
+            loadUnreadNotifCount();
+        }
+    }, [notification]);
+
+    const uploadPushToken = async (token) => {
+        try {
+            await fetch(`${BASE_URL}/push-token`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${userToken}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token })
+            });
+        } catch (e) { console.log(e); }
+    };
+
+    const loadUnreadNotifCount = async () => {
+        if (!userToken) return;
+        try {
+            const r = await fetch(`${BASE_URL}/notifications/unread-count`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const data = await r.json();
+            setUnreadNotifCount(data.unread_count || 0);
+        } catch (e) { setUnreadNotifCount(0); }
+    };
 
     const checkLogin = async () => {
         try {
@@ -242,6 +281,26 @@ export const GlobalProvider = ({ children }) => {
         }
     }
 
+    const updateRecipe = async (recipeId, updateData) => {
+        try {
+            const r = await fetch(`${BASE_URL}/recipes/${recipeId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` },
+                body: JSON.stringify(updateData)
+            });
+            if (!r.ok) throw new Error('Update failed');
+            const updated = await r.json();
+            // Update in feed videos
+            setVideos(prev => prev.map(v => v.id === recipeId ? { ...v, ...updated } : v));
+            // Update in profile videos
+            setMyVideos(prev => prev.map(v => v.id === recipeId ? { ...v, ...updated } : v));
+            return updated;
+        } catch (e) {
+            console.log('updateRecipe error:', e);
+            return null;
+        }
+    };
+
     const value = {
         themeColor, updateThemeColor,
         userToken, isLoading, handleLogin, logout,
@@ -254,8 +313,9 @@ export const GlobalProvider = ({ children }) => {
         sharedCollections,
         activeCollectionId, setActiveCollectionId,
         collectionVideos, setCollectionVideos, loadCollectionVideos,
-        toggleLike, toggleFollow, deleteRecipeGlobal, loadMyProfile,
-        unreadChatCount, loadUnreadChatCount
+        toggleLike, toggleFollow, deleteRecipeGlobal, updateRecipe, loadMyProfile,
+        unreadChatCount, loadUnreadChatCount,
+        unreadNotifCount, setUnreadNotifCount, loadUnreadNotifCount
     };
 
     return (

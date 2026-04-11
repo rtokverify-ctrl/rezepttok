@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Image, Dimensions, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView, Image, Dimensions, ActivityIndicator, Alert, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BASE_URL } from '../constants/Config';
@@ -8,10 +8,71 @@ import { useGlobal } from '../context/GlobalContext';
 const { width, height } = Dimensions.get('window');
 
 const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken }) => {
-    const { themeColor } = useGlobal();
+    const { themeColor, updateRecipe } = useGlobal();
     const styles = getStyles(themeColor);
 
     const [addingToShop, setAddingToShop] = useState(false);
+    
+    // Edit mode state
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState('');
+    const [editIngredients, setEditIngredients] = useState('');
+    const [editSteps, setEditSteps] = useState('');
+    const [editTags, setEditTags] = useState('');
+    const [editTips, setEditTips] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+
+    // Reset edit state when recipe changes or modal closes
+    useEffect(() => {
+        if (!visible) {
+            setIsEditing(false);
+        }
+    }, [visible]);
+
+    const enterEditMode = () => {
+        if (!selectedRecipe) return;
+        setEditTitle(selectedRecipe.title || '');
+        setEditIngredients(
+            selectedRecipe.ingredients?.map(i => i.name).join('\n') || ''
+        );
+        setEditSteps(
+            selectedRecipe.steps?.map(s => s.instruction).join('\n') || ''
+        );
+        setEditTags(
+            selectedRecipe.tags?.join(', ') || ''
+        );
+        setEditTips(selectedRecipe.tips || '');
+        setIsEditing(true);
+    };
+
+    const handleSave = async () => {
+        if (!selectedRecipe) return;
+        setIsSaving(true);
+        
+        const updateData = {
+            title: editTitle,
+            ingredients: editIngredients.split('\n').filter(l => l.trim()).map(l => ({ name: l.trim(), amount: "1", unit: "x" })),
+            steps: editSteps.split('\n').filter(l => l.trim()).map((l, i) => ({ order: i + 1, instruction: l.trim() })),
+            tags: editTags.split(',').map(t => t.trim()).filter(t => t.length > 0),
+            tips: editTips || null
+        };
+
+        const result = await updateRecipe(selectedRecipe.id, updateData);
+        setIsSaving(false);
+
+        if (result) {
+            // Update the selectedRecipe in place so the modal shows updated data
+            selectedRecipe.title = result.title;
+            selectedRecipe.ingredients = result.ingredients;
+            selectedRecipe.steps = result.steps;
+            selectedRecipe.tags = result.tags;
+            selectedRecipe.tips = result.tips;
+            setIsEditing(false);
+            Alert.alert("Gespeichert", "Dein Rezept wurde aktualisiert! ✅");
+        } else {
+            Alert.alert("Fehler", "Konnte die Änderungen nicht speichern.");
+        }
+    };
 
     const addToShoppingList = async () => {
         if (!selectedRecipe?.ingredients) return;
@@ -79,11 +140,21 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
                         )}
                         <LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']} style={styles.gradient} />
 
-                        <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+                        <TouchableOpacity onPress={() => { setIsEditing(false); onClose(); }} style={styles.closeBtn}>
                             <Ionicons name="close" size={28} color="white" />
                         </TouchableOpacity>
 
-                        <Text style={styles.title}>{selectedRecipe.title}</Text>
+                        {isEditing ? (
+                            <TextInput
+                                style={styles.titleEdit}
+                                value={editTitle}
+                                onChangeText={setEditTitle}
+                                placeholder="Titel"
+                                placeholderTextColor="rgba(255,255,255,0.5)"
+                            />
+                        ) : (
+                            <Text style={styles.title}>{selectedRecipe.title}</Text>
+                        )}
                         <View style={styles.metaRow}>
                             <View style={styles.metaItem}>
                                 <Ionicons name="time-outline" size={16} color="#ddd" />
@@ -103,63 +174,139 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
                     {/* Content */}
                     <View style={styles.content}>
                         {/* Tags */}
-                        {selectedRecipe.tags && (
-                            <View style={styles.tagRow}>
-                                {selectedRecipe.tags.map((t, i) => (
-                                    <View key={i} style={styles.tag}>
-                                        <Text style={styles.tagText}>#{t}</Text>
-                                    </View>
-                                ))}
+                        {isEditing ? (
+                            <View style={{ marginBottom: 20 }}>
+                                <Text style={styles.editLabel}>Tags (kommagetrennt)</Text>
+                                <TextInput
+                                    style={styles.editInput}
+                                    value={editTags}
+                                    onChangeText={setEditTags}
+                                    placeholder="Vegan, Schnell, Asiatisch"
+                                    placeholderTextColor="#999"
+                                />
                             </View>
+                        ) : (
+                            selectedRecipe.tags && (
+                                <View style={styles.tagRow}>
+                                    {selectedRecipe.tags.map((t, i) => (
+                                        <View key={i} style={styles.tag}>
+                                            <Text style={styles.tagText}>#{t}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            )
                         )}
 
                         {/* Tips */}
-                        {selectedRecipe.tips && (
-                            <View style={styles.tipBox}>
-                                <Ionicons name="bulb" size={24} color="#F59E0B" style={{ marginRight: 10 }} />
-                                <View style={{ flex: 1 }}>
-                                    <Text style={styles.tipTitle}>Chef Tipp</Text>
-                                    <Text style={styles.tipText}>{selectedRecipe.tips}</Text>
-                                </View>
+                        {isEditing ? (
+                            <View style={{ marginBottom: 20 }}>
+                                <Text style={styles.editLabel}>Chef Tipp</Text>
+                                <TextInput
+                                    style={[styles.editInput, { minHeight: 60 }]}
+                                    value={editTips}
+                                    onChangeText={setEditTips}
+                                    placeholder="Dein Geheimtipp (optional)"
+                                    placeholderTextColor="#999"
+                                    multiline
+                                />
                             </View>
+                        ) : (
+                            selectedRecipe.tips && (
+                                <View style={styles.tipBox}>
+                                    <Ionicons name="bulb" size={24} color="#F59E0B" style={{ marginRight: 10 }} />
+                                    <View style={{ flex: 1 }}>
+                                        <Text style={styles.tipTitle}>Chef Tipp</Text>
+                                        <Text style={styles.tipText}>{selectedRecipe.tips}</Text>
+                                    </View>
+                                </View>
+                            )
                         )}
 
                         {/* Ingredients */}
                         <View style={styles.sectionHeaderRow}>
                             <Text style={styles.sectionTitle}>Zutaten</Text>
-                            <TouchableOpacity onPress={addToShoppingList} disabled={addingToShop} style={styles.addShopBtn}>
-                                {addingToShop ? <ActivityIndicator color="white" size="small" /> : <Ionicons name="cart-outline" size={20} color="white" />}
-                                <Text style={styles.addShopText}>Alle hinzufügen</Text>
-                            </TouchableOpacity>
+                            {!isEditing && (
+                                <TouchableOpacity onPress={addToShoppingList} disabled={addingToShop} style={styles.addShopBtn}>
+                                    {addingToShop ? <ActivityIndicator color="white" size="small" /> : <Ionicons name="cart-outline" size={20} color="white" />}
+                                    <Text style={styles.addShopText}>Alle hinzufügen</Text>
+                                </TouchableOpacity>
+                            )}
                         </View>
-                        <View style={styles.card}>
-                            {selectedRecipe.ingredients?.map((ing, i) => (
-                                <View key={i} style={styles.ingredientRow}>
-                                    <View style={styles.bullet} />
-                                    <Text style={styles.ingredientText}>{ing.name}</Text>
-                                </View>
-                            ))}
-                        </View>
+                        {isEditing ? (
+                            <TextInput
+                                style={[styles.editInput, { minHeight: 120 }]}
+                                value={editIngredients}
+                                onChangeText={setEditIngredients}
+                                placeholder="Eine Zutat pro Zeile"
+                                placeholderTextColor="#999"
+                                multiline
+                            />
+                        ) : (
+                            <View style={styles.card}>
+                                {selectedRecipe.ingredients?.map((ing, i) => (
+                                    <View key={i} style={styles.ingredientRow}>
+                                        <View style={styles.bullet} />
+                                        <Text style={styles.ingredientText}>{ing.name}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
 
                         {/* Steps */}
-                        <Text style={styles.sectionTitle}>Zubereitung</Text>
-                        <View style={styles.stepsContainer}>
-                            {selectedRecipe.steps?.map((s, i) => (
-                                <View key={i} style={styles.stepRow}>
-                                    <View style={styles.stepNumberBox}>
-                                        <Text style={styles.stepNumber}>{s.order}</Text>
+                        <Text style={[styles.sectionTitle, { marginTop: isEditing ? 20 : 0 }]}>Zubereitung</Text>
+                        {isEditing ? (
+                            <TextInput
+                                style={[styles.editInput, { minHeight: 150, marginTop: 10 }]}
+                                value={editSteps}
+                                onChangeText={setEditSteps}
+                                placeholder="Ein Schritt pro Zeile"
+                                placeholderTextColor="#999"
+                                multiline
+                            />
+                        ) : (
+                            <View style={styles.stepsContainer}>
+                                {selectedRecipe.steps?.map((s, i) => (
+                                    <View key={i} style={styles.stepRow}>
+                                        <View style={styles.stepNumberBox}>
+                                            <Text style={styles.stepNumber}>{s.order}</Text>
+                                        </View>
+                                        <Text style={styles.stepText}>{s.instruction}</Text>
                                     </View>
-                                    <Text style={styles.stepText}>{s.instruction}</Text>
-                                </View>
-                            ))}
-                        </View>
+                                ))}
+                            </View>
+                        )}
 
-                        {/* Delete Button (Owner) */}
+                        {/* Action Buttons (Owner) */}
                         {selectedRecipe.is_mine && (
-                            <TouchableOpacity onPress={deleteRecipe} style={styles.deleteBtn}>
-                                <Ionicons name="trash-outline" size={20} color="#ff4d4d" />
-                                <Text style={styles.deleteText}>Rezept löschen</Text>
-                            </TouchableOpacity>
+                            <View style={styles.ownerActions}>
+                                {isEditing ? (
+                                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                                        <TouchableOpacity onPress={() => setIsEditing(false)} style={styles.cancelBtn}>
+                                            <Ionicons name="close-outline" size={20} color="#888" />
+                                            <Text style={styles.cancelText}>Abbrechen</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={handleSave} disabled={isSaving} style={styles.saveBtn}>
+                                            {isSaving ? (
+                                                <ActivityIndicator color="white" size="small" />
+                                            ) : (
+                                                <Ionicons name="checkmark" size={20} color="white" />
+                                            )}
+                                            <Text style={styles.saveText}>Speichern</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : (
+                                    <View style={{ flexDirection: 'row', gap: 12 }}>
+                                        <TouchableOpacity onPress={enterEditMode} style={styles.editBtn}>
+                                            <Ionicons name="create-outline" size={20} color={themeColor} />
+                                            <Text style={styles.editText}>Bearbeiten</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={deleteRecipe} style={styles.deleteBtn}>
+                                            <Ionicons name="trash-outline" size={20} color="#ff4d4d" />
+                                            <Text style={styles.deleteText}>Löschen</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+                            </View>
                         )}
                     </View>
                 </ScrollView>
@@ -175,6 +322,7 @@ const getStyles = (themeColor) => StyleSheet.create({
     gradient: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 150 },
     closeBtn: { position: 'absolute', top: 20, right: 20, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, padding: 8, zIndex: 10 },
     title: { position: 'absolute', bottom: 40, left: 20, right: 20, color: 'white', fontSize: 28, fontWeight: 'bold', textShadowColor: 'rgba(0,0,0,0.5)', textShadowRadius: 10 },
+    titleEdit: { position: 'absolute', bottom: 35, left: 20, right: 20, color: 'white', fontSize: 24, fontWeight: 'bold', backgroundColor: 'rgba(0,0,0,0.4)', borderRadius: 12, paddingHorizontal: 15, paddingVertical: 10 },
     metaRow: { position: 'absolute', bottom: 15, left: 20, flexDirection: 'row' },
     metaItem: { flexDirection: 'row', alignItems: 'center', marginRight: 15 },
     metaText: { color: '#ddd', marginLeft: 5, fontSize: 13, fontWeight: '600' },
@@ -198,8 +346,21 @@ const getStyles = (themeColor) => StyleSheet.create({
     stepNumberBox: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#e9ecef', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
     stepNumber: { fontWeight: 'bold', color: '#495057' },
     stepText: { flex: 1, fontSize: 16, color: '#333', lineHeight: 24 },
-    deleteBtn: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 15, marginTop: 30, borderWidth: 1, borderColor: '#ff4d4d', borderRadius: 12 },
+    
+    // Owner action buttons
+    ownerActions: { marginTop: 30, alignItems: 'center' },
+    editBtn: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1, padding: 15, borderWidth: 1.5, borderColor: themeColor, borderRadius: 12 },
+    editText: { color: themeColor, fontWeight: 'bold', marginLeft: 8 },
+    deleteBtn: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1, padding: 15, borderWidth: 1, borderColor: '#ff4d4d', borderRadius: 12 },
     deleteText: { color: '#ff4d4d', fontWeight: 'bold', marginLeft: 8 },
+    saveBtn: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1, padding: 15, backgroundColor: themeColor, borderRadius: 12 },
+    saveText: { color: 'white', fontWeight: 'bold', marginLeft: 8 },
+    cancelBtn: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1, padding: 15, backgroundColor: '#e9ecef', borderRadius: 12 },
+    cancelText: { color: '#666', fontWeight: 'bold', marginLeft: 8 },
+
+    // Edit mode inputs
+    editLabel: { fontSize: 14, fontWeight: '600', color: '#666', marginBottom: 6 },
+    editInput: { backgroundColor: 'white', borderRadius: 12, padding: 15, fontSize: 16, color: '#333', borderWidth: 1, borderColor: '#e0e0e0', textAlignVertical: 'top' },
 });
 
 export default RecipeModal;

@@ -58,7 +58,7 @@ const NOTIF_TEXT = {
 };
 
 const NotificationScreen = ({ userToken }) => {
-    const { themeColor } = useGlobal();
+    const { themeColor, setUnreadNotifCount } = useGlobal();
     const styles = getStyles(themeColor);
 
     const [notifications, setNotifications] = useState([]);
@@ -70,10 +70,17 @@ const NotificationScreen = ({ userToken }) => {
 
     const loadNotifications = async () => {
         setLoadingNotifications(true);
+        // Clear local badge count optimistic
+        setUnreadNotifCount(0);
         try {
             const r = await fetch(`${BASE_URL}/notifications`, { headers: { 'Authorization': 'Bearer ' + userToken } });
             const d = await r.json();
             setNotifications(Array.isArray(d) ? d : []);
+            
+            // Mark all fetched unread items as read in the background
+            d.filter(n => !n.read).forEach(n => {
+                fetch(`${BASE_URL}/notifications/${n.id}/read`, { method: 'POST', headers: { 'Authorization': 'Bearer ' + userToken } }).catch(()=>{});
+            });
         } catch (e) {
             console.log(e);
         } finally {
@@ -101,8 +108,8 @@ const NotificationScreen = ({ userToken }) => {
         return (
             <View style={styles.notifItem}>
                 <View style={styles.avatarContainer}>
-                    {item.actor_avatar ? (
-                        <Image source={{ uri: getFullUrl(item.actor_avatar) }} style={styles.avatar} />
+                    {item.sender_avatar ? (
+                        <Image source={{ uri: getFullUrl(item.sender_avatar) }} style={styles.avatar} />
                     ) : (
                         <View style={styles.avatarPlaceholder}>
                             <Ionicons name="person" size={22} color="#555" />
@@ -114,7 +121,7 @@ const NotificationScreen = ({ userToken }) => {
                 </View>
                 <View style={styles.notifContent}>
                     <Text style={styles.notifText}>
-                        <Text style={styles.notifActor}>{item.actor_name} </Text>
+                        <Text style={styles.notifActor}>{item.sender_name} </Text>
                         {text}
                     </Text>
                     <Text style={styles.notifTime}>{timeAgo(item.created_at)}</Text>

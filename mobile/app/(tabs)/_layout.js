@@ -6,7 +6,7 @@ import { BlurView } from 'expo-blur';
 import { useGlobal } from '../../context/GlobalContext';
 
 export default function TabLayout() {
-    const { themeColor, userToken, isLoading } = useGlobal();
+    const { themeColor, userToken, isLoading, unreadNotifCount } = useGlobal();
 
     if (isLoading) {
         return (
@@ -102,6 +102,8 @@ export default function TabLayout() {
                 options={{
                     title: 'Activity',
                     tabBarIcon: ({ color }) => <MaterialIcons name="notifications" size={26} color={color} />,
+                    tabBarBadge: unreadNotifCount > 0 ? unreadNotifCount : undefined,
+                    tabBarBadgeStyle: { backgroundColor: '#ff4d4d', color: 'white', fontSize: 10 }
                 }}
             />
             <Tabs.Screen

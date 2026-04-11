@@ -14,7 +14,7 @@ const TILE_SIZE = (width - (32 + GRID_GAP)) / GRID_COLS; // 32 is padding (16*2)
 
 const TRENDING_TAGS = ['Für dich', 'Pasta', 'Vegan', 'Dessert', 'Schnell', 'Asiatisch', 'Salat', 'Deutsch', 'Backen'];
 
-const SearchScreen = ({ userToken, navigation, onChefPress }) => {
+const SearchScreen = ({ userToken, navigation, onChefPress, onVideoPress }) => {
     const { themeColor } = useGlobal();
     const styles = getStyles(themeColor);
 
@@ -102,7 +102,7 @@ const SearchScreen = ({ userToken, navigation, onChefPress }) => {
             return num || 0;
         };
         return (
-            <TouchableOpacity style={styles.videoTile} activeOpacity={0.8}>
+            <TouchableOpacity style={styles.videoTile} activeOpacity={0.8} onPress={() => onVideoPress && onVideoPress(item)}>
                 <View style={styles.videoTileInner}>
                     <Ionicons name="play-circle" size={32} color="rgba(255,255,255,0.8)" style={{ position: 'absolute', top: 10, right: 10 }} />
                     <Text style={styles.videoTileTitle} numberOfLines={2}>{item.title}</Text>

@@ -108,4 +108,35 @@ class StorageManager:
                 shutil.copyfileobj(file.file, buffer)
             return f"/static/avatars/{filename}"
 
+    async def delete_file(self, file_url: str) -> bool:
+        if not file_url:
+            return False
+            
+        try:
+            if self.mode == "s3":
+                # Versuche S3 Key aus URL zu extrahieren
+                # URL Format typischerweise: https://.../bucket_name/PFAD/ZUR/DATEI
+                if f"/{self.bucket_name}/" in file_url:
+                    s3_key = file_url.split(f"/{self.bucket_name}/")[-1]
+                else:
+                    # Fallback heuristik für public urls
+                    parts = file_url.split("/")
+                    if "avatars" in parts:
+                        s3_key = "avatars/" + parts[-1]
+                    else:
+                        s3_key = parts[-1] # fallback to raw filename
+                
+                self.s3_client.delete_object(Bucket=self.bucket_name, Key=s3_key)
+                return True
+            else:
+                # Local Storage
+                local_path = file_url.lstrip("/")
+                if os.path.exists(local_path):
+                    os.remove(local_path)
+                    return True
+                return False
+        except Exception as e:
+            print(f"Error deleting file {file_url}: {e}")
+            return False
+
 storage_manager = StorageManager()

@@ -6,7 +6,7 @@ import os
 
 from database import get_db
 from models import User, Recipe, Like, Comment, Collection, SavedRecipe, Follow, Notification
-from schemas import RecipeCreate, CommentCreate, CollectionCreate
+from schemas import RecipeCreate, RecipeUpdate, CommentCreate, CollectionCreate
 from auth import get_current_user
 
 router = APIRouter()
@@ -143,46 +143,100 @@ def get_collection_videos(collection_id: int, db: Session = Depends(get_db), cur
     return results
 
 @router.post("/recipes/{recipe_id}/like")
-def toggle_like(recipe_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+async def toggle_like(recipe_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     if not db.query(Recipe).filter(Recipe.id == recipe_id).first(): raise HTTPException(404, "Nicht gefunden")
     existing = db.query(Like).filter(Like.user_id == user.id, Like.recipe_id == recipe_id).first()
-    if existing: db.delete(existing)
+    if existing: 
+        db.delete(existing)
+        db.commit()
     else: 
         db.add(Like(user_id=user.id, recipe_id=recipe_id))
         recipe = db.query(Recipe).filter(Recipe.id == recipe_id).first()
         if recipe and recipe.owner_id != user.id:
             db.add(Notification(recipient_id=recipe.owner_id, sender_id=user.id, type="like", post_id=recipe_id, created_at=datetime.now().isoformat()))
-    db.commit()
+            db.commit()
+            from services.push_service import send_push_notification
+            await send_push_notification(db, recipe.owner_id, "Neuer Like", f"{user.username} gefällt dein Rezept!")
+        else:
+            db.commit()
     return {"msg": "Ok"}
 
 @router.get("/recipes/{recipe_id}/comments")
 def get_comments(recipe_id: int, db: Session = Depends(get_db)):
-    comments = db.query(Comment).filter(Comment.recipe_id == recipe_id).order_by(Comment.id.desc()).all()
-    results = []
-    for c in comments:
-        u = db.query(User).filter(User.id == c.user_id).first()
-        results.append({
-            "id": c.id, "text": c.text, "username": u.display_name if u and u.display_name else (u.username if u else "Gast"), "avatar": u.avatar_url if u else None,
-            "created_at": c.created_at
-        })
-    return results
+    # Get all comments for this recipe
+    all_comments = db.query(Comment).filter(Comment.recipe_id == recipe_id).order_by(Comment.id.asc()).all()
+    
+    # Build user lookup
+    user_ids = set(c.user_id for c in all_comments)
+    users = {u.id: u for u in db.query(User).filter(User.id.in_(user_ids)).all()} if user_ids else {}
+    
+    def format_comment(c):
+        u = users.get(c.user_id)
+        return {
+            "id": c.id, "text": c.text, 
+            "username": u.display_name if u and u.display_name else (u.username if u else "Gast"), 
+            "user_id": c.user_id,
+            "avatar": u.avatar_url if u else None,
+            "parent_id": c.parent_id,
+            "created_at": c.created_at,
+            "replies": []
+        }
+    
+    # Separate top-level and replies
+    comment_map = {}
+    top_level = []
+    
+    for c in all_comments:
+        formatted = format_comment(c)
+        comment_map[c.id] = formatted
+        if c.parent_id is None:
+            top_level.append(formatted)
+        else:
+            parent = comment_map.get(c.parent_id)
+            if parent:
+                parent["replies"].append(formatted)
+    
+    # Reverse so newest top-level comments are first
+    top_level.reverse()
+    return top_level
 
 @router.post("/recipes/{recipe_id}/comments")
-def create_comment(recipe_id: int, comment: CommentCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    new_comment = Comment(text=comment.text, user_id=user.id, recipe_id=recipe_id, created_at=datetime.now().isoformat())
+async def create_comment(recipe_id: int, comment: CommentCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    new_comment = Comment(text=comment.text, user_id=user.id, recipe_id=recipe_id, parent_id=comment.parent_id, created_at=datetime.now().isoformat())
     db.add(new_comment)
     recipe = db.query(Recipe).filter(Recipe.id == recipe_id).first()
+    
+    # Notify recipe owner about comment (if not self)
     if recipe and recipe.owner_id != user.id:
         db.add(Notification(recipient_id=recipe.owner_id, sender_id=user.id, type="comment", post_id=recipe_id, created_at=datetime.now().isoformat()))
+    
+    # If replying, also notify the parent comment author (if different from self and recipe owner)
+    if comment.parent_id:
+        parent_comment = db.query(Comment).filter(Comment.id == comment.parent_id).first()
+        if parent_comment and parent_comment.user_id != user.id and (not recipe or parent_comment.user_id != recipe.owner_id):
+            db.add(Notification(recipient_id=parent_comment.user_id, sender_id=user.id, type="reply", post_id=recipe_id, created_at=datetime.now().isoformat()))
+    
     db.commit()
     db.refresh(new_comment)
+    
+    # Push notifications
+    from services.push_service import send_push_notification
+    if recipe and recipe.owner_id != user.id:
+        await send_push_notification(db, recipe.owner_id, "Neuer Kommentar", f"{user.username} hat kommentiert: {comment.text}")
+    if comment.parent_id:
+        parent_comment = db.query(Comment).filter(Comment.id == comment.parent_id).first()
+        if parent_comment and parent_comment.user_id != user.id and (not recipe or parent_comment.user_id != recipe.owner_id):
+            await send_push_notification(db, parent_comment.user_id, "Antwort auf deinen Kommentar", f"{user.username}: {comment.text}")
     
     # Return full comment object for frontend
     return {
         "id": new_comment.id, "text": new_comment.text, 
         "username": user.display_name if user.display_name else user.username, 
+        "user_id": user.id,
         "avatar": user.avatar_url,
-        "created_at": new_comment.created_at
+        "parent_id": new_comment.parent_id,
+        "created_at": new_comment.created_at,
+        "replies": []
     }
 
 @router.post("/upload")
@@ -191,6 +245,27 @@ def create_recipe(recipe: RecipeCreate, db: Session = Depends(get_db), user: Use
     db.add(db_recipe)
     db.commit()
     return db_recipe
+
+@router.patch("/recipes/{recipe_id}")
+def update_recipe(recipe_id: int, data: RecipeUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    recipe = db.query(Recipe).filter(Recipe.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+    if recipe.owner_id != user.id:
+        raise HTTPException(status_code=403, detail="Nur der Ersteller kann dieses Rezept bearbeiten")
+    
+    update_data = data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(recipe, field, value)
+    db.commit()
+    db.refresh(recipe)
+    
+    return {
+        "id": recipe.id, "title": recipe.title, "video_url": recipe.video_url,
+        "ingredients": recipe.ingredients, "steps": recipe.steps,
+        "tags": recipe.tags, "tips": recipe.tips, "owner_id": recipe.owner_id,
+        "created_at": recipe.created_at, "views": recipe.views
+    }
 
 @router.delete("/recipes/{recipe_id}")
 def delete_recipe(recipe_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):

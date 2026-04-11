@@ -78,7 +78,7 @@ const ProfileScreen = ({
     loadMyProfile,
     onLogout
 }) => {
-    const { themeColor, setThemeColor } = useGlobal();
+    const { themeColor, updateThemeColor } = useGlobal();
     const styles = getStyles(themeColor);
 
     const router = useRouter();
@@ -166,9 +166,7 @@ const ProfileScreen = ({
     };
 
     const handleThemeChange = async (color) => {
-        const { setThemeColor } = useGlobal(); // Already extracted above
-        setThemeColor(color);
-        try { await AsyncStorage.setItem('@theme_color', color); } catch (e) {}
+        updateThemeColor(color);
     };
 
     const handleDeleteAccount = () => {
