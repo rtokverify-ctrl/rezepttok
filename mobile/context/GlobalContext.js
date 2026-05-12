@@ -76,7 +76,7 @@ export const GlobalProvider = ({ children }) => {
 
     const uploadPushToken = async (token) => {
         try {
-            await fetch(`${BASE_URL}/push-token`, {
+            await apiFetch(`${BASE_URL}/push-token`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${userToken}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token })
@@ -87,7 +87,7 @@ export const GlobalProvider = ({ children }) => {
     const loadUnreadNotifCount = async () => {
         if (!userToken) return;
         try {
-            const r = await fetch(`${BASE_URL}/notifications/unread-count`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await apiFetch(`${BASE_URL}/notifications/unread-count`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const data = await r.json();
             setUnreadNotifCount(data.unread_count || 0);
         } catch (e) { setUnreadNotifCount(0); }
@@ -121,6 +121,15 @@ export const GlobalProvider = ({ children }) => {
         setSavedVideos([]);
     };
 
+    const apiFetch = async (url, options) => {
+        const response = await fetch(url, options);
+        if (response.status === 401) {
+            logout();
+            throw new Error("Unauthorized");
+        }
+        return response;
+    };
+
     const loadFeed = async (isRefresh = false, cursorOverride = null) => {
         if (!userToken) return;
         
@@ -139,7 +148,7 @@ export const GlobalProvider = ({ children }) => {
         
         try {
             const url = cursorOverride ? `${BASE_URL}/feed?cursor=${encodeURIComponent(cursorOverride)}` : `${BASE_URL}/feed`;
-            const r = await fetch(url, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await apiFetch(url, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
             const fetchedVideos = d.data || [];
             setNextCursor(d.nextCursor || null);
@@ -176,10 +185,10 @@ export const GlobalProvider = ({ children }) => {
         if (!userToken) return;
         try {
             const [p, v, l, s] = await Promise.all([
-                fetch(`${BASE_URL}/my-profile`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()),
-                fetch(`${BASE_URL}/my-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()),
-                fetch(`${BASE_URL}/liked-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()),
-                fetch(`${BASE_URL}/saved-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json())
+                apiFetch(`${BASE_URL}/my-profile`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()),
+                apiFetch(`${BASE_URL}/my-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()),
+                apiFetch(`${BASE_URL}/liked-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json()),
+                apiFetch(`${BASE_URL}/saved-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } }).then(r => r.json())
             ]);
             setMyProfileData(p);
             setMyVideos(Array.isArray(v) ? v.map(x => ({ ...x, video_url: getFullUrl(x.video_url), likes: x.likes_count || 0 })) : []);
@@ -193,13 +202,13 @@ export const GlobalProvider = ({ children }) => {
     const loadCollections = async () => {
         if (!userToken) return;
         try {
-            const r = await fetch(`${BASE_URL}/collections`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await apiFetch(`${BASE_URL}/collections`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
             if (Array.isArray(d)) setCollections(d);
             else setCollections([]);
             
             // Also fetch shared collections
-            const sReq = await fetch(`${BASE_URL}/collections/shared-with-me`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const sReq = await apiFetch(`${BASE_URL}/collections/shared-with-me`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const sData = await sReq.json();
             if (Array.isArray(sData)) setSharedCollections(sData);
             else setSharedCollections([]);
@@ -212,7 +221,7 @@ export const GlobalProvider = ({ children }) => {
     const loadLikedVideos = async () => {
         if (!userToken) return;
         try {
-            const r = await fetch(`${BASE_URL}/liked-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await apiFetch(`${BASE_URL}/liked-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const l = await r.json();
             setLikedVideos(Array.isArray(l) ? l.map(x => ({ ...x, video_url: getFullUrl(x.video_url) })) : []);
         } catch (e) { console.log(e); }
@@ -221,7 +230,7 @@ export const GlobalProvider = ({ children }) => {
     const loadSavedVideosAll = async () => {
         if (!userToken) return;
         try {
-            const r = await fetch(`${BASE_URL}/saved-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await apiFetch(`${BASE_URL}/saved-videos`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const s = await r.json();
             setSavedVideos(Array.isArray(s) ? s.map(x => ({ ...x, video_url: getFullUrl(x.video_url) })) : []);
         } catch (e) { console.log(e); }
@@ -230,7 +239,7 @@ export const GlobalProvider = ({ children }) => {
     const loadCollectionVideos = async (id) => {
         if (!userToken) return;
         try {
-            const r = await fetch(`${BASE_URL}/collections/${id}/videos`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await apiFetch(`${BASE_URL}/collections/${id}/videos`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const d = await r.json();
             setCollectionVideos(Array.isArray(d) ? d.map(x => ({ ...x, video_url: getFullUrl(x.video_url) })) : []);
             setActiveCollectionId(id);
@@ -240,7 +249,7 @@ export const GlobalProvider = ({ children }) => {
     const loadUnreadChatCount = async () => {
         if (!userToken) return;
         try {
-            const r = await fetch(`${BASE_URL}/conversations`, { headers: { 'Authorization': `Bearer ${userToken}` } });
+            const r = await apiFetch(`${BASE_URL}/conversations`, { headers: { 'Authorization': `Bearer ${userToken}` } });
             const data = await r.json();
             if (Array.isArray(data)) {
                 const total = data.reduce((sum, c) => sum + (c.unread_count || 0), 0);
@@ -252,7 +261,7 @@ export const GlobalProvider = ({ children }) => {
     const toggleLike = async (id) => {
         setVideos(prev => prev.map(v => v.id === id ? { ...v, is_liked: !v.is_liked, likes: v.is_liked ? (v.likes - 1) : (v.likes + 1) } : v));
         try {
-            await fetch(`${BASE_URL}/recipes/${id}/like`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
+            await apiFetch(`${BASE_URL}/recipes/${id}/like`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
             loadMyProfile();
         } catch (e) { }
     };
@@ -264,7 +273,7 @@ export const GlobalProvider = ({ children }) => {
             setUserProfileData(prev => ({ ...prev, i_follow: !prev.i_follow, followers_count: prev.i_follow ? prev.followers_count - 1 : prev.followers_count + 1 }));
         }
         try {
-            await fetch(`${BASE_URL}/users/${userId}/toggle-follow`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
+            await apiFetch(`${BASE_URL}/users/${userId}/toggle-follow`, { method: 'POST', headers: { 'Authorization': `Bearer ${userToken}` } });
             loadMyProfile();
         } catch (e) { console.log(e); }
     };
@@ -272,7 +281,7 @@ export const GlobalProvider = ({ children }) => {
     // Deleting
     const deleteRecipeGlobal = async (recipeId) => {
         try {
-            await fetch(`${BASE_URL}/recipes/${recipeId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${userToken}` } });
+            await apiFetch(`${BASE_URL}/recipes/${recipeId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${userToken}` } });
             loadFeed();
             loadMyProfile();
             return true;
@@ -283,7 +292,7 @@ export const GlobalProvider = ({ children }) => {
 
     const updateRecipe = async (recipeId, updateData) => {
         try {
-            const r = await fetch(`${BASE_URL}/recipes/${recipeId}`, {
+            const r = await apiFetch(`${BASE_URL}/recipes/${recipeId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` },
                 body: JSON.stringify(updateData)
