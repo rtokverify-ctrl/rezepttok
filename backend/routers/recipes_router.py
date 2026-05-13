@@ -10,12 +10,14 @@ from models import (
     Recipe,
     Like,
     Comment,
+    CommentLike,
     Collection,
     SavedRecipe,
     Follow,
     Notification,
 )
-from schemas import RecipeCreate, RecipeUpdate, CommentCreate, CollectionCreate
+from schemas import RecipeCreate, RecipeUpdate, CommentCreate, CollectionCreate, ExtractInfoRequest
+import asyncio
 from auth import get_current_user
 
 router = APIRouter()
@@ -328,7 +330,7 @@ async def toggle_like(
 
 
 @router.get("/recipes/{recipe_id}/comments")
-def get_comments(recipe_id: int, db: Session = Depends(get_db)):
+def get_comments(recipe_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     # Get all comments for this recipe
     all_comments = (
         db.query(Comment)
@@ -345,6 +347,17 @@ def get_comments(recipe_id: int, db: Session = Depends(get_db)):
         else {}
     )
 
+    # Build likes lookup
+    comment_ids = set(c.id for c in all_comments)
+    likes_count = {}
+    i_liked = set()
+    if comment_ids:
+        likes = db.query(CommentLike).filter(CommentLike.comment_id.in_(comment_ids)).all()
+        for like in likes:
+            likes_count[like.comment_id] = likes_count.get(like.comment_id, 0) + 1
+            if like.user_id == current_user.id:
+                i_liked.add(like.comment_id)
+
     def format_comment(c):
         u = users.get(c.user_id)
         return {
@@ -358,6 +371,8 @@ def get_comments(recipe_id: int, db: Session = Depends(get_db)):
             "parent_id": c.parent_id,
             "created_at": c.created_at,
             "replies": [],
+            "likes_count": likes_count.get(c.id, 0),
+            "i_liked_it": c.id in i_liked
         }
 
     # Separate top-level and replies
@@ -377,6 +392,75 @@ def get_comments(recipe_id: int, db: Session = Depends(get_db)):
     # Reverse so newest top-level comments are first
     top_level.reverse()
     return top_level
+
+
+@router.post("/recipes/{recipe_id}/comments/{comment_id}/like")
+def toggle_comment_like(
+    recipe_id: int,
+    comment_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    existing_like = (
+        db.query(CommentLike)
+        .filter(CommentLike.user_id == user.id, CommentLike.comment_id == comment_id)
+        .first()
+    )
+    
+    if existing_like:
+        db.delete(existing_like)
+        db.commit()
+        return {"liked": False}
+    else:
+        new_like = CommentLike(
+            user_id=user.id,
+            comment_id=comment_id,
+            created_at=datetime.now().isoformat()
+        )
+        db.add(new_like)
+        db.commit()
+        
+        # Optional: Notify the comment owner here
+        comment = db.query(Comment).filter(Comment.id == comment_id).first()
+        if comment and comment.user_id != user.id:
+            from services.push_service import create_and_send_notification
+            create_and_send_notification(
+                db,
+                comment.user_id,
+                "Neuer Like auf deinen Kommentar",
+                f"{user.username} gefällt dein Kommentar!",
+            )
+            
+        return {"liked": True}
+
+@router.post("/extract-recipe-info")
+async def extract_recipe_info(req: ExtractInfoRequest, user: User = Depends(get_current_user)):
+    # Mock AI Processing Delay
+    await asyncio.sleep(2)
+    
+    # Generate dummy data based on title
+    base_title = req.title.strip() if req.title else "Rezept"
+    
+    dummy_ingredients = [
+        {"name": f"200g {base_title}-Mehl", "amount": "200", "unit": "g"},
+        {"name": "2 Eier", "amount": "2", "unit": "Stück"},
+        {"name": "100ml Milch", "amount": "100", "unit": "ml"},
+        {"name": "1 Prise Salz", "amount": "1", "unit": "Prise"},
+        {"name": "Geheime KI-Zutat", "amount": "Etwas", "unit": ""}
+    ]
+    
+    dummy_steps = [
+        {"order": 1, "instruction": f"Alle trockenen Zutaten für {base_title} in einer Schüssel vermengen."},
+        {"order": 2, "instruction": "Eier und Milch hinzugeben und glatt rühren."},
+        {"order": 3, "instruction": "In einer Pfanne goldbraun ausbacken."},
+        {"order": 4, "instruction": "Genießen!"}
+    ]
+    
+    return {
+        "ingredients": dummy_ingredients,
+        "steps": dummy_steps
+    }
+
 
 
 @router.post("/recipes/{recipe_id}/comments")
@@ -541,6 +625,66 @@ def delete_recipe(
     db.delete(recipe)
     db.commit()
     return {"msg": "Weg"}
+
+
+@router.get("/recipes/{recipe_id}")
+def get_single_recipe(
+    recipe_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    r = db.query(Recipe).filter(Recipe.id == recipe_id).first()
+    if not r:
+        raise HTTPException(status_code=404, detail="Rezept nicht gefunden")
+
+    owner = db.query(User).filter(User.id == r.owner_id).first()
+    chef_display = owner.display_name if owner else "Unknown"
+    owner_avatar = owner.avatar_url if owner else None
+    count = db.query(Like).filter(Like.recipe_id == r.id).count()
+    comment_count = db.query(Comment).filter(Comment.recipe_id == r.id).count()
+    my_like = (
+        db.query(Like)
+        .filter(Like.recipe_id == r.id, Like.user_id == current_user.id)
+        .first()
+    )
+    my_save = (
+        db.query(SavedRecipe)
+        .filter(
+            SavedRecipe.recipe_id == r.id, SavedRecipe.user_id == current_user.id
+        )
+        .first()
+    )
+    i_follow = (
+        db.query(Follow)
+        .filter(
+            Follow.follower_id == current_user.id, Follow.following_id == r.owner_id
+        )
+        .first()
+        is not None
+        if r.owner_id != current_user.id
+        else False
+    )
+
+    return {
+        "id": r.id,
+        "title": r.title,
+        "video_url": r.video_url,
+        "chef": chef_display,
+        "owner_id": r.owner_id,
+        "owner_avatar_url": owner_avatar,
+        "ingredients": r.ingredients,
+        "steps": r.steps,
+        "tags": r.tags,
+        "tips": r.tips,
+        "likes_count": count,
+        "i_liked_it": my_like is not None,
+        "comments_count": comment_count,
+        "i_saved_it": my_save is not None,
+        "is_mine": (r.owner_id == current_user.id),
+        "i_follow_owner": i_follow,
+        "created_at": r.created_at,
+        "views": r.views,
+    }
 
 
 @router.get("/recipes/trending")

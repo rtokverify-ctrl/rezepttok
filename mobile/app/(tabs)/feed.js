@@ -130,6 +130,29 @@ export default function FeedTab() {
         } catch (e) { }
     };
 
+    const toggleCommentLike = async (commentId) => {
+        const toggleInList = (list) => {
+            return list.map(c => {
+                if (c.id === commentId) {
+                    return { ...c, i_liked_it: !c.i_liked_it, likes_count: c.i_liked_it ? Math.max((c.likes_count || 1) - 1, 0) : (c.likes_count || 0) + 1 };
+                }
+                if (c.replies && c.replies.length > 0) {
+                    return { ...c, replies: toggleInList(c.replies) };
+                }
+                return c;
+            });
+        };
+        
+        setCurrentComments(prev => toggleInList(prev));
+
+        try {
+            await fetch(`${BASE_URL}/recipes/${commentVideoId}/comments/${commentId}/like`, { 
+                method: 'POST', 
+                headers: { 'Authorization': `Bearer ${userToken}` } 
+            });
+        } catch (e) { console.log("Fehler beim Comment-Like", e); }
+    };
+
     const handleChefPress = async (chefId) => {
         if (!chefId) return;
         if (myProfileData && chefId === myProfileData.id) {
@@ -184,6 +207,7 @@ export default function FeedTab() {
                 newComment={newComment}
                 setNewComment={setNewComment}
                 sendComment={sendComment}
+                toggleCommentLike={toggleCommentLike}
             />
 
             <SaveModal

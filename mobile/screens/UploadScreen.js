@@ -47,6 +47,7 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
     const [uploadTips, setUploadTips] = useState('');
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isExtracting, setIsExtracting] = useState(false);
     const [compressionStatus, setCompressionStatus] = useState('');
     const [toastMessage, setToastMessage] = useState(null); // { text, type }
 
@@ -220,6 +221,35 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
         }
     };
 
+    const handleExtractInfo = async () => {
+        if (!uploadTitle.trim()) {
+            showMessage("Bitte gib zuerst einen Titel ein.", "info");
+            return;
+        }
+        setIsExtracting(true);
+        try {
+            const r = await fetch(`${BASE_URL}/extract-recipe-info`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken}` },
+                body: JSON.stringify({ title: uploadTitle, tags: uploadTags })
+            });
+            if (!r.ok) throw new Error("Fehler bei der KI-Extraktion");
+            const data = await r.json();
+            
+            if (data.ingredients) {
+                setIngredientsText(data.ingredients.map(i => `${i.amount} ${i.unit} ${i.name}`.trim()).join('\n'));
+            }
+            if (data.steps) {
+                setStepsText(data.steps.map(s => s.instruction).join('\n'));
+            }
+            showMessage("KI hat die Daten erfolgreich ausgefüllt! ✨", "success");
+        } catch (e) {
+            showMessage(e.message, "error");
+        } finally {
+            setIsExtracting(false);
+        }
+    };
+
     return (
         <View style={{ flex: 1, backgroundColor: 'black', paddingTop: 40 }}>
             <ScrollView style={styles.uploadContainer}>
@@ -246,6 +276,10 @@ const UploadScreen = ({ userToken, onUploadComplete }) => {
                     </View>
                 )}
                 <TextInput style={styles.modernInput} value={uploadTitle} onChangeText={setUploadTitle} placeholder="Titel des Gerichts" placeholderTextColor="#666" />
+                <TouchableOpacity onPress={handleExtractInfo} disabled={isExtracting} style={{ backgroundColor: 'rgba(102, 10, 194, 0.2)', padding: 12, borderRadius: 12, marginBottom: 15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(102, 10, 194, 0.4)' }}>
+                    {isExtracting ? <ActivityIndicator color={themeColor} size="small" style={{ marginRight: 8 }} /> : null}
+                    <Text style={{ color: themeColor, fontWeight: 'bold', fontSize: 16 }}>{isExtracting ? "Analysiere..." : "✨ Auto-Fill mit KI"}</Text>
+                </TouchableOpacity>
                 <TextInput style={styles.modernInput} value={uploadTags} onChangeText={setUploadTags} placeholder="Tags (z.B. Vegan, Schnell)" placeholderTextColor="#666" />
                 <TextInput style={[styles.modernInput, { height: 60 }]} multiline value={ingredientsText} onChangeText={setIngredientsText} placeholder="Zutaten (Liste)" placeholderTextColor="#666" />
                 <TextInput style={[styles.modernInput, { height: 60 }]} multiline value={stepsText} onChangeText={setStepsText} placeholder="Zubereitungsschritte" placeholderTextColor="#666" />

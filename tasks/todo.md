@@ -9,7 +9,7 @@
 ## 2. Infrastructure & Production (from `EMAIL_SETUP.md` & `todo.md`)
 - [ ] **Email Integration**: Configure SMTP settings in `.env` and switch `mail_manager.py` to use real email dispatch instead of console prints.
 - [ ] **Frontend Testing**: Add Unit/E2E tests and improve offline caching.
-- [ ] **Profile Features**: Expand user profile (avatars, bio, theme toggle).
+- [x] **Profile Features**: Expand user profile (avatars, bio, theme toggle).
 
 ## 3. General Development Rules (from `lessons.md`)
 - [ ] **Verify Before Done**: Always test and log before marking a task complete.
@@ -19,7 +19,7 @@
 
 ## 4. New Feature Backlog (Brainstorming)
 - [x] **Cooking Mode (Hands-Free)**: Keep awake, large steps, voice control ("Springe zu Schritt 2"), video segmented by steps.
-- [ ] **Deep Linking & Social Sharing**: Expo Linking (`rezepttok://recipe/123`) to share and open directly in app.
+- [x] **Deep Linking & Social Sharing**: Expo Linking (`rezepttok://recipe/123`) to share and open directly in app.
 - [ ] **Remix / Duett Funktion**: "Nachgekocht"-Feature, um eigene Videos mit dem Original zu verlinken.
 - [ ] **AI-Zutaten-Extraktion**: KI-basiertes Auto-Fill der Zutatenliste beim Video-Upload.
 - [ ] **Creator Analytics Dashboard**: Profil-Tab für Views, meistgespeicherte Videos und Follower-Wachstum.

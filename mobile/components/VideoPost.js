@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable, StyleSheet, Dimensions, Animated, Platform, PanResponder } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable, StyleSheet, Dimensions, Animated, Platform, PanResponder, Share } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { useEvent } from 'expo';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -12,6 +12,16 @@ const { width } = Dimensions.get('window');
 const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openComments, onChefPress, onFollowPress, containerHeight }) => {
     const { themeColor } = useGlobal();
     const styles = getStyles(themeColor);
+
+    const handleShare = async () => {
+        try {
+            await Share.share({
+                message: `Schau dir dieses Rezept an! rezepttok://recipe/${item.id}`,
+            });
+        } catch (error) {
+            console.log("Error sharing", error);
+        }
+    };
 
     const [userPaused, setUserPaused] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -222,6 +232,11 @@ const VideoPost = ({ item, isActive, toggleLike, onSavePress, openModal, openCom
                 <TouchableOpacity onPress={() => openComments && openComments(item.id)} style={styles.actionButton}>
                     <Ionicons name="chatbubble-ellipses" size={38} color="white" />
                     <Text style={styles.actionText}>{item.comments_count || 0}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={handleShare} style={styles.actionButton}>
+                    <Ionicons name="arrow-redo" size={38} color="white" />
+                    <Text style={styles.actionText}>Teilen</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => onSavePress(item)} style={styles.actionButton}>

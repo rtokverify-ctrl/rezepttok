@@ -49,6 +49,11 @@ class CommentCreate(BaseModel):
     parent_id: Optional[int] = None
 
 
+class ExtractInfoRequest(BaseModel):
+    title: str
+    tags: Optional[str] = None
+
+
 class CollectionCreate(BaseModel):
     name: str
 

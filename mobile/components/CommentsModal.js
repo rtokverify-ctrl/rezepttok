@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BASE_URL, getFullUrl } from '../constants/Config';
 import { useGlobal } from '../context/GlobalContext';
 
-const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNewComment, sendComment }) => {
+const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNewComment, sendComment, toggleCommentLike }) => {
     const { themeColor } = useGlobal();
     const styles = getStyles(themeColor);
 
@@ -61,7 +61,7 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: isReply ? 11 : 14 }}>{(item.username || "?").charAt(0).toUpperCase()}</Text>
                 </View>
             )}
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingRight: 10 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={styles.commentUser}>{item.username || "Gast"}</Text>
                     <Text style={styles.commentTime}>{formatCommentDate(item.created_at)}</Text>
@@ -85,6 +85,14 @@ const CommentsModal = ({ visible, onClose, comments, loading, newComment, setNew
                         </TouchableOpacity>
                     )}
                 </View>
+            </View>
+
+            {/* Like Button */}
+            <View style={{ alignItems: 'center', justifyContent: 'center', minWidth: 40 }}>
+                <TouchableOpacity onPress={() => toggleCommentLike && toggleCommentLike(item.id)} style={{ padding: 4 }}>
+                    <Ionicons name={item.i_liked_it ? "heart" : "heart-outline"} size={18} color={item.i_liked_it ? "#ff4d4d" : "#888"} />
+                </TouchableOpacity>
+                <Text style={{ color: '#888', fontSize: 11, marginTop: 2 }}>{item.likes_count || 0}</Text>
             </View>
         </View>
     );

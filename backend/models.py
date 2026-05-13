@@ -95,6 +95,13 @@ class Comment(Base):
     created_at: Mapped[str] = mapped_column()
 
 
+class CommentLike(Base):
+    __tablename__ = "comment_likes"
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    comment_id: Mapped[int] = mapped_column(ForeignKey("comments.id"), primary_key=True)
+    created_at: Mapped[Optional[str]] = mapped_column(default=None)
+
+
 class Collection(Base):
     __tablename__ = "collections"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
