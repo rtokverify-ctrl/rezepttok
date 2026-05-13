@@ -1,4 +1,5 @@
 """Health Check Router – Self-diagnostic endpoint."""
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text, inspect
@@ -36,7 +37,7 @@ def health_check(db: Session = Depends(get_db)):
         checks["database"] = {
             "status": "ok",
             "tables_found": len(tables),
-            "latency_ms": latency_ms
+            "latency_ms": latency_ms,
         }
     except Exception as e:
         checks["database"] = {"status": "error", "error": str(e)}
@@ -44,9 +45,17 @@ def health_check(db: Session = Depends(get_db)):
 
     # ── 2. Expected tables ───────────────────────────────────────────
     expected_tables = [
-        "users", "recipes", "comments", "likes", "follows",
-        "notifications", "saved_recipes", "collections",
-        "shopping_list_items", "conversations", "messages"
+        "users",
+        "recipes",
+        "comments",
+        "likes",
+        "follows",
+        "notifications",
+        "saved_recipes",
+        "collections",
+        "shopping_list_items",
+        "conversations",
+        "messages",
     ]
     try:
         inspector = inspect(engine)
@@ -56,7 +65,7 @@ def health_check(db: Session = Depends(get_db)):
             "status": "ok" if not missing else "warning",
             "expected": len(expected_tables),
             "found": len(expected_tables) - len(missing),
-            "missing": missing
+            "missing": missing,
         }
         if missing:
             overall = "degraded"
@@ -66,20 +75,19 @@ def health_check(db: Session = Depends(get_db)):
     # ── 3. Storage mode ──────────────────────────────────────────────
     try:
         from services.storage_manager import storage_manager
-        checks["storage"] = {
-            "status": "ok",
-            "mode": storage_manager.mode
-        }
+
+        checks["storage"] = {"status": "ok", "mode": storage_manager.mode}
     except Exception as e:
         checks["storage"] = {"status": "error", "error": str(e)}
 
     # ── 4. Mail service ──────────────────────────────────────────────
     try:
         from services.mail_manager import mail_manager
+
         checks["mail"] = {
             "status": "ok" if mail_manager.api_key else "warning",
             "configured": bool(mail_manager.api_key),
-            "from": mail_manager.from_email
+            "from": mail_manager.from_email,
         }
     except Exception as e:
         checks["mail"] = {"status": "error", "error": str(e)}
@@ -91,5 +99,5 @@ def health_check(db: Session = Depends(get_db)):
         "status": overall,
         "uptime_seconds": uptime,
         "checks": checks,
-        "version": "1.0.0"
+        "version": "1.0.0",
     }

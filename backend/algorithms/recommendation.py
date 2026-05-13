@@ -1,6 +1,6 @@
-
 # Recommendation Algorithm Module
 # Purpose: Determine which videos a user sees in their feed.
+
 
 def get_recommended_content(user_id: int, limit: int = 10):
     """
@@ -9,6 +9,7 @@ def get_recommended_content(user_id: int, limit: int = 10):
     3. Return top X videos.
     """
     pass
+
 
 def train_user_model(user_id: int):
     """

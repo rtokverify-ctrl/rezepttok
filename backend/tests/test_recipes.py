@@ -1,5 +1,6 @@
 """Tests for recipes_router: Feed, CRUD, Like, Comment, Save, Collections."""
-from tests.conftest import auth_header, create_verified_user
+
+from tests.conftest import auth_header
 
 
 SAMPLE_RECIPE = {
@@ -8,7 +9,7 @@ SAMPLE_RECIPE = {
     "ingredients": [{"name": "Nudeln", "amount": "500", "unit": "g"}],
     "steps": [{"order": 1, "instruction": "Wasser kochen"}],
     "tags": ["Pasta", "Schnell"],
-    "tips": "Salz ins Wasser!"
+    "tips": "Salz ins Wasser!",
 }
 
 
@@ -18,6 +19,7 @@ def _create_recipe(client, token, recipe=None):
 
 
 # ── FEED ─────────────────────────────────────────────────────────────
+
 
 def test_empty_feed(client, auth_token):
     r = client.get("/feed", headers=auth_header(auth_token))
@@ -35,10 +37,11 @@ def test_feed_with_recipe(client, auth_token):
 
 # ── CREATE / DELETE ──────────────────────────────────────────────────
 
+
 def test_create_recipe(client, auth_token):
     r = _create_recipe(client, auth_token)
     assert r.status_code == 200
-    
+
     feed = client.get("/feed", headers=auth_header(auth_token)).json()
     assert feed[0]["title"] == "Test Pasta"
 
@@ -67,6 +70,7 @@ def test_delete_others_recipe(client, auth_token, second_auth_token):
 
 # ── LIKE ─────────────────────────────────────────────────────────────
 
+
 def test_like_toggle(client, auth_token):
     _create_recipe(client, auth_token)
     feed = client.get("/feed", headers=auth_header(auth_token)).json()
@@ -87,23 +91,28 @@ def test_like_toggle(client, auth_token):
 
 # ── COMMENTS ─────────────────────────────────────────────────────────
 
+
 def test_comment_create_and_load(client, auth_token):
     _create_recipe(client, auth_token)
     feed = client.get("/feed", headers=auth_header(auth_token)).json()
     recipe_id = feed[0]["id"]
 
-    r = client.post(f"/recipes/{recipe_id}/comments",
-                    json={"text": "Lecker!"},
-                    headers=auth_header(auth_token))
+    r = client.post(
+        f"/recipes/{recipe_id}/comments",
+        json={"text": "Lecker!"},
+        headers=auth_header(auth_token),
+    )
     assert r.status_code == 200
     assert r.json()["text"] == "Lecker!"
 
-    comments = client.get(f"/recipes/{recipe_id}/comments",
-                          headers=auth_header(auth_token)).json()
+    comments = client.get(
+        f"/recipes/{recipe_id}/comments", headers=auth_header(auth_token)
+    ).json()
     assert len(comments) == 1
 
 
 # ── SAVE & COLLECTIONS ──────────────────────────────────────────────
+
 
 def test_global_save_toggle(client, auth_token):
     _create_recipe(client, auth_token)
@@ -111,14 +120,18 @@ def test_global_save_toggle(client, auth_token):
     recipe_id = feed[0]["id"]
 
     # Save
-    r = client.post(f"/recipes/{recipe_id}/toggle-global-save", headers=auth_header(auth_token))
+    r = client.post(
+        f"/recipes/{recipe_id}/toggle-global-save", headers=auth_header(auth_token)
+    )
     assert r.json()["saved"] is True
 
     feed = client.get("/feed", headers=auth_header(auth_token)).json()
     assert feed[0]["i_saved_it"] is True
 
     # Unsave
-    r = client.post(f"/recipes/{recipe_id}/toggle-global-save", headers=auth_header(auth_token))
+    r = client.post(
+        f"/recipes/{recipe_id}/toggle-global-save", headers=auth_header(auth_token)
+    )
     assert r.json()["saved"] is False
 
 
@@ -128,24 +141,35 @@ def test_collection_create_and_save(client, auth_token):
     recipe_id = feed[0]["id"]
 
     # Create collection
-    col = client.post("/collections", json={"name": "Favoriten"}, headers=auth_header(auth_token))
+    col = client.post(
+        "/collections", json={"name": "Favoriten"}, headers=auth_header(auth_token)
+    )
     assert col.status_code == 200
     col_id = col.json()["id"]
 
     # Save recipe to collection
-    r = client.post(f"/recipes/{recipe_id}/toggle-collection/{col_id}", headers=auth_header(auth_token))
+    r = client.post(
+        f"/recipes/{recipe_id}/toggle-collection/{col_id}",
+        headers=auth_header(auth_token),
+    )
     assert r.json()["active"] is True
 
     # Check collection videos
-    vids = client.get(f"/collections/{col_id}/videos", headers=auth_header(auth_token)).json()
+    vids = client.get(
+        f"/collections/{col_id}/videos", headers=auth_header(auth_token)
+    ).json()
     assert len(vids) == 1
 
     # Remove from collection
-    r = client.post(f"/recipes/{recipe_id}/toggle-collection/{col_id}", headers=auth_header(auth_token))
+    r = client.post(
+        f"/recipes/{recipe_id}/toggle-collection/{col_id}",
+        headers=auth_header(auth_token),
+    )
     assert r.json()["active"] is False
 
 
 # ── TRENDING ─────────────────────────────────────────────────────────
+
 
 def test_trending_recipes(client, auth_token):
     _create_recipe(client, auth_token)

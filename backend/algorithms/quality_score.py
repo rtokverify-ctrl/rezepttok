@@ -1,6 +1,6 @@
-
 # Video Quality Scoring Module
 # Purpose: Evaluate the objective and subjective quality of a video.
+
 
 def calculate_quality_score(video_id: int):
     """

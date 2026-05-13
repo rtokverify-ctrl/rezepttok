@@ -1,6 +1,7 @@
 # Contextual Pairing Algorithm
 # Purpose: Suggest complementary recipes (e.g., Sauce for Pasta) based on current video and user preferences.
 
+
 def get_contextual_suggestions(current_video_id: int, user_id: int):
     """
     1. Identify 'Base' component in current video (e.g., 'Pasta', 'Steak', 'Pancakes').

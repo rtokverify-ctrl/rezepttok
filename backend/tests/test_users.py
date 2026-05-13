@@ -1,5 +1,6 @@
 """Tests for users_router: Profile, Follow."""
-from tests.conftest import auth_header, create_verified_user
+
+from tests.conftest import auth_header
 
 
 def test_get_my_profile(client, auth_token):
@@ -28,9 +29,11 @@ def test_get_nonexistent_profile(client, auth_token):
 
 
 def test_update_profile(client, auth_token):
-    r = client.post("/update-profile",
+    r = client.post(
+        "/update-profile",
         data={"display_name": "Neuer Name", "bio": "Meine Bio"},
-        headers=auth_header(auth_token))
+        headers=auth_header(auth_token),
+    )
     assert r.status_code == 200
 
     profile = client.get("/my-profile", headers=auth_header(auth_token)).json()
@@ -44,17 +47,23 @@ def test_follow_toggle(client, auth_token, second_auth_token):
     user1_id = user1["id"]
 
     # User2 follows User1
-    r = client.post(f"/users/{user1_id}/toggle-follow", headers=auth_header(second_auth_token))
+    r = client.post(
+        f"/users/{user1_id}/toggle-follow", headers=auth_header(second_auth_token)
+    )
     assert r.status_code == 200
     assert r.json()["following"] is True
 
     # Check follower count
-    profile = client.get(f"/users/{user1_id}/profile", headers=auth_header(second_auth_token)).json()
+    profile = client.get(
+        f"/users/{user1_id}/profile", headers=auth_header(second_auth_token)
+    ).json()
     assert profile["profile"]["followers_count"] == 1
     assert profile["profile"]["i_follow"] is True
 
     # Unfollow
-    r = client.post(f"/users/{user1_id}/toggle-follow", headers=auth_header(second_auth_token))
+    r = client.post(
+        f"/users/{user1_id}/toggle-follow", headers=auth_header(second_auth_token)
+    )
     assert r.json()["following"] is False
 
 

@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock
 
 from database import Base, get_db
 
@@ -16,7 +16,10 @@ from database import Base, get_db
 # The app imports auth_router which imports mail_manager at register time.
 # We need to patch it so background tasks don't fail.
 import services.mail_manager
-services.mail_manager.mail_manager.send_verification_code = AsyncMock(return_value={"ok": True})
+
+services.mail_manager.mail_manager.send_verification_code = AsyncMock(
+    return_value={"ok": True}
+)
 
 from main import app
 from limiter import limiter
@@ -72,12 +75,17 @@ def db_session():
 
 
 # ── Helper: Create a user and return token ───────────────────────────
-def create_verified_user(client: TestClient, username="testuser", email="test@test.com", password="TestPass123!"):
+def create_verified_user(
+    client: TestClient,
+    username="testuser",
+    email="test@test.com",
+    password="TestPass123!",
+):
     """Register and return auth token (auto-verified)."""
-    r = client.post("/register", json={
-        "username": username, "email": email,
-        "password": password, "age": 20
-    })
+    r = client.post(
+        "/register",
+        json={"username": username, "email": email, "password": password, "age": 20},
+    )
     token = r.json().get("access_token", "")
     return token
 

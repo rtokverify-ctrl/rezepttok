@@ -14,20 +14,24 @@ class User(Base):
     display_name: Mapped[Optional[str]] = mapped_column(default=None)
     bio: Mapped[Optional[str]] = mapped_column(default=None)
     avatar_url: Mapped[Optional[str]] = mapped_column(default=None)
-    
+
     # Security / 2FA
     is_verified: Mapped[bool] = mapped_column(default=False)
     verification_code: Mapped[Optional[str]] = mapped_column(default=None)
+
 
 class Notification(Base):
     __tablename__ = "notifications"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     recipient_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     sender_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    type: Mapped[str] = mapped_column() # like, comment, follow
-    post_id: Mapped[Optional[int]] = mapped_column(ForeignKey("recipes.id"), default=None)
+    type: Mapped[str] = mapped_column()  # like, comment, follow
+    post_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("recipes.id"), default=None
+    )
     read: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[str] = mapped_column()
+
 
 class ShoppingList(Base):
     __tablename__ = "shopping_lists"
@@ -36,18 +40,27 @@ class ShoppingList(Base):
     name: Mapped[str] = mapped_column()
     created_at: Mapped[str] = mapped_column()
 
+
 class ShoppingListItem(Base):
     __tablename__ = "shopping_list_items"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    list_id: Mapped[int] = mapped_column(ForeignKey("shopping_lists.id", ondelete="CASCADE"))
+    list_id: Mapped[int] = mapped_column(
+        ForeignKey("shopping_lists.id", ondelete="CASCADE")
+    )
     item: Mapped[str] = mapped_column()
     quantity: Mapped[Optional[str]] = mapped_column(default="")
     completed: Mapped[bool] = mapped_column(default=False)
 
+
 class SharedShoppingList(Base):
     __tablename__ = "shared_shopping_lists"
-    list_id: Mapped[int] = mapped_column(ForeignKey("shopping_lists.id", ondelete="CASCADE"), primary_key=True)
-    shared_with_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    list_id: Mapped[int] = mapped_column(
+        ForeignKey("shopping_lists.id", ondelete="CASCADE"), primary_key=True
+    )
+    shared_with_user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"), primary_key=True
+    )
+
 
 class Recipe(Base):
     __tablename__ = "recipes"
@@ -63,10 +76,12 @@ class Recipe(Base):
     views: Mapped[int] = mapped_column(default=0)
     created_at: Mapped[Optional[str]] = mapped_column(default=None)
 
+
 class Like(Base):
     __tablename__ = "likes"
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"), primary_key=True)
+
 
 class Comment(Base):
     __tablename__ = "comments"
@@ -74,8 +89,11 @@ class Comment(Base):
     text: Mapped[str] = mapped_column()
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"))
-    parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("comments.id"), default=None)
+    parent_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("comments.id"), default=None
+    )
     created_at: Mapped[str] = mapped_column()
+
 
 class Collection(Base):
     __tablename__ = "collections"
@@ -83,22 +101,32 @@ class Collection(Base):
     name: Mapped[str] = mapped_column()
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
+
 class SavedRecipe(Base):
     __tablename__ = "saved_recipes"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id"))
-    collection_id: Mapped[Optional[int]] = mapped_column(ForeignKey("collections.id", ondelete="CASCADE"), default=None)
+    collection_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("collections.id", ondelete="CASCADE"), default=None
+    )
+
 
 class SharedCollection(Base):
     __tablename__ = "shared_collections"
-    collection_id: Mapped[int] = mapped_column(ForeignKey("collections.id", ondelete="CASCADE"), primary_key=True)
-    shared_with_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    collection_id: Mapped[int] = mapped_column(
+        ForeignKey("collections.id", ondelete="CASCADE"), primary_key=True
+    )
+    shared_with_user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"), primary_key=True
+    )
+
 
 class Follow(Base):
     __tablename__ = "follows"
     follower_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
     following_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+
 
 class Conversation(Base):
     __tablename__ = "conversations"
@@ -108,6 +136,7 @@ class Conversation(Base):
     created_at: Mapped[str] = mapped_column()
     updated_at: Mapped[str] = mapped_column()
 
+
 class Message(Base):
     __tablename__ = "messages"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -116,6 +145,7 @@ class Message(Base):
     text: Mapped[str] = mapped_column()
     created_at: Mapped[str] = mapped_column()
     read: Mapped[bool] = mapped_column(default=False)
+
 
 class PushToken(Base):
     __tablename__ = "push_tokens"

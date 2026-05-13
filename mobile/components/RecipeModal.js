@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BASE_URL } from '../constants/Config';
 import { useGlobal } from '../context/GlobalContext';
+import CookingModeModal from './CookingModeModal';
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,6 +13,7 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
     const styles = getStyles(themeColor);
 
     const [addingToShop, setAddingToShop] = useState(false);
+    const [cookingModeVisible, setCookingModeVisible] = useState(false);
     
     // Edit mode state
     const [isEditing, setIsEditing] = useState(false);
@@ -173,6 +175,14 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
 
                     {/* Content */}
                     <View style={styles.content}>
+                        {/* Start Cooking Mode Button */}
+                        {!isEditing && (
+                            <TouchableOpacity onPress={() => setCookingModeVisible(true)} style={styles.startCookingBtn}>
+                                <Ionicons name="restaurant" size={20} color="white" />
+                                <Text style={styles.startCookingText}>Kochmodus starten</Text>
+                            </TouchableOpacity>
+                        )}
+
                         {/* Tags */}
                         {isEditing ? (
                             <View style={{ marginBottom: 20 }}>
@@ -311,6 +321,11 @@ const RecipeModal = ({ visible, onClose, selectedRecipe, deleteRecipe, userToken
                     </View>
                 </ScrollView>
             </View>
+            <CookingModeModal 
+                visible={cookingModeVisible} 
+                onClose={() => setCookingModeVisible(false)} 
+                selectedRecipe={selectedRecipe} 
+            />
         </Modal>
     );
 };
@@ -335,6 +350,8 @@ const getStyles = (themeColor) => StyleSheet.create({
     tipText: { color: '#856404', fontSize: 13 },
     sectionHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15, marginTop: 10 },
     sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#1a1a1a' },
+    startCookingBtn: { flexDirection: 'row', backgroundColor: themeColor, padding: 15, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 20, shadowColor: themeColor, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
+    startCookingText: { color: 'white', fontWeight: 'bold', fontSize: 18, marginLeft: 10 },
     addShopBtn: { flexDirection: 'row', backgroundColor: themeColor, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, alignItems: 'center' },
     addShopText: { color: 'white', fontWeight: 'bold', fontSize: 12, marginLeft: 5 },
     card: { backgroundColor: 'white', borderRadius: 16, padding: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 2, marginBottom: 25 },

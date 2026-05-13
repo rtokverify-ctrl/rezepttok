@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class MailManager:
     def __init__(self):
         self.api_key = os.getenv("MAILJET_API_KEY", "")
@@ -31,24 +32,26 @@ class MailManager:
                     "https://api.mailjet.com/v3.1/send",
                     auth=(self.api_key, self.secret_key),
                     json={
-                        "Messages": [{
-                            "From": {
-                                "Email": self.from_email,
-                                "Name": self.from_name
-                            },
-                            "To": [{
-                                "Email": email
-                            }],
-                            "Subject": "Dein RezeptTok 2FA Code",
-                            "HTMLPart": html
-                        }]
+                        "Messages": [
+                            {
+                                "From": {
+                                    "Email": self.from_email,
+                                    "Name": self.from_name,
+                                },
+                                "To": [{"Email": email}],
+                                "Subject": "Dein RezeptTok 2FA Code",
+                                "HTMLPart": html,
+                            }
+                        ]
                     },
-                    timeout=30.0
+                    timeout=30.0,
                 )
 
                 if response.status_code != 200:
                     error_msg = response.text
-                    print(f"WARNING: Mailjet API Error ({response.status_code}): {error_msg}")
+                    print(
+                        f"WARNING: Mailjet API Error ({response.status_code}): {error_msg}"
+                    )
                     return None
 
                 result = response.json()
@@ -57,5 +60,6 @@ class MailManager:
         except Exception as e:
             print(f"WARNING: Email sending failed for {email}: {e}")
             return None
+
 
 mail_manager = MailManager()

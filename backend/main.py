@@ -6,11 +6,23 @@ from slowapi import _rate_limit_exceeded_handler
 import os
 
 from database import engine, Base
-import models 
 from limiter import limiter
-from routers import auth_router, users_router, recipes_router, video_router, search_router, notifications_router, shopping_router, debug_router, chat_router, health_router, collaboration_router
+from routers import (
+    auth_router,
+    users_router,
+    recipes_router,
+    video_router,
+    search_router,
+    notifications_router,
+    shopping_router,
+    debug_router,
+    chat_router,
+    health_router,
+    collaboration_router,
+)
 
 from contextlib import asynccontextmanager
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,13 +30,19 @@ async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     # Auto-migrate: add parent_id to comments if missing
     from sqlalchemy import text, inspect
+
     with engine.connect() as conn:
         inspector = inspect(engine)
-        columns = [c['name'] for c in inspector.get_columns('comments')]
-        if 'parent_id' not in columns:
-            conn.execute(text("ALTER TABLE comments ADD COLUMN parent_id INTEGER REFERENCES comments(id)"))
+        columns = [c["name"] for c in inspector.get_columns("comments")]
+        if "parent_id" not in columns:
+            conn.execute(
+                text(
+                    "ALTER TABLE comments ADD COLUMN parent_id INTEGER REFERENCES comments(id)"
+                )
+            )
             conn.commit()
     yield
+
 
 app = FastAPI(lifespan=lifespan)
 app.state.limiter = limiter
@@ -41,20 +59,23 @@ else:
     allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",")]
 
 app.add_middleware(
-    CORSMiddleware, 
-    allow_origins=allowed_origins, 
-    allow_methods=["*"], 
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=False if "*" in allowed_origins else True
+    allow_credentials=False if "*" in allowed_origins else True,
 )
+
 
 @app.get("/")
 def read_root():
     return {"status": "Online"}
 
+
 @app.head("/")
 def head_root():
     return {"status": "Online"}
+
 
 app.include_router(auth_router.router)
 app.include_router(users_router.router)

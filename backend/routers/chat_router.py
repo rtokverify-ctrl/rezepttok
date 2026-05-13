@@ -1,4 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect, Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    WebSocket,
+    WebSocketDisconnect,
+    Query,
+)
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, func, desc
 from datetime import datetime
@@ -28,10 +35,17 @@ def get_conversation_for_user(conv_id: int, user_id: int, db: Session) -> Conver
 
 # ── GET /conversations ───────────────────────────────────────────────
 @router.get("/conversations", response_model=List[ConversationOut])
-def get_conversations(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_conversations(
+    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
+):
     convs = (
         db.query(Conversation)
-        .filter(or_(Conversation.user1_id == current_user.id, Conversation.user2_id == current_user.id))
+        .filter(
+            or_(
+                Conversation.user1_id == current_user.id,
+                Conversation.user2_id == current_user.id,
+            )
+        )
         .order_by(desc(Conversation.updated_at))
         .all()
     )
@@ -55,28 +69,34 @@ def get_conversations(db: Session = Depends(get_db), current_user: User = Depend
             .filter(
                 Message.conversation_id == c.id,
                 Message.sender_id != current_user.id,
-                Message.read == False,
+                not Message.read,
             )
             .scalar()
         )
 
-        result.append(ConversationOut(
-            id=c.id,
-            other_user=ConversationUserOut(
-                id=other_user.id,
-                username=other_user.username,
-                avatar_url=other_user.avatar_url,
-            ),
-            last_message=last_msg.text if last_msg else None,
-            last_message_time=last_msg.created_at if last_msg else None,
-            unread_count=unread or 0,
-        ))
+        result.append(
+            ConversationOut(
+                id=c.id,
+                other_user=ConversationUserOut(
+                    id=other_user.id,
+                    username=other_user.username,
+                    avatar_url=other_user.avatar_url,
+                ),
+                last_message=last_msg.text if last_msg else None,
+                last_message_time=last_msg.created_at if last_msg else None,
+                unread_count=unread or 0,
+            )
+        )
     return result
 
 
 # ── POST /conversations ──────────────────────────────────────────────
 @router.post("/conversations")
-def create_conversation(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_conversation(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     if user_id == current_user.id:
         raise HTTPException(400, "Cannot message yourself")
 
@@ -89,8 +109,14 @@ def create_conversation(user_id: int, db: Session = Depends(get_db), current_use
         db.query(Conversation)
         .filter(
             or_(
-                and_(Conversation.user1_id == current_user.id, Conversation.user2_id == user_id),
-                and_(Conversation.user1_id == user_id, Conversation.user2_id == current_user.id),
+                and_(
+                    Conversation.user1_id == current_user.id,
+                    Conversation.user2_id == user_id,
+                ),
+                and_(
+                    Conversation.user1_id == user_id,
+                    Conversation.user2_id == current_user.id,
+                ),
             )
         )
         .first()
@@ -99,7 +125,9 @@ def create_conversation(user_id: int, db: Session = Depends(get_db), current_use
         return {"conversation_id": existing.id}
 
     now = datetime.utcnow().isoformat()
-    conv = Conversation(user1_id=current_user.id, user2_id=user_id, created_at=now, updated_at=now)
+    conv = Conversation(
+        user1_id=current_user.id, user2_id=user_id, created_at=now, updated_at=now
+    )
     db.add(conv)
     db.commit()
     db.refresh(conv)
@@ -108,7 +136,13 @@ def create_conversation(user_id: int, db: Session = Depends(get_db), current_use
 
 # ── GET /conversations/{id}/messages ─────────────────────────────────
 @router.get("/conversations/{conv_id}/messages", response_model=List[MessageOut])
-def get_messages(conv_id: int, skip: int = 0, limit: int = 50, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_messages(
+    conv_id: int,
+    skip: int = 0,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     conv = get_conversation_for_user(conv_id, current_user.id, db)
 
     messages = (
@@ -124,7 +158,12 @@ def get_messages(conv_id: int, skip: int = 0, limit: int = 50, db: Session = Dep
 
 # ── POST /conversations/{id}/messages ────────────────────────────────
 @router.post("/conversations/{conv_id}/messages", response_model=MessageOut)
-async def send_message(conv_id: int, msg: MessageCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def send_message(
+    conv_id: int,
+    msg: MessageCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     conv = get_conversation_for_user(conv_id, current_user.id, db)
 
     if not msg.text or not msg.text.strip():
@@ -145,33 +184,36 @@ async def send_message(conv_id: int, msg: MessageCreate, db: Session = Depends(g
 
     # Push to recipient via WebSocket if connected
     recipient_id = conv.user2_id if conv.user1_id == current_user.id else conv.user1_id
-    
+
     # WebSocket Push (Real-time)
     if recipient_id in active_connections:
         try:
-            await active_connections[recipient_id].send_json({
-                "type": "new_message",
-                "conversation_id": conv.id,
-                "message": {
-                    "id": message.id,
-                    "text": message.text,
-                    "sender_id": message.sender_id,
-                    "created_at": message.created_at,
-                    "read": message.read,
-                },
-            })
+            await active_connections[recipient_id].send_json(
+                {
+                    "type": "new_message",
+                    "conversation_id": conv.id,
+                    "message": {
+                        "id": message.id,
+                        "text": message.text,
+                        "sender_id": message.sender_id,
+                        "created_at": message.created_at,
+                        "read": message.read,
+                    },
+                }
+            )
         except Exception:
             pass  # Connection may have dropped
 
     # Push Notification (Background)
     try:
         from services.push_service import send_push_notification
+
         await send_push_notification(
-            db, 
-            recipient_id, 
-            f"Neue Nachricht von {current_user.display_name or current_user.username}", 
+            db,
+            recipient_id,
+            f"Neue Nachricht von {current_user.display_name or current_user.username}",
             message.text,
-            {"type": "chat", "conversation_id": conv.id}
+            {"type": "chat", "conversation_id": conv.id},
         )
     except Exception as e:
         print(f"Chat push error: {e}")
@@ -181,13 +223,17 @@ async def send_message(conv_id: int, msg: MessageCreate, db: Session = Depends(g
 
 # ── POST /conversations/{id}/read ────────────────────────────────────
 @router.post("/conversations/{conv_id}/read")
-def mark_as_read(conv_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def mark_as_read(
+    conv_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     conv = get_conversation_for_user(conv_id, current_user.id, db)
 
     db.query(Message).filter(
         Message.conversation_id == conv.id,
         Message.sender_id != current_user.id,
-        Message.read == False,
+        not Message.read,
     ).update({"read": True})
     db.commit()
     return {"status": "ok"}
